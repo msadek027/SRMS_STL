@@ -1,0 +1,201 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        EventPermission();
+        $('#btnReset').click(function () {
+
+            $(":checkbox").prop('checked', false);
+            //  $('.chk').prop('checked', false);
+            ResetData();
+
+
+
+        });
+
+        $('#btnView').click(function () {
+
+            PopupWindow.open();
+            PopupWindow.center();
+            $.ajax({
+                url: '/Role/GetRole',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#PopupWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        PopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+
+                },
+                error: function () {
+                    alert('Error occured!');
+                },
+                //complete: function () { },
+            });
+
+        });
+ 
+
+
+        //Initializing Main page details Kendo Grid Colums
+        var PopupGrid = $('#PopupWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "RoleID",
+                        fields: {
+                            RoleID: { type: "string" },
+                            RoleName: { type: "string" }
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "RoleID", title: "RoleID" ,hidden:true},
+                 { field: "RoleName", title: "RoleName" },
+                 { field: "IsActive", title: "IsActive" }
+
+            ]
+
+        }).data('kendoGrid');
+
+        $('#PopupWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            PopupWindow.close();
+            SetMasterData(selectRow);
+
+            $('#IsActive').prop('checked', selectRow.IsActive);
+        });
+
+        //Produc Name twise Filter table row
+        $("#txtPopupInput").keyup(function () {
+            var val = $(this).val();
+            $("#PopupWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "RoleID", operator: "contains", value: val },
+                     { field: "RoleName", operator: "contains", value: val },
+                   //  { field: "IsActive", operator: "contains", value: val },
+
+                ]
+            });
+        });
+
+
+
+
+
+        //function SetMasterData(data) {
+        //    $.each(data, function (key, value) {
+        //        $('#' + key).val(value);
+        //    });
+        //}
+        var chkValue = true;
+        $('#IsActive').click(function () {
+            if ($(this).is(':checked')) { chkValue = $('#IsActive').prop('checked'); }
+            else { chkValue = $('#IsActive').prop('checked'); }
+        });
+        $('#btnSave').click(function () {
+            var Input = InputValidation('RoleName');
+
+            if (Input == 0) {
+                master.RoleID = $('#RoleID').val();
+                master.RoleName = $('#RoleName').val();
+                master.IsActive = chkValue;
+
+
+
+                $.ajax({
+                    url: '/Role/OperationsMode',
+                    data: JSON.stringify(master),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.Status == "Yes") {
+                            $("#RoleID").val(data.ID);
+                            OperationMsg(data.Mode);
+                        }
+                        else {
+                            ErrorFrmServerMsg(data.Status);
+                        }
+
+                    },
+                    error: function () { ErrorFrmClientMsg(); },
+                    // complete: function () { CompletedMsg(); },
+                }); //End of ajax call
+            }
+            else {
+                ValidationMsg();
+            }
+
+        });
+        var master = { "RoleID": "", "RoleName": "", "IsActive": "" };
+    });
+</script>
+
+
+
+
+        <div class="box-header with-border">@*Form Title*@
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> <div id="MessageText"></div></div>
+            <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+                <div style="text-align:right;">
+                    <button id="btnSave" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
+                    <button id="btnView" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+                    <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+                    @*<button id="btnDelete" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-trash"></i>Delete</button>*@
+                </div>
+            </div>
+        </div>
+     <div class="box-body">
+    @*Form Body Content*@
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 "> Role Name:</div>
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"><input type="text" id="RoleName" name="RoleName" placeholder="Role Name" class="RequiredField form-control" /></div>
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"><input type="hidden" id="RoleID" name="RoleID" readonly="readonly" class="form-control" /></div>
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"><input type="checkbox" id="IsActive" class="chk" name="IsActive" checked="checked"> IsActive</div>
+
+
+    </div>
+</div>
+<div class="box-footer">@*Form Footer*@</div>
+<div class="row">
+    <div id="PopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="PopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+
+

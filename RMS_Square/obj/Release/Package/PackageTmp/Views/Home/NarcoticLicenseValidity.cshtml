@@ -1,0 +1,334 @@
+﻿
+@{
+    ViewBag.Title = "NarcoticLicenseValidity";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+<div class="box-header with-border">
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <i class="glyphicon glyphicon-filter"></i> Filter By : >> >> >> >> >> >> >><div id="MessageText"></div>
+    </div>
+    <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+        <div style="text-align:right;">
+            <button id="btnSearch" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+            <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+        </div>
+    </div>
+</div>
+<div class="box-body">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Company Code : </div>
+            <div class="col-sm-2">
+                <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" readonly />
+            </div>
+            <div class="col-sm-1"><button id="btnFind" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+            <div class="col-sm-2">Company Name :</div>
+            <div class="col-sm-5"><input type="text" id="CompanyName" name="CompanyName" class="form-control" readonly /></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Submission Type :</div>
+            <div class="col-sm-3">
+                <select id="SubmissionType" class="txtBox">
+                    <option selected value="All">All</option>
+                    <option value="License">License</option>
+                    <option value="Renewal">Renewal</option>
+                </select>
+            </div>
+            <div class="col-sm-2">Expired Within :</div>
+            <div class="col-sm-2"><input type="text" id="AlarmDays" name="AlarmDays" class="form-control txtBox numeric" maxlength="3" placeholder="days" /></div>
+            <div class="col-sm-3">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Expiry From Date : </div>
+            <div class="col-sm-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="FromDate" name="FromDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+            <div class="col-sm-2">Expiry To Date : </div>
+            <div class="col-sm-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="ToDate" name="ToDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <fieldset class="panel-border" id="divRenew">
+            <legend class="panel-border">License/Renewal Information :</legend>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="LicenseInfoGrid" class=""></div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+</div>
+<div class="box-footer">@*Form Footer*@</div>
+<div class="row">
+    <div id="DisplayPopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="DisplayPopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+    <div id="CompanyWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="CompanyWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $('#btnReset').click(function () {
+        ResetData();
+        $("#SubmissionType").val("All");
+        $("#LicenseInfoGrid").data("kendoGrid").dataSource.data([]);
+    });
+
+    $(document).ready(function () {
+
+        $('.input-group.date').datepicker({
+            format: "d/mm/yyyy",//dd M yyyy
+            // daysOfWeekDisabled: "5,6",
+            autoclose: true,
+            todayHighlight: true
+            //,todayBtn: true,
+        });
+
+        // Company window for find button
+        var CompanyWindow = $("#CompanyWindow").kendoWindow({
+            width: "70%",
+            height: "70%",
+            draggable: true,
+            modal: true,
+            title: "List of Company."
+        }).data("kendoWindow").center();
+
+
+        $('#btnFind').click(function () {
+            CompanyWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetAllCompany", "General")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        CompanyWindow.close();
+                        AcknowledgeMsg();
+                    }
+
+                }
+            });
+
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var companyGrid = $('#CompanyWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "CompanyCode",
+                        fields: {
+                            CompanyCode: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 10
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtCompanyKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "CompanyCode", title: "CompanyCode", width: 80 },
+                 { field: "CompanyName", title: "CompanyName", width: 100 },
+                 { field: "Address", title: "CompanyAddress", width: 160 },
+                 { field: "LicenseNo", title: "LicenseNo", width: 80 }
+            ]
+
+        }).data('kendoGrid');
+
+        $('#CompanyWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+
+            CompanyWindow.close();
+            SetMasterData(selectRow);
+
+        });
+
+        //Company Name wise Filter table row
+        $("#txtCompanyKeyword").keyup(function () {
+            var val = $(this).val();
+            $("#CompanyWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "CompanyCode", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val },
+                     { field: "Address", operator: "contains", value: val },
+                ]
+            });
+        });
+
+        //To Define Data  for License info Kendo Grid
+        var licenseInfoDataSource = new kendo.data.DataSource({
+            batch: true,
+            schema: {
+                model: {
+                    id: "ID",
+                    fields: {
+                        ID: { editable: true },
+                        RevisionNo: { editable: true },
+                        SubmissionDate: { editable: false },
+                        InspectionDate: { editable: false },
+                        ApprovalDate: { editable: false },
+                        ValidUpto: { editable: false },
+                        AlarmDays: { editable: false },
+                        DateDiff:{editable:false}
+                    }
+                }
+            },
+            pageSize: 20,
+            transport: {
+                read: function () {
+                    $.ajax({
+                        url: '@Url.Action("GetNarcoticExpireLicenseAll", "Home")', // at first data
+                        type: "GET",
+                        contentType: 'application/json;',
+                        dataType: 'json',
+                        success: function (data) {
+                            $("#LicenseInfoGrid").data("kendoGrid").dataSource.data(data);
+                            $("#divLoading").hide();
+                        }
+                    });
+                }
+            }
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var licenseInfoGrid = $('#LicenseInfoGrid').kendoGrid({
+            dataSource: licenseInfoDataSource,
+            pageable: {
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            //height: 300,
+            selectable: "row",
+            toolbar: ["excel",{ template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            excel: {
+                fileName: "Export.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            navigatable: true,
+            groupable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "ID", hidden: true },
+                 { field: "SlNo ", hidden: true, title: "SlNo", width: 70 },
+                 { field: "DateDiff", title: "LicDays", width: 80 },
+                 { field: "CompanyCode", title: "Code", width: 70 },
+                 { field: "CompanyName", title: "CompanyName", width: 140 },
+                 { field: "RevisionNo", title: "RevisionNo", width: 75 },
+                 { field: "SubmissionType", title: "SubmissionType", width: 100 },
+                 { field: "LicenseNo", title: "LicenseNo", width: 80 },
+                 { field: "SubmissionDate", title: "SubmissionDate", width: 80 },
+                 { field: "InspectionDate",  title: "InspectionDate", width: 80 },
+                 { field: "ValidUpto", title: "ValidUpto", width: 80 },
+                 { field: "ApprovalDate", title: "ApprovalDate", width: 80 },
+                 { field: "AlarmDays", title: "AlarmDays", width: 60 }
+            ],
+            dataBound: onDataBound
+        }).data('kendoGrid');
+
+        $("#txtInputLicense").keyup(function () {
+            var val = $(this).val();
+            $("#LicenseInfoGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "RevisionNo", operator: "contains", value: val },
+                     { field: "SubmissionType", operator: "contains", value: val },
+                     { field: "SubmissionDate", operator: "contains", value: val },
+                     { field: "InspectionDate", operator: "contains", value: val },
+                     { field: "ApprovalDate", operator: "contains", value: val },
+                     { field: "ValidUpto", operator: "contains", value: val },
+                     { field: "AlarmDays", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        function onDataBound(arg) {
+            CustomRowDataBound("LicenseInfoGrid");
+        }
+
+        $('#btnSearch').click(function () {
+            var checkInput = 0; //InputValidation('CompanyCode');
+            if (checkInput == 0) {
+                model.CompanyCode = $('#CompanyCode').val();
+                model.LicenseNo = $('#LicenseNo').val();
+                model.AlarmDays = $('#AlarmDays').val();
+                model.SubmissionType = $('#SubmissionType').val();
+                model.FromDate = $('#FromDate').val();
+                model.ToDate = $('#ToDate').val();
+                $.ajax({
+                    url: '@Url.Action("GetNarcoticExpireLicense", "Home")',
+                    data: JSON.stringify(model),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.dataMaster.length > 0) {
+                            $("#LicenseInfoGrid").data("kendoGrid").dataSource.data(data.dataMaster);
+                        }
+                        else {
+                            $("#LicenseInfoGrid").data("kendoGrid").dataSource.data([]);
+                            toastr.error(OperationMsg("NRF"));
+                        }
+                    }
+                }); //End of ajax call
+            }
+            else {
+                ValidationMsg();
+            }
+
+        });
+        var model = { "CompanyCode": "", "LicenseNo": "", "AlarmDays": "", "SubmissionType": "", "FromDate": "", "ToDate": "" };
+        var dataItemInfo = {};
+
+    });
+
+</script>
+

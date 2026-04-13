@@ -1,0 +1,361 @@
+﻿@{
+   // ViewBag.Title = "frmNocInfoRpt";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+@using (Html.BeginForm("frmNocInfoRpt", "NocInfo", FormMethod.Post, new { target = "_blank", name = "H1Form", id = "H1Form" }))
+{
+    <div class="box-header with-border">
+        <div class="row">
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <i class="glyphicon glyphicon-filter"></i> Filter By : >> >> >> >> >> >> >><div id="MessageText"></div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <div style="text-align:right;">
+                    <div class="btn-group">
+                        <label class="btn btn-default blue">
+                            <input type="radio" id="ReportType" name="ReportType" checked="checked" value="PDF" /> PDF
+                        </label>
+                        <label class="btn btn-default blue">
+                            <input type="radio" id="ReportType" name="ReportType" value="EXCEL" />EXCEL
+                        </label>
+                        <label class="btn btn-default blue">
+                            <input type="radio" id="ReportType" name="ReportType" value="HTML" />Grid
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <div style="text-align:right;">
+                    <button id="btnSearch" class="btn btn-primary btn-lg" type="submit"><i class="glyphicon glyphicon-file"></i>Preview</button>
+                    <button id="btnView" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-file"></i>Preview</button>
+                    <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-2">Company Code : </div>
+                <div class="col-sm-2">
+                    <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" readonly placeholder="All" />
+                </div>
+                <div class="col-sm-1"><button id="btnFindCompany" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+                <div class="col-sm-2">Company Name :</div>
+                <div class="col-sm-4">
+                    <input type="text" id="CompanyName" name="CompanyName" class="form-control" readonly />
+                </div>
+                <div class="col-sm-1"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-2"> Choose Option : </div>
+                <div class="col-sm-2">
+                    <select id="ChooseOption" class="txtBox" name="ChooseOption">
+                        <option selected value="All">All</option>
+                        <option value="SubmissionDate">SubmissionDate</option>
+                        <option value="ApprovalDate">ApprovalDate</option>
+                        <option value="InvoiceDate">InvoiceDate</option>
+                    </select>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-1">(From, To)</div>
+                <div class="col-sm-2">
+                    <div class="input-group date">
+                        <input type="text" class="form-control txtBox" id="FromDate" name="FromDate" placeholder="dd/mm/yyyy">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="input-group date">
+                        <input type="text" class="form-control txtBox" id="ToDate" name="ToDate" placeholder="dd/mm/yyyy">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-2"> Invoice No : </div>
+                <div class="col-sm-2">
+                    <input type="text" id="InvoiceNo" name="InvoiceNo" class="form-control txtBox" placeholder="All" />
+                </div>
+                <div class="col-sm-2"> Department : </div>
+                <div class="col-sm-2">
+                    <input type="text" id="Department" name="Department" class="form-control txtBox" placeholder="All" />
+                </div>
+                <div class="col-sm-4">
+                </div>
+            </div>
+        </div>
+        <div id="divHtmlView" class="form-group">
+            <fieldset class="panel-border" id="divHtml">
+                <legend class="panel-border">Records Information :</legend>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div id="HtmlInfoGrid" class=""></div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="box-footer"></div>
+    <div class="row">
+        <div id="DisplayPopupWindow" class="PopupWindowLayout" style="display: none;">
+            <div id="DisplayPopupWindowGrid" class="PopUpGrid"></div>
+        </div>
+        <div id="ProductWindow" class="PopupWindowLayout" style="display: none;">
+            <div id="ProductWindowGrid" class="PopUpGrid"></div>
+        </div>
+        <div id="CompanyWindow" class="PopupWindowLayout" style="display: none;">
+            <div id="CompanyWindowGrid" class="PopUpGrid"></div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+
+    $('#btnReset').click(function () {
+        ResetData();
+        $("#ChooseOption").val("All");
+        $("#HtmlInfoGrid").data("kendoGrid").dataSource.data([]);
+        ReportButtonView();
+    });
+
+    function ReportButtonView()
+    {
+        $('input[name="ReportType"]').change(function () {
+            var type = $('input[name="ReportType"]:checked').val();
+            //$('input[name="ReportType"]:checked').each(function (key, val) {
+            //    type = $(val).val();
+            //});
+            if (type == "HTML") {
+                $("#btnView").show();
+                $("#divHtmlView").show();
+                $("#btnSearch").hide();
+            }
+            else {
+                $("#btnSearch").show();
+                $("#btnView").hide();
+                $("#divHtmlView").hide();
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $("#btnView").hide();
+        $("#divHtmlView").hide();
+        ReportButtonView();
+        $('.input-group.date').datepicker({
+            format: "d/mm/yyyy",//dd M yyyy
+            // daysOfWeekDisabled: "5,6",
+            autoclose: true,
+            todayHighlight: true
+            //,todayBtn: true,
+        });
+
+        //To Define Data  for License info Kendo Grid
+        var htmlInfoDataSource = new kendo.data.DataSource({
+            batch: true,
+            schema: {
+                model: {
+                    id: "ID",
+                    fields: {
+                        ID: { editable: true }
+                    }
+                }
+            },
+            pageSize: 10
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var htmlInfoGrid = $('#HtmlInfoGrid').kendoGrid({
+            dataSource: htmlInfoDataSource,
+            pageable: {
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            //height: 350,
+            selectable: "row",
+            toolbar: ["excel", { template: "<input type='text' id='txtGridSearch'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            excel: {
+                fileName: "Export.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            navigatable: true,
+            groupable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "ID", hidden: true },
+                 { field: "SN", title: "S/N ", width: 120 },
+                 { field: "InvoiceNo", title: "InvoiceNo", width: 120 },
+                 { field: "InvoiceDate", title: "InvoiceDate", width: 120 },
+                 { field: "ItemName", title: "ItemName", width: 120 },
+                 { field: "Quantity", title: "Quantity", width: 120 },
+                 { field: "CountryOfOrigin", title: "Country Of Origin", width: 120 },
+                 { field: "SubmissionDate", title: "SubmissionDate", width: 120 },
+                 { field: "ApprovalDate", title: "ApprovalDate", width: 120 },
+                 { field: "CompanyName", title: "CompanyName", width: 180 },
+            ]
+        }).data('kendoGrid');
+
+        $("#txtGridSearch").keyup(function () {
+            var val = $(this).val();
+            $("#HtmlInfoGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "CompanyCode", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val },
+                     { field: "SlNo", operator: "contains", value: val },
+                     { field: "ItemName", operator: "contains", value: val },
+                     { field: "InvoiceNo", operator: "contains", value: val },
+                     { field: "CountryOfOrigin", operator: "contains", value: val },
+                ]
+            });
+        });
+
+        $('#btnView').click(function () {
+            var checkInput = 0;// InputValidation('CompanyCode');
+            if (checkInput == 0) {
+                model.CompanyCode = $('#CompanyCode').val();
+                model.InvoiceNo = $('#InvoiceNo').val();
+                model.Department = $('#Department').val();
+                model.ReportType = "HTML";
+                model.ChooseOption = $('#ChooseOption').val();
+                model.FromDate = $('#FromDate').val();
+                model.ToDate = $('#ToDate').val();
+                $.ajax({
+                    url: '@Url.Action("frmNocInfoRpt", "NocInfo")',
+                    data: JSON.stringify(model),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (data) {
+                        $("#HtmlInfoGrid").data("kendoGrid").dataSource.data(data);
+                    }
+                }); //End of ajax call
+            }
+            else {
+                ValidationMsg();
+            }
+
+        });
+        var model = { "ReportType": "", "CompanyCode": "", "ProductCode": "", "FromDate": "", "ToDate": "", "ChooseOption": "", "InvoiceNo": "","Department":"" };
+
+
+        // Company window for find button
+        var CompanyWindow = $("#CompanyWindow").kendoWindow({
+            actions: ["Minimize", "Maximize", "Close"],
+            width: "90%",
+            height: "80%",
+            draggable: true,
+            modal: true,
+            title: "List of Company"
+        }).data("kendoWindow").center();
+
+
+        $('#btnFindCompany').click(function () {
+            CompanyWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetAllCompany", "General")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        CompanyWindow.close();
+                        AcknowledgeMsg();
+                    }
+                }
+            });
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var companyGrid = $('#CompanyWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "CompanyCode",
+                        fields: {
+                            CompanyCode: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 10
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtCompanyKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "CompanyCode", title: "CompanyCode", width: 80 },
+                 { field: "CompanyName", title: "CompanyName", width: 100 },
+                 { field: "Address", title: "CompanyAddress", width: 160 },
+                 { field: "LicenseNo", title: "LicenseNo", width: 80 }
+            ]
+
+        }).data('kendoGrid');
+
+        $('#CompanyWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            CompanyWindow.close();
+            SetMasterData(selectRow);
+            changeAny = 1;
+
+        });
+
+        //Company Name wise Filter table row
+        $("#txtCompanyKeyword").keyup(function () {
+            var val = $(this).val();
+            $("#CompanyWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "CompanyCode", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val },
+                     { field: "Address", operator: "contains", value: val }
+                ]
+            });
+        });
+        
+            });
+
+</script>
+
+
+
+
+
+
+
+

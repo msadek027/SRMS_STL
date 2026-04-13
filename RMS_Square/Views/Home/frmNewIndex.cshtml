@@ -1,0 +1,389 @@
+﻿@{
+    //ViewBag.TotalExCount
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    hr.style-eight {
+        overflow: visible; /* For IE */
+        padding: 0;
+        border: none;
+        border-top: medium double #3C8DBC;
+        color: #333;
+        text-align: center;
+    }
+
+        hr.style-eight:after {
+            content: "Validity Notification";
+            display: inline-block;
+            position: relative;
+            top: -0.7em;
+            font-size: 1.5em;
+            font-style: italic;
+            padding: 0 0.25em;
+            background: white;
+        }
+
+    hr.style-twelve {
+        overflow: visible; /* For IE */
+        padding: 0;
+        border: none;
+        border-top: medium double #3C8DBC;
+        color: #333;
+        text-align: center;
+    }
+
+        hr.style-twelve:after {
+            content: "Receive Date Notification";
+            display: inline-block;
+            position: relative;
+            top: -0.7em;
+            font-size: 1.5em;
+            font-style: italic;
+            padding: 0 0.25em;
+            background: white;
+        }
+
+    .bg-l1 {
+        background-color: #005B9A !important;
+    }
+
+    .bg-l2 {
+        background-color: #0191C8 !important;
+    }
+
+    .bg-l3 {
+        background-color: #4CD9D2 !important;
+    }
+
+    .CenterText {
+        text-align: center;
+        color: white;
+    }
+</style>
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+
+
+<div class="box-body" id="divFirst">
+    <input type="hidden" id="UserRole" data-value="@Session["RoleName"]" />
+    <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-2">
+            <a href="../Regulatory/RecipeInfo/frmRecipeInfoRpt">
+                <div class="small-box bg-aqua animated bounceInDown" style="height:110px">
+                    <div class="inner">
+                        <br />
+                        <p style=" text-align: center; font-size: 25px;color: #fff;font-weight: bold;">Recipe Info</p>
+                    </div>             
+                </div>
+            </a>
+        </div>
+
+        <div class="col-sm-2">
+            <!-- small box -->
+            <a href="../Regulatory/ProductReg/frmProductRegRpt">
+                <div class="small-box bg-aqua animated bounceInRight" style="height:110px">
+                    <div class="inner">
+                        <br />
+                        <p style=" text-align: center; font-size: 25px; font-weight: bold;">Product Registration</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+
+        <div class="col-sm-2">
+            <a href="../Regulatory/ProductPrice/frmProductPriceRpt">
+                <!-- small box -->
+                <div class="small-box bg-aqua animated bounceInUp" style="height:110px">
+                    <div class="inner">
+                        <br />
+                        <p style=" text-align: center; font-size: 25px; font-weight: bold;">Price Info</p>
+                    </div>
+
+                </div>
+            </a>
+        </div>
+
+        <div class="col-sm-2">
+            <!-- small box -->
+            <a href="../Regulatory/MarketAuthCertificate/frmMarketAuthCertificateRpt">
+                <div class="small-box bg-aqua animated bounceInLeft" style="height:110px">
+                    <div class="inner">
+                        <br />
+                        <p style=" text-align: center; font-size:25px; font-weight: bold;">MA Certificate</p>
+                    </div>
+
+                </div>
+            </a>
+        </div>
+
+        <div class="col-sm-2" id="divProduct">
+            <!-- small box animated rollIn -->
+            <a href="../Regulatory/ProductInfo/frmProductInfoRpt">
+                <div class="small-box  bg-aqua animated rollIn" style="height:110px">
+                    <div class="inner">
+                        <br />
+                        <p style=" text-align: center; font-size: 25px; font-weight: bold;">Product (Summary)</p>
+                    </div>
+
+                </div>
+            </a>
+        </div>
+
+
+        <div class="col-sm-1"></div>
+    </div>
+</div>
+
+<div id="divSecondTitle">
+    <hr class="style-eight" />
+</div>
+
+<div class="box-body" id="divSecond">
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <div class="small-box bg-l3">
+                <a href='@Url.Action("CompanyLicenseValidity", "Home")' class="small-box-footer">
+                    <div class="inner">
+                        <h3>@ViewBag.ExpireComLcn</h3>
+                        <p>Manufacturing License</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <div class="small-box bg-l2">
+                <a href="../Home/GmpLicenseValidity" class="small-box-footer">
+                    <div class="inner">
+                        <h3>@ViewBag.ExpireGmpLcn</h3>
+                        <p>GMP Certificate</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <div class="small-box bg-l2">
+                <a href="../Home/NarcoticLicenseValidity" class="small-box-footer">
+                    <div class="inner">
+                        <h3>@ViewBag.ExpireNarcoticLcn</h3>
+                        <p>Narcotic License</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+
+            <div class="small-box bg-l3">
+                <a href="../Home/AdvertiseNotify" class="small-box-footer">
+                    <div class="inner">
+                        <h3>@ViewBag.ExpireAdvNotify</h3>
+                        <p>Advertisement</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <div class="small-box bg-l3">
+                <a href="../Home/RecipeNotify" class="small-box-footer">
+                    <div class="inner">
+                        <h3>@ViewBag.ExpireRecipeNotify</h3>
+                        <p>Recipe</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <div class="small-box  bg-l2">
+                <a href="../Home/ProductLicenseValidity" class="small-box-footer">
+                    <div class="inner">
+                        <h3>@ViewBag.ExpireProductLcn</h3>
+                        <p>Product Registration</p>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <div class="small-box bg-l2">
+                <a href="../Home/MACertificateExpiry" class="small-box-footer">
+                    <div class="inner">
+                        <h3>@ViewBag.ExpireMACertificate</h3>
+                        <p>Marketing Authorization</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <div class="small-box bg-l3">
+                <a href="../Home/ImportProductLicVd" class="small-box-footer">
+                    <div class="inner">
+                        <h3>@ViewBag.ExpireImpProductLcn</h3>
+                        <p>Import Product Registration</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    @*<div class="row">
+            <div class="col-lg-3 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-aqua">
+                    <div class="inner">
+                        <h3>@ViewBag.NewAnnexProductLast</h3>
+                        <p>Product Annex Within Last 60 days!</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-bag"></i>
+                    </div>
+                    <a href="../Regulatory/ProductReg/frmProductRegView" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-green">
+                    <div class="inner">
+                        <h3>@ViewBag.NewProductPriceLast</h3>
+                        <p>Product Price Within Last 60 days!</p>
+
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="../Regulatory/ProductPrice/frmProductPriceView" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-yellow">
+                    <div class="inner">
+                        <h3>@ViewBag.NewMAProduct</h3>
+                        <p>Ending Product Life Cycle Report Within Last 60 days!</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person-add"></i>
+                    </div>
+                    <a href="../Regulatory/ProductRpt/frmProductRpt" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-red">
+                    <div class="inner">
+                        <h3>@ViewBag.CountEmployee</h3>
+                        <p>Employee/User Total!</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-pie-graph"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+        </div>*@
+</div>
+
+@*<div id="divThirdTitle">
+    <hr class="style-twelve" />
+</div>
+<div class="box-body" id="divThird">
+    <div class="row">
+        <div class="col-lg-2 col-xs-6">
+            <!-- small box style="text-align:center;" General/frmNewComming?PageName=Recipe-->
+            <a href="../Regulatory/RecipeInfo/frmRecipeInfo" class="small-box-footer">
+                <div class="small-box bg-l3">
+                    <div class="inner">
+                        <h3 class="CenterText">@ViewBag.RDNRecipe</h3>
+                        <p class="CenterText">Recipe</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-2 col-xs-6">
+            <a href="../Regulatory/ProductReg/frmProductReg" class="small-box-footer">
+                <div class="small-box bg-l2">
+                    <div class="inner">
+                        <h3 class="CenterText">@ViewBag.RDNDTL</h3>
+                        <p class="CenterText">DTL</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-2 col-xs-6">
+            <!-- small box -->
+            <a href="../Regulatory/ProductReg/frmProductReg" class="small-box-footer">
+                <div class="small-box bg-l1">
+                    <div class="inner">
+                        <h3 class="CenterText">@ViewBag.RDNProductReg</h3>
+                        <p class="CenterText">Product Registration</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-2 col-xs-6">
+            <a href="../Regulatory/ProductPrice/frmProductPrice" class="small-box-footer">
+                <div class="small-box bg-l1">
+                    <div class="inner">
+                        <h3 class="CenterText">@ViewBag.RDNPrice</h3>
+                        <p class="CenterText">Price</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-2 col-xs-6">
+            <!-- small box -->
+            <a href="../Regulatory/MarketAuthCertificate/frmMarketAuthCertificate" class="small-box-footer">
+                <div class="small-box bg-l2">
+                    <div class="inner">
+                        <h3 class="CenterText">@ViewBag.RDNMA</h3>
+                        <p class="CenterText">MA</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-2 col-xs-6">
+            <!-- small box -->
+            <a href="../Regulatory/PriceFixCom/frmPriceFixCom" class="small-box-footer">
+                <div class="small-box bg-l3">
+                    <div class="inner">
+                        <h3 class="CenterText">@ViewBag.RDNPFC</h3>
+                        <p class="CenterText">PFC</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>*@
+
+<div class="box-footer"></div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        if ($("#UserRole").data("value") == "Group2") {
+            document.getElementById("divSecond").style.visibility = "hidden";
+            document.getElementById("divSecondTitle").style.visibility = "hidden";
+        }
+    });
+
+</script>

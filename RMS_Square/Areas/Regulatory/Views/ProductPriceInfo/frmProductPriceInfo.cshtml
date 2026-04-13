@@ -1,0 +1,596 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        EventPermission();
+        $('#btnReset').click(function () {
+
+            ResetData();
+            var gridInput = 0;
+
+            $('#MainGrid').data('kendoGrid').dataSource.filter([]);
+            $('#MainGrid').data('kendoGrid').dataSource.data([]);
+
+        });
+
+        var MainGrid = $('#MainGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: false,
+                schema: {
+                    model: {
+                        id: "OrderTypeCode",
+                        fields: {
+                            OrderTypeCode: { type: "string", editable: true, validation: { required: true } },
+                            PriceTypeCode: { type: "string", editable: true, validation: { required: true } },
+                            CurrencyCode: { type: "string", editable: true, validation: { required: true } },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            selectable: "row",
+            toolbar: [{ text: "Add Items", className: "btnMainGrid", imageClass: "k-icon k-add", }, { template: "<input type='text' id='txtInput' style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "PriceMstSlNo", title: "Price MST", hidden: true },
+                 { field: "PriceDtlSlNo", title: "Price DTL", hidden: true },
+                 { field: "OrderTypeCode", title: "Order Type Code",hidden: true },
+                 { field: "OrderTypeName", title: "Order Type", editable: true, editor: GetOrderType },
+                 { field: "PriceTypeCode", title: "Price Type Code", hidden: true },
+                 { field: "PriceTypeName", title: "Price Type", editable: true, editor: GetPriceType },
+                 { field: "CurrencyCode", title: "Currency Code", hidden: true },
+                 { field: "CurrencyName", title: "Currency", editable: true, editor: GetCurrency },
+                 { field: "ProductPrice", title: "Regular Price", editable: true },
+                 { field: "LCPrice", title: "LC Price", editable: true },
+            ]
+
+        }).data('kendoGrid');
+
+
+     
+
+
+        function GetOrderType(container, options) {
+            $('<input name="OrderTypeCode" data-bind="value:' + options.field + '"/>')
+            .appendTo(container)
+            .kendoDropDownList({
+                autoBind: true,
+                optionLabel: "Select",
+                dataTextField: "OrderTypeName",
+                dataValueField: "OrderTypeCode",
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: "/General/GetOrderType",
+                            type: "GET",
+                        }
+                    }
+                },
+                change: function (e) {
+                        changeStatus = 1;
+                        var dataItem = e.sender.dataItem();
+                        options.model.set("OrderTypeName", dataItem.OrderTypeName);
+                        options.model.set("OrderTypeCode", dataItem.OrderTypeCode);
+                 },
+                });
+        }
+
+
+
+        function GetCurrency(container, options) {
+            $('<input name="CurrencyCode" data-bind="value:' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+                    autoBind: true,
+                    dataTextField: "CurrencyName",
+                    dataValueField: "CurrencyCode",
+                    optionLabel: "Select",
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: "/CurrencyInfo/GetCurrency",
+                                type: "GET"
+                            }
+                        }
+                    },
+                    change: function (e) {
+                        changeStatus = 1;
+                        var dataItem = e.sender.dataItem();
+                        options.model.set("CurrencyName", dataItem.CurrencyName);
+                        options.model.set("CurrencyCode", dataItem.CurrencyCode);
+                    },
+                });
+        }
+
+        function GetPriceType(container, options) {
+            $('<input name="PriceTypeCode" data-bind="value:' + options.field + '"/>')
+               .appendTo(container)
+               .kendoDropDownList({
+                   autoBind: true,
+                   dataTextField: "PriceTypeName",
+                   dataValueField: "PriceTypeCode",
+                   optionLabel: "Select",
+                   dataSource: {
+                        transport: {
+                            read: {
+                                url: "/General/GetPriceType",
+                                type: "GET"
+                            }
+                        }
+                   },
+                   change: function (e) {
+                       changeStatus = 1;
+                       var dataItem = e.sender.dataItem();
+                       options.model.set("PriceTypeName", dataItem.PriceTypeName);
+                       options.model.set("PriceTypeCode", dataItem.PriceTypeCode);
+                   },
+                });
+        }
+
+
+        $(".btnMainGrid").click(function () {
+            DataAddToGrid();
+        });
+        function DataAddToGrid() {
+            var addflag = 1; // For Row Add in Detail Grid using enter Key Press
+            var parentFlag = 1; // For Row Add in Detail Grid using enter Key Press without Parent Data
+
+            if (parentFlag == 1) {
+                $("#MessageText").html("");
+                var grid = $("#MainGrid").data("kendoGrid");
+
+                $("#MainGrid").data().kendoGrid.bind('dataBound', function () {
+                    this.element.find('tbody tr:first').addClass('k-state-selected');
+                });
+                var dataSource = $("#MainGrid").data("kendoGrid").dataSource;
+                var addData = dataSource.data();
+                if (addData != null) { // For Add row when Exiting Data in Grid
+                    for (var i = 0; i < addData.length; i++) {
+                        if (addData[i].SoftwareName == "") {
+                            addflag = 0;
+                        }
+                    }
+                }
+                if (addflag == 1) {
+                    grid.addRow();
+                }
+            }
+        }
+        // Filter table row
+        $("#txtInput").keyup(function () {
+            var val = $(this).val();
+            $("#MainGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "OrderTypeCode", operator: "contains", value: val },
+                     { field: "PriceTypeCode", operator: "contains", value: val },
+                     { field: "ProductPrice", operator: "contains", value: val },
+                     { field: "CurrencyCode", operator: "contains", value: val },
+                     { field: "LCPrice", operator: "contains", value: val },
+                ]
+            });
+        });
+
+        var gridInput = 0;
+        function GridValidation() {
+            gridInput = 0;
+            var dataSource = $("#MainGrid").data("kendoGrid").dataSource;
+            data = dataSource.data(); // Get Detail Grid Data
+            if (dataSource.view().length > 0) {
+                gridInput = 0;
+            }
+            else {
+                gridInput = 1;
+            }
+        }
+
+        $('#btnView').click(function () {
+            PopupWindow.open();
+            $.ajax({
+                url: '/ProductPriceInfo/GetPriceList',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#PopupWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        PopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+                },
+                error: function () {
+                    alert('Error occured!');
+                },
+                //complete: function () { },
+            });
+        });
+
+        /// Creating POP UP For the Buyer Grid To Load
+        var PopupWindowBuyer = $("#PopupWindowBuyer").kendoWindow({
+            width: "70%",
+            height: "70%",
+            draggable: true,
+            modal: true,
+            title: "List Of Values."
+        }).data("kendoWindow").center();
+
+
+        /// On Key pressing event in Buyer Selection Field
+        $("#ProductName").on('keyup keypress keydown click dblclick', function (e) {
+            PopupWindowBuyer.open();
+            $.ajax({
+                url: '/ProductInfo/GetProduct',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#PopupWindowGridBuyer').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        PopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+                },
+                error: function () {
+                    alert('Error occured!');
+                },
+            });
+        });
+
+
+        /// On Key pressing event in Buyer Selection Field
+        $("#BuyerName").on('keyup keypress keydown click dblclick', function (e) {
+            PopupWindowBuyer.open();
+            $.ajax({
+                url: '/ProductInfo/GetProduct',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#PopupWindowGridBuyer').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        PopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+                },
+                error: function () {
+                    alert('Error occured!');
+                },
+            });
+        });
+
+
+        /// Creating GRID For Loading Buyer Information
+        var PopupGridBuyer = $('#PopupWindowGridBuyer').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "ProductCode",
+                        fields: {
+                            ProductCode: { type: "string", editable: true, validation: { required: true }, defaultValue: "BDT" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            toolbar: [{ template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            groupable: { messages: { empty: "List" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "PriceMstSlno", hidden: true },
+                 { field: "ProductCode", title: "Product Code", width: 80, hidden:true },
+                 { field: "ProductName", title: "Product Name", width: 100 },
+                 { field: "BuyerCode", title: "Buyer Code", width: 80, hidden: true },
+                 { field: "BuyerName", title: "Buyer Name", width: 100 },
+                 { field: "Address", title: "Address", width: 80 },
+                 { field: "CountryCode", title: "Country Code", width: 80, hidden: true },
+                 { field: "CountryName", title: "Country Name", width: 100 },
+            ]
+
+        }).data('kendoGrid');
+
+        /// On Grid Double Click, append data in appropriate field
+        $('#PopupWindowGridBuyer').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+
+            var selectRow = grid.dataItem(grid.select());
+            $('#ProductCode').val(selectRow.ProductCode);
+            $('#ProductName').val(selectRow.ProductName);
+            $('#BuyerCode').val(selectRow.BuyerCode);
+            $('#BuyerName').val(selectRow.BuyerName);
+            $('#CountryCode').val(selectRow.CountryCode);
+            $('#CountryName').val(selectRow.CountryName);
+            PopupWindowBuyer.close();
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var PopupGrid = $('#PopupWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "PriceRevisionNo",
+                        fields: {
+                            PriceRevisionNo: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "PriceRevisionNo", title: "Revision No", width: 80 },
+                 { field: "PriceRevisionDate", title: "Revision Date", width: 100 },
+                 { field: "ProductName", title: "Product Name", width: 80 },
+                 { field: "BuyerName", title: "Buyer Name", width: 80 },
+                 { field: "CountryName", title: "Country Name", width: 100 },
+            ]
+
+        }).data('kendoGrid');
+
+        $('#PopupWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            PopupWindow.close();
+            SetMasterData(selectRow);
+            LoadDetails(selectRow.PriceMstSlno);
+        });
+
+        function LoadDetails(value) {
+            $.ajax({
+                url: '/ProductPriceInfo/GetPriceDetails',
+                type: 'POST',
+                contentType: 'application/json;',
+                dataType: 'json',
+                data: JSON.stringify({ masterID: value }),
+                success: function (data) {
+                    if (data != "") {
+                        $('#MainGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        PopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+                },
+                error: function () {
+                    alert('Error occured!');
+                },
+            });
+        }
+
+        function GridValidation() {
+            gridInput = 0;
+            var dataSource = $("#MainGrid").data("kendoGrid").dataSource;
+            data = dataSource.data(); // Get Detail Grid Data
+            if (dataSource.view().length > 0) {
+                gridInput = 0;
+            }
+            else {
+                gridInput = 1;
+            }
+        }
+
+
+        //Produc Name twise Filter table row
+        $("#txtPopupInput").keyup(function () {
+            var val = $(this).val();
+            $("#PopupWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "PriceRevisionNo", operator: "contains", value: val },
+                     { field: "ProductName", operator: "contains", value: val },
+                     { field: "BuyerName", operator: "contains", value: val },
+                     { field: "CountryName", operator: "contains", value: val },
+                ]
+            });
+        });
+
+        $('#btnSave').click(function () {
+
+            GridValidation();
+
+            var Input = InputValidation('ProductName') + InputValidation('BuyerName') + InputValidation('PriceRevisionDate') + InputValidation('EffectStartDate') + InputValidation('EffectEndDate');
+
+            if (Input == 0 && gridInput == 0) {
+
+                master.PriceRevisionDate = $("#PriceRevisionDate").val();
+                master.ProductName = $("#ProductName").val();
+                master.ProductCode = $("#ProductCode").val();
+                master.PriceMstSlno = $("#PriceMstSlno").val();
+
+                master.BuyerName = $('#BuyerName').val();
+                master.BuyerCode = $('#BuyerCode').val();
+                master.EffectStartDate = $('#EffectStartDate').val();
+                master.EffectEndDate = $('#EffectEndDate').val();
+                master.CountryName = $('#CountryName').val();
+                master.CountryCode = $('#CountryCode').val();
+                master.EffectStatus = $('#EffectStatus').val();
+                master.Remarks = $('#Remarks').val();
+
+                var PageDetailsdts = $("#MainGrid").data("kendoGrid").dataSource;
+                data = PageDetailsdts.data(); // Get Detail Grid Data
+                master.PricingDetailList = [];
+                if (PageDetailsdts.hasChanges) {
+                    for (var i = data.length - 1; i >= 0; i--) {
+
+                        details.PriceMstSlNo = data[i].PriceMstSlNo;
+                        details.PriceDtlSlNo = data[i].PriceDtlSlNo;
+                        details.OrderTypeCode = data[i].OrderTypeCode;
+                        details.PriceTypeCode = data[i].PriceTypeCode;
+                        details.CurrencyCode = data[i].CurrencyCode;
+                        details.ProductPrice = data[i].ProductPrice;
+                        details.LCPrice = data[i].LCPrice;
+
+                        master.PricingDetailList.push(details);
+                         details = { "PriceDtlSlNo": "", "PriceMstSlNo": "", "OrderTypeCode": "", "OrderTypeName": "", "PriceTypeCode": "", "PriceTypeName": "", "CurrencyCode": "", "CurrencyName": "", "CurrencyShortName": "", "ProductPrice": "", "LCPrice": "" };
+                    }
+                }
+                
+                $.ajax({
+                    url: '/ProductPriceInfo/OperationsMode',
+                    data: JSON.stringify(master),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.Status == "Yes") {
+                            $("#NotifyPartyCode").val(data.ID);
+                            OperationMsg(data.Mode);
+                        }
+                        else {
+                            ErrorFrmServerMsg(data.Status);
+                        }
+                    },
+                    error: function () { ErrorFrmClientMsg(); },
+                    // complete: function () { CompletedMsg(); },
+                }); //End of ajax call
+            }
+            else {
+                ValidationMsg();
+            }
+
+        });
+
+        var master = { "PriceMstSlno": "", "ProductCode": "", "ProductName": "", "PriceRevisionNo": "", "PriceRevisionDate": "", "EffectStartDate": "", "EffectEndDate": "", "EffectStatus": "", "BuyerCode": "", "BuyerName": "", "CountryCode": "", "CountryName": "", "Remarks": "", "PricingDetailList": [] };
+        var details = { "PriceDtlSlNo": "", "PriceMstSlNo": "", "OrderTypeCode": "", "OrderTypeName": "", "PriceTypeCode": "", "PriceTypeName": "", "CurrencyCode": "", "CurrencyName": "", "CurrencyShortName": "", "ProductPrice": "", "LCPrice": "" };
+    });
+</script>
+
+<div class="box-header with-border">
+    @*Form Title*@
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> <div id="MessageText"></div></div>
+    <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+        <div style="text-align:right;">
+            <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+            <button id="btnSave" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
+            <button id="btnView" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+            @* <button id="btnDelete" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-trash"></i>Delete</button>*@
+        </div>
+    </div>
+</div>
+
+<div class="box-body">
+    <div class="form-horizontal">
+        @*Form Body Content*@
+        <div class="form-group has-feedback">
+            <div class="row">              
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">Revision Date:</div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="PriceRevisionDate" name="PriceRevisionDate" class="date form-control" /><i class="fa fa-calendar form-control-feedback"></i></div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="PriceRevisionNo" name="PriceRevisionNo" placeholder="Revision No" readonly="readonly" class="form-control" /></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">Product Name:</div>
+                <div class="col-xs-0 col-sm-6 col-md-3 col-lg-3"><input type="text" id="ProductName" name="ProductName" placeholder="Press F9" class="RequiredField form-control" /></div>
+                <input type="hidden" id="ProductCode" name="ProductCode" class="form-control" />
+                <input type="hidden" id="PriceMstSlno" class="form-control" />
+
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">Buyer Name: </div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="BuyerName" name="BuyerName" placeholder="Press F9" class="form-control" /></div>
+                <input type="hidden" id="BuyerCode" name="BuyerCode" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group  has-feedback">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">Effected From: </div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="EffectStartDate" name="EffectStartDate" class="date form-control" /><i class="fa fa-calendar form-control-feedback"></i></div>
+
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">Effected To: </div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="EffectEndDate" name="EffectEndDate" class="date form-control" /><i class="fa fa-calendar form-control-feedback"></i></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">Country: </div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                    <input type="text" id="CountryName" name="CountryName" readonly="readonly" class="form-control" />
+                    <input type="hidden" id="CountryCode" class="form-control" />
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"> Active Status:</div>
+                <div class="col-xs-0 col-sm-6 col-md-3 col-lg-3">
+                    <select id="EffectStatus" name="EffectStatus" class="form-control">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-lg-3">Remarks: </div>
+                <div class="col-lg-9"><textarea id="Remarks" name="Remarks" maxlength="150" placeholder="Remarks" class="form-control"></textarea></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="box-footer">@*Form Footer*@</div>
+<div class="row">
+    <div id="PopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="PopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+    <div id="PopupWindowBuyer" class="PopupWindowLayout" style="display: none;">
+        <div id="PopupWindowGridBuyer" class="PopUpGrid"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div id="MainGrid" class="MainGrid"></div>
+    </div>
+</div>

@@ -1,0 +1,924 @@
+﻿
+@{
+    //ViewBag.Title = "frmProductReg";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+<div class="box-header with-border">
+    @*Form Title*@
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> <div id="MessageText"></div></div>
+    <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+        <div style="text-align:right;">
+            <button id="btnSave" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
+            <button id="btnView" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+            @* <button id="btnDelete" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-trash"></i>Delete</button>*@
+            <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+        </div>
+    </div>
+</div>
+<div class="box-body">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Recipe No<span style="color: red">*</span> :</div>
+            <div class="col-sm-2"><input type="text" id="SlNo" name="SlNo" class="form-control" placeholder="Get from Find" readonly /></div>
+            <input type="hidden" id="RecipeId" name="RecipeId" class="txtBox" />
+            <div class="col-sm-1"><button id="btnFind" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+            <div class="col-sm-1">Annex No:</div>
+            <div class="col-sm-2"><input type="text" id="AnnexureNo" name="AnnexureNo" placeholder="Auto" class="form-control" readonly /></div>
+            <input type="hidden" id="AnnexId" name="AnnexId" class="txtBox" />
+            <div class="col-sm-2">Revision No :</div>
+            <div class="col-sm-2"><input type="text" id="AnnexRevisionNo" name="AnnexRevisionNo" placeholder="Auto" class="form-control" readonly /></div>
+           
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Company Code : </div>
+            <div class="col-sm-2">
+                <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" readonly />
+            </div>
+            <div class="col-sm-2">Company Name & LicenseNo :</div>
+            <div class="col-sm-4"><input type="text" id="CompanyName" name="CompanyName" class="form-control" readonly /></div>
+            <div class="col-sm-2"><input type="text" id="LicenseNo" name="LicenseNo" class="form-control" readonly /></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-4"> </div>
+            <div class="col-sm-2">Record Status :</div>
+            <div class="col-sm-3">
+                <select id="StateStatus" class="form-control txtBox" tabindex="" name="StateStatus">
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <button id="btnRevision" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-plus"></i>Renew/Amendment</button>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <fieldset class="panel-border">
+            <legend class="panel-border">Product Information :</legend>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-2">Product Code : </div>
+                    <div class="col-sm-2">
+                        <input type="text" id="ProductCode" name="ProductCode" class="form-control txtBox" readonly />
+                    </div>
+                    <div class="col-sm-2">SAP Code :</div>
+                    <div class="col-sm-2"><input type="text" id="SAPProductCode" name="SAPProductCode" class="form-control" readonly /></div>
+                    <div class="col-sm-2">Pack Size :</div>
+                    <div class="col-sm-2"><input type="text" id="PackSizeName" name="PackSizeName" class="form-control" readonly /></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-2">Dosage Form : </div>
+                    <div class="col-sm-2">
+                        <input type="text" id="DosageFormName" name="DosageFormName" class="form-control txtBox" readonly />
+                    </div>
+                    <div class="col-sm-2">Product Category :</div>
+                    <div class="col-sm-2"><input type="text" id="ProductCategory" name="ProductCategory" class="form-control" readonly /></div>
+                    <div class="col-sm-2">Brand Name :</div>
+                    <div class="col-sm-2"><input type="text" id="BrandName" name="BrandName" class="form-control" readonly /></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-2">Generic Name & Strength : </div>
+                    <div class=" col-sm-10">
+                        <textarea class="form-control" id="GenAndStrength" name="GenAndStrength" placeholder="Generic Name and Strength" rows="2" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-2">Product Specification: </div>
+                    <div class="col-sm-2">
+                        <input type="text" id="ProductSpecification" name="ProductSpecification" class="form-control txtBox" readonly />
+                    </div>
+                    <div class="col-sm-8"></div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="form-group" id="divInnProduct">
+        <fieldset class="panel-border">
+            <legend class="panel-border">INN Product Info :</legend>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-1"> </div>
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">DTL Sample Receive Date : </div>
+                    <div class="col-sm-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtBox" id="DtlReceivedDate" name="DtlReceivedDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">DTL Sample Submission Date : </div>
+                    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="DtlSubmissionDate" name="DtlSubmissionDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-1"> </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-1"> </div>
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">DTL Sample Approval Date : </div>
+                    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="DtlApprovalDate" name="DtlApprovalDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Remarks : </div>
+                    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                        <input type="text" id="DtlRemarks" name="DtlRemarks" placeholder="Remarks" class="txtBox form-control " />
+                    </div>
+                    <div class="col-sm-1"> </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="form-group" id="divRenew">
+        <fieldset class="panel-border">
+            <legend class="panel-border">Registration Information :</legend>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-1"> </div>
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Received Date : </div>
+                    <div class="col-sm-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control txtBox" id="ReceivedDate" name="ReceivedDate" disabled placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6"> </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-1"> </div>
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Submission Date : </div>
+                    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="SubmissionDate" name="SubmissionDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Inclusion Date : </div>
+                    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="InclusionDate" name="InclusionDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-1"> </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-1"> </div>
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approval/Renewal Date: </div>
+                    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="RenewalDate" name="RenewalDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Valid Up To : </div>
+                    <div class="col-sm-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtBox" id="ValidUptoDate" name="ValidUptoDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-1"> </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-1"> </div>
+                    <div class="col-sm-2">Justification : </div>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control txtBox" id="Remarks" name="Remarks" placeholder="Remarks" maxlength="300">
+                    </div>
+                    <div class="col-sm-1"> </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2">DAR No :</div>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="DarNo" maxlength="30" name="DarNo">
+            </div>
+            <div class="col-sm-2">Annexure Status :</div>
+            <div class="col-sm-2">
+                <select id="AnnexStatus" class="form-control txtBox" tabindex="" name="AnnexStatus">
+                    <option selected value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2">Proposed By :</div>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="ProposedBy" maxlength="30" name="ProposedBy">
+            </div>
+            <div class="col-sm-2">Alarm Days :</div>
+            <div class="col-sm-2">
+                <input type="text" id="AlarmDays" name="AlarmDays" maxlength="5" placeholder="Alarm Days" class="txtBox form-control numeric" />
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-12">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">Upload Documents :</legend>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            Document Name<span style="color: red">*</span>:
+                        </div>
+                        <div class="col-sm-3">
+                            <select id="RefNo" class="form-control txtBox" tabindex="" name="RefNo">
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="file" class="txtBox" id="UploadFile" name="UploadFile" />
+                            <i class="glyphicon glyphicon-upload form-control-feedback"></i>
+                        </div>
+                        <div class="col-sm-3">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <br />
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label>List of Document File</label>
+                            <div id="FileGrid" class=""></div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box-footer"></div>
+<div class="row">
+    <div id="DisplayPopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="DisplayPopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+    <div id="RecipeWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="RecipeWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+<div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px;
+        top: 0px; width: 100%; height: 100%; background-color: #666666; z-index: 30001;
+        opacity: .8; filter: alpha(opacity=70);display:none">
+    <p style="position: absolute; top: 50%; left: 42%; color: White;">
+        Please wait... <img src="../../Content/Images/ajax-loader1.gif">
+    </p>
+</div>
+<script type="text/javascript">
+
+    $('#btnReset').click(function () {
+        ResetData();
+        $('#btnFind').removeAttr('disabled');
+        $("#RefNo").empty();
+        $('#StateStatus').empty();
+        $("#FileGrid").data("kendoGrid").dataSource.data([]);
+    });
+    $("#btnRevision").click(function () {
+        $('#AnnexId').val('');
+        $('#AnnexRevisionNo').val('');
+        var options = new Array();
+        options.push('<option  value="">--Select Any--</option>');
+        options.push('<option  value="Renew">Renew</option>');
+        options.push('<option  value="Annexure Amendment">Annexure Amendment</option>');
+        options.push('<option  value="Packaging Amendment">Packaging Amendment</option>');
+        $("#StateStatus").html(options.join(''));
+        $("#FileGrid").data("kendoGrid").dataSource.data([]);
+    });
+    $('#StateStatus').change(function () {
+        var status = $('#StateStatus').val();
+        if (status == "Renew") {
+            $("#divRenew").find('input, textarea, select').val('');
+        }
+        CheckPagePartAccessPrivilege(status);
+    });
+   
+    function CheckPagePartAccessPrivilege(status) {
+
+        var state = status == "" ? "New" : status;
+        if (state == "New" )
+        {
+            switch ('@ViewBag.PageAccess') {
+                case "A":
+                    var options = new Array();
+                    options.push('<option  value="">--Select Any--</option>');
+                    options.push('<option  value="Proposed Annexure">Proposed Annexure</option>');
+                    options.push('<option  value="Proposed Packaging Material">Proposed Packaging Material</option>');
+                    options.push('<option  value="Stability Data">Stability Data</option>');
+                   
+                    options.push('<option  value="Approved Annexure">Approved Annexure</option>');
+                    options.push('<option  value="Approved Packaging Material">Approved Packaging Material</option>');
+                    options.push('<option  value="Approval Letter">Approval Letter</option>');
+                    $("#RefNo").html(options.join(''));
+                    break;
+                case "P":
+                    var options = new Array();
+                    options.push('<option  value="">--Select Any--</option>');
+                    options.push('<option  value="Proposed Annexure">Proposed Annexure</option>');
+                    options.push('<option  value="Proposed Packaging Material">Proposed Packaging Material</option>');
+                    options.push('<option  value="Stability Data">Stability Data</option>');
+                    $("#RefNo").html(options.join(''));
+                    break;
+            }
+        }
+        else if(state=="Renew")
+        {
+            switch ('@ViewBag.PageAccess') {
+                case "A":
+                    var options = new Array();
+                    options.push('<option  value="">--Select Any--</option>');
+                    options.push('<option  value="Proposed Annexure">Proposed Annexure</option>');
+                    options.push('<option  value="Proposed Packaging Material">Proposed Packaging Material</option>');
+                    options.push('<option  value="Approved Annexure">Approved Annexure</option>');
+                    options.push('<option  value="Approved Packaging Material">Approved Packaging Material</option>');
+                    options.push('<option  value="Approval Letter">Approval Letter</option>');
+                    $("#RefNo").html(options.join(''));
+                    break;
+                case "P":
+                    var options = new Array();
+                    options.push('<option  value="">--Select Any--</option>');
+                    options.push('<option  value="Proposed Annexure">Proposed Annexure</option>');
+                    options.push('<option  value="Proposed Packaging Material">Proposed Packaging Material</option>');
+                    $("#RefNo").html(options.join(''));
+                    break;
+            }
+        }
+        else if (state == "Annexure Amendment")
+        {
+            switch ('@ViewBag.PageAccess') {
+                case "A":
+                    var options = new Array();
+                    options.push('<option  value="">--Select Any--</option>');
+                    options.push('<option  value="Proposed Annexure">Proposed Annexure</option>');
+                    options.push('<option  value="Stability Data">Stability Data</option>');
+                    options.push('<option  value="Amendment Justification">Amendment Justification</option>');
+                    options.push('<option  value="Approved Annexure">Approved Annexure</option>');
+                    options.push('<option  value="Approved Packaging Material">Approved Packaging Material</option>');
+                    options.push('<option  value="Approval Letter">Approval Letter</option>');
+                    $("#RefNo").html(options.join(''));
+                    break;
+                case "P":
+                    var options = new Array();
+                    options.push('<option  value="">--Select Any--</option>');
+                    options.push('<option  value="Proposed Annexure">Proposed Annexure</option>');
+                    options.push('<option  value="Stability Data">Stability Data</option>');
+                    options.push('<option  value="Amendment Justification">Amendment Justification</option>');
+                    $("#RefNo").html(options.join(''));
+                    break;
+            }
+        }
+        else if (state == "Packaging Amendment")
+        {
+            switch ('@ViewBag.PageAccess') {
+                case "A":
+                    var options = new Array();
+                    options.push('<option  value="">--Select Any--</option>');
+                    options.push('<option  value="Proposed Packaging Material">Proposed Packaging Material</option>');
+                    options.push('<option  value="Amendment Justification">Amendment Justification</option>');
+                    options.push('<option  value="Approved Annexure">Approved Annexure</option>');
+                    options.push('<option  value="Approved Packaging Material">Approved Packaging Material</option>');
+                    options.push('<option  value="Approval Letter">Approval Letter</option>');
+                    $("#RefNo").html(options.join(''));
+                    break;
+                case "P":
+                    var options = new Array();
+                    options.push('<option  value="">--Select Any--</option>');
+                    options.push('<option  value="Proposed Packaging Material">Proposed Packaging Material</option>');
+                    options.push('<option  value="Amendment Justification">Amendment Justification</option>');
+                    $("#RefNo").html(options.join(''));
+                    break;
+            }
+        }
+        
+    
+    }
+    $(document).ready(function () {
+        CheckUnSavedData();
+        CheckPagePartAccessPrivilege("");
+        // EventPermission();
+        $('.input-group.date').datepicker({
+            format: "d/mm/yyyy",//dd M yyyy
+            autoclose: true,
+            todayHighlight: true
+            //,todayBtn: true,
+        });
+        $('#btnView').click(function () {
+            DisplayPopupWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetAllInfo", "ProductReg")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#DisplayPopupWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        DisplayPopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+                }
+            });
+        });
+        //Initializing Main page details Kendo Grid Colums
+        var PopupGrid = $('#DisplayPopupWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "AnnexId",
+                        fields: {
+                            ID: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 20,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: ["excel",{ template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            excel: {
+                fileName: "Export.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            navigatable: true,
+            height: "100%",
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "AnnexId", hidden: true },
+                 { field: "AnnexureNo", locked:true,title: "AnnexureNo", width: 120 },
+                 { field: "SlNo ", locked: true, title: "RecipeNo", width: 120 },
+                 { field: "CompanyCode", locked: true, title: "CompCode", width: 120 },
+                 { field: "CompanyName", locked: true, title: "CompanyName", width: 140 },
+                 { field: "ProductCode", locked: true, title: "ProductCode", width: 120 },
+                 { field: "AnnexRevisionNo", title: "RevisionNo", width: 120 },
+                 { field: "StateStatus", title: "RecordStatus", width: 120 },
+                 { field: "SAPProductCode", title: "SAPCode", width: 120 },
+                 { field: "BrandName", title: "BrandName", width: 120 },
+                 { field: "GenAndStrength", title: "GenericAndStrength", width: 360 },
+                 { field: "ProductSpecification", title: "ProductSpec", width: 120 },
+                 { field: "DarNo", title: "DARNo", width: 120 },
+                 { field: "ProposedBy", title: "ProposedBy", width: 120 },
+                 { field: "ReceivedDate", title: "ReceivedDate", width: 120 },
+                 { field: "SubmissionDate", title: "SubmissionDate", width: 120 },
+                 { field: "AnnexStatus", title: "AnnexStatus", width: 120 },
+                 { field: "ApvApprovalDate", title: "ApprovalDate", width: 120 },
+                 { field: "ValidUptoDate", title: "ValidUpto", width: 120 },
+                 { field: "AlarmDays", title: "AlarmDays", width: 120 }
+            ]
+
+        }).data('kendoGrid');
+
+        $('#DisplayPopupWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            DisplayPopupWindow.close();
+            SetMasterData(selectRow);
+            $('#btnFind').attr('disabled', 'disabled');
+            CheckPagePartAccessPrivilege(selectRow.StateStatus);
+            var options = new Array();
+            options.push('<option selected value="' + selectRow.StateStatus + '">' + selectRow.StateStatus + '</option>');
+            $("#StateStatus").html(options.join(''));
+            //if (selectRow.ProductSpecification == "INN") {
+            //    $("#divInnProduct").show();
+            //}
+            //else {
+            //    $("#divInnProduct").hide();
+            //}
+            $.ajax({
+                url: '@Url.Action("GetFileByRefId", "ProductReg")',
+                type: 'GET',
+                data: { refLevel1: selectRow.AnnexId },
+                success: function (data) {
+                    $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                }
+            });
+        });
+
+        //Produc Name wise Filter table row
+        $("#txtPopupInput").keyup(function () {
+            var val = $(this).val();
+            $("#DisplayPopupWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "SlNo", operator: "contains", value: val },
+                     { field: "CompanyCode", operator: "contains", value: val },
+                     { field: "SapProductCode", operator: "contains", value: val },
+                     { field: "ProductCode", operator: "contains", value: val },
+                     { field: "ApvApprovalDate", operator: "contains", value: val },
+                     { field: "ApvValidUptoDate", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val },
+                     { field: "BrandName", operator: "contains", value: val },
+                     { field: "GenAndStrength", operator: "contains", value: val },
+                     { field: "AlarmDays", operator: "contains", value: val },
+                     { field: "StateStatus", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        //Display window
+        var DisplayPopupWindow = $("#DisplayPopupWindow").kendoWindow({
+            actions: ["Minimize", "Maximize", "Close"],
+            width: "100%",
+            height: "80%",
+            draggable: true,
+            modal: true,
+            title: "List of Record"
+        }).data("kendoWindow").center();
+
+        // Start Recipe window for find button
+        var RecipeWindow = $("#RecipeWindow").kendoWindow({
+            actions: ["Minimize", "Maximize", "Close"],
+            width: "100%",
+            height: "80%",
+            draggable: true,
+            modal: true,
+            title: "List of Recipe"
+        }).data("kendoWindow").center();
+
+        $('#btnFind').click(function () {
+            RecipeWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetAllRecipeForAnnex", "RecipeInfo")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#RecipeWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        RecipeWindow.close();
+                        AcknowledgeMsg();
+                    }
+                }
+            });
+        });
+        //Initializing Main page details Kendo Grid Colums
+        var recipeGrid = $('#RecipeWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: false,
+                schema: {
+                    model: {
+                        id: "RecipeID",
+                        fields: {
+                            CompanyCode: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 10
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtRecipeKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "RecipeID", hidden: true },
+                 { field: "SlNo ", title: "RecipeNo", width: 120 },
+                 { field: "CompanyCode", title: "CompCode", width: 120 },
+                 { field: "CompanyName", title: "CompanyName", width: 140 },
+                 { field: "ProductCode", title: "ProductCode", width: 120 },
+                 { field: "RevisionNo", title: "RevisionNo", width: 120 },
+                 { field: "SAPProductCode", title: "SAPCode", width: 120 },
+                 { field: "BrandName", title: "BrandName", width: 120 },
+                 { field: "GenAndStrength", title: "GenericAndStrength", width: 360 },
+                 { field: "ProductSpecification", title: "ProductSpec", width: 120 },
+                 { field: "MeetingType", title: "MeetingType", width: 120 },
+                 { field: "ProposedBy", title: "ProposedBy", width: 120 },
+                 { field: "ApvSubmissionDate", hidden: true, title: "SubmissionDate", width: 80 },
+                 { field: "InspectionDate", hidden: true, title: "InspectionDate", width: 80 },
+                 { field: "ApvApprovalDate", title: "ApprovalDate", width: 120 },
+                 { field: "ApvValidUptoDate", title: "Valid Upto", width: 120 },
+                 { field: "AlarmDays", title: "AlarmDays", width: 120 }
+            ]
+        }).data('kendoGrid');
+
+        $('#RecipeWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            RecipeWindow.close();
+            SetMasterData(selectRow);
+            $("#ReceivedDate").val("");
+            var options = new Array();
+            options.push('<option selected value="New">New</option>');
+            $("#StateStatus").html(options.join(''));
+            changeAny = 1;
+            //if (selectRow.ProductSpecification == "INN") {
+            //    $("#divInnProduct").show();
+            //}
+            //else {
+            //    $("#divInnProduct").hide();
+            //}
+
+        });
+
+        //Recipe Name wise Filter table row
+        $("#txtRecipeKeyword").keyup(function () {
+            var val = $(this).val();
+            $("#RecipeWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "SlNo", operator: "contains", value: val },
+                     { field: "CompanyCode", operator: "contains", value: val },
+                     { field: "SapProductCode", operator: "contains", value: val },
+                     { field: "ProductCode", operator: "contains", value: val },
+                     { field: "ApvApprovalDate", operator: "contains", value: val },
+                     { field: "ApvValidUptoDate", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val },
+                     { field: "BrandName", operator: "contains", value: val },
+                     { field: "GenAndStrength", operator: "contains", value: val },
+                     { field: "AlarmDays", operator: "contains", value: val }
+                ]
+            });
+        });
+
+
+        //End Recipe
+
+        //To Define Data  for Kendo Grid
+        var fileDataSource = new kendo.data.DataSource({
+            batch: true,
+            schema: {
+                model: {
+                    id: "FileID",
+                    fields: {
+                        FileID: { editable: false },
+                        FileCode: { editable: false },
+                        Extention: { editable: false },
+                        FileName: { editable: false },
+                        RefNo: { editable: false },
+                        FileSize: { editable: false },
+                        SetOn: { editable: false },
+                        SetByName: { editable: false }
+                    }
+                }
+            },
+            pageSize: 10
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var grid = $('#FileGrid').kendoGrid({
+            dataSource: fileDataSource,
+            pageable: {
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            selectable: "row",
+            toolbar: [{ template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            groupable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+            { field: "FileID", hidden: true },
+            { field: "FileCode", hidden: true },
+            { field: "Extention", hidden: true },
+            { field: "RefNo", title: "Document Name", width: 150, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "FileName", title: "File Name", width: 350, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "FileSize", filterable: false, title: "Size(MB)", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { command: [{ name: "Download", text: "Download", imageClass: "glyphicon glyphicon-download", click: handleDownload }], title: "Download Action", width: "120px", attributes: { "class": "btnDownload" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { command: [{ name: "Delete", text: "Delete", imageClass: "glyphicon glyphicon-trash", click: handleFileDelete }], title: "Delete Action", width: "120px", attributes: { "class": "btnDelete" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
+            ]
+
+        }).data('kendoGrid');
+
+        $("#txtInput").keyup(function () {
+            var val = $(this).val();
+            $("#FileGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "RefNo", operator: "contains", value: val },
+                     { field: "FileName", operator: "contains", value: val },
+                     { field: "FileSize", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        function handleFileDelete(event) {
+            dataItemInfo = grid.dataItem($(event.currentTarget).closest("tr"));
+            if (confirm('Do you really want to delete this file?')) {
+                $.ajax({
+                    url: '@Url.Action("DeleteFile", "General")',
+                    type: 'POST',
+                    data: JSON.stringify({ "fileId": dataItemInfo.FileID, "fileCode": dataItemInfo.FileCode, "extention": dataItemInfo.Extention }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    cache: false,
+                    success: function (response) {
+                        if (response.Status == "Yes") {
+                            toastr.success(OperationMsg("FD"));
+                            $("#FileGrid").data("kendoGrid").dataSource.remove(dataItemInfo);
+                        }
+                        else {
+                            toastr.error(OperationMsg("FND"));
+                        }
+                    }
+                });
+            }
+        };
+        // Download Button in Grid
+        function handleDownload(event) {
+            dataItemInfo = grid.dataItem($(event.currentTarget).closest("tr"));
+             window.location.href = '@Url.Action("Download", "General")' + '?path=' + dataItemInfo.FileCode + dataItemInfo.Extention + '&fileName=' + dataItemInfo.FileName + '&fileId=' + dataItemInfo.FileID;
+        };
+
+        $('#btnSave').click(function () {
+            if (changeAny == 1) {
+                var checkInput = InputValidation('SlNo') + InputValidation('StateStatus');//RecipeNo Check
+                if (checkInput == 0) {
+                    model.AnnexId = $('#AnnexId').val();
+                    model.RecipeId = $('#RecipeId').val();
+                    model.CompanyCode = $('#CompanyCode').val();
+                    model.ProductCode = $('#ProductCode').val();
+                    model.AnnexureNo = $('#AnnexureNo').val();
+                    model.AnnexRevisionNo = $('#AnnexRevisionNo').val();
+                    model.DarNo = $('#DarNo').val();
+                    model.AnnexStatus = $('#AnnexStatus').val();
+                    model.DtlReceivedDate = $('#DtlReceivedDate').val();
+                    model.DtlSubmissionDate = $('#DtlSubmissionDate').val();
+                    model.DtlApprovalDate = $('#DtlApprovalDate').val();
+                    model.DtlRemarks = $('#DtlRemarks').val();
+                    model.ProposalDate = $('#ProposalDate').val();
+                    model.ReceivedDate = $('#ReceivedDate').val();
+                    model.SubmissionDate = $('#SubmissionDate').val();
+                    model.InclusionDate = $('#InclusionDate').val();
+                    model.RenewalDate = $('#RenewalDate').val();
+                    model.ValidUptoDate = $('#ValidUptoDate').val();
+                    model.Remarks = $('#Remarks').val();
+                    model.ProposedBy = $('#ProposedBy').val();
+                    model.AlarmDays = $('#AlarmDays').val();
+                    model.StateStatus = $('#StateStatus').val();
+                    $.ajax({
+                        url: '@Url.Action("frmProductReg", "ProductReg")',
+                        data: JSON.stringify(model),
+                        type: 'POST',
+                        contentType: 'application/json;',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.Status == "Yes") {
+                                $("#AnnexId").val(data.AnnexId);
+                                $("#AnnexureNo").val(data.AnnexureNo);
+                                $("#AnnexRevisionNo").val(data.AnnexRevisionNo);
+                                OperationMsg(data.Mode);
+                                changeAny = 0;
+                            }
+                            else {
+                                ErrorFrmServerMsg(data.Status);
+                            }
+
+                        }
+                    }); //End of ajax call
+                }
+                else {
+                    ValidationMsg();
+                }
+            }
+            else {
+                toastr.warning(OperationMsg("NC"));
+            }
+        });
+        var model = {
+            "AnnexId": "", "RecipeId": "", "CompanyCode": "", "ProductCode": "", "StateStatus": "", "AnnexureNo": "", "AnnexRevisionNo": "", "DarNo": "", "AnnexStatus": "", "DtlReceivedDate": "", "DtlSubmissionDate": "", "DtlApprovalDate": "",
+            "DtlRemarks": "", "ProposalDate": "", "ReceivedDate": "", "SubmissionDate": "", "InclusionDate": "", "RenewalDate": "", "ValidUptoDate": "", "Remarks": "",
+            "ProposedBy": "", "AlarmDays": ""
+        };
+        var dataItemInfo = {};
+
+    });
+
+    //$('#image-file').bind('change', function ()
+    $('#UploadFile').on('change', function (e) {
+        var checkInput = InputValidation('RefNo');
+        if (checkInput == 0) {
+            var files = e.target.files;
+            var refId = $("#AnnexId").val();
+            if (refId != "") {
+                var fileSize = 0;
+                var fSizeStrg = "";
+                $file = $("#UploadFile");
+                for (var f = 0; f < files.length; f++) {
+                    var iSize = ($file[0].files[f].size / 1024);
+                    fileSize = (Math.round((iSize / 1024) * 100) / 100);
+                    if (fSizeStrg != "") {
+                        fSizeStrg += ',' + fileSize;
+                    }
+                    else {
+                        fSizeStrg = fileSize;
+                    }
+                    if (iSize / 1024 > 25) {
+                        iSize = (Math.round((iSize / 1024) * 100) / 100);
+                        alert('File size is ' + iSize + ' MB');
+                        $("#divLoading").show();
+                        if (iSize > 25) {
+                            toastr.warning(OperationMsg("UFW"));
+                            $("#divLoading").hide();
+                            return;
+                        }
+                    }
+                }
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        var data = new FormData();
+                        for (var x = 0; x < files.length; x++) {
+                            data.append("file" + x, files[x]);
+                        }
+                        $("#divLoading").show();
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("UploadFile", "ProductReg")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val() + '&sStatus=' + $("#StateStatus").val(),
+                            contentType: false,
+                            processData: false,
+                            data: data,
+                            success: function (result) {
+                                $("#divLoading").hide();
+                                if (result.msgType == "FUS") {
+                                    toastr.success(OperationMsg(result.msgType));
+                                    $("#FileGrid").data("kendoGrid").dataSource.data(result.FileList);
+                                    $("#RefNo").val('--Select Any--');
+                                    $("#ReceivedDate").val(result.ReceiveDate);
+                                }
+                                else if (result.msgType == "FLI") {
+                                    toastr.warning(OperationMsg(result.msgType));
+                                }
+                                else {
+                                    toastr.warning(OperationMsg(result.msgType));
+                                }
+                            }
+
+                        });
+                    } else {
+                        alert("This browser doesn't support HTML5 file uploads!");
+                    }
+                }
+            }
+            else {
+                toastr.warning(OperationMsg("FI"));
+            }
+        }
+        else {
+            toastr.error(OperationMsg("SDN"));
+        }
+
+    });
+
+
+
+</script>

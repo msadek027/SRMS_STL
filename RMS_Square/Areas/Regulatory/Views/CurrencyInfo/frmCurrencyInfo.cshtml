@@ -1,0 +1,316 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/CustomCSS/Button.css" rel="stylesheet" />
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        EventPermission();
+        $('#btnReset').click(function () {
+
+            $(".ddlBox").val("Active");
+            ResetData();
+
+        });
+
+        $('#btnView').click(function () {
+            
+            PopupWindow.open();
+
+            $.ajax({
+                url: '/CurrencyInfo/GetCurrency',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#PopupWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        PopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+
+                },
+                error: function () {
+                    alert('Error occured!');
+                },
+                //complete: function () { },
+            });
+
+        });
+
+
+
+        //Initializing Main page details Kendo Grid Colums
+        var PopupGrid = $('#PopupWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "SoftwareID",
+                        fields: {
+                            CurrencyCode: { type: "string" },
+                            CurrencyName: { type: "string" },
+                            ShortName: { type: "string" },
+                            Status: { type: "string" }
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: ["excel",{ template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            excel: {
+                fileName: "Export.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "CurrencyCode", title: "Currency Code", width: 80 },
+                 { field: "CurrencyName", title: "Currency Name", width: 100 },
+                 { field: "ShortName", title: "Short Name", width: 80 },
+                 { field: "Status", title: "Status", width: 80 }
+
+            ]
+
+        }).data('kendoGrid');
+
+        $('#PopupWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            PopupWindow.close();
+            SetMasterData(selectRow);
+            //$("#SUStatus").val(1);
+
+
+        });
+
+        //Produc Name twise Filter table row
+        $("#txtPopupInput").keyup(function () {
+            var val = $(this).val();
+            $("#PopupWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "CurrencyCode", operator: "contains", value: val },
+                     { field: "CurrencyName", operator: "contains", value: val },
+                    { field: "ShortName", operator: "contains", value: val },
+                    { field: "Status", title: "Status", width: 80 }
+                ]
+            });
+        });
+
+
+        $('#btnSave').click(function () {
+            var Input = InputValidation('CurrencyName');
+
+            if (Input == 0) {
+                master.CurrencyCode = $('#CurrencyCode').val();
+                master.CurrencyName = $('#CurrencyName').val();
+                master.ShortName = $('#ShortName').val();
+                master.Status = $('#Status').val();
+
+
+
+                $.ajax({
+                    url: '/CurrencyInfo/OperationsMode',
+                    data: JSON.stringify(master),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.Status == "Yes") {
+                            $("#CurrencyCode").val(data.ID);
+                            OperationMsg(data.Mode);
+                        }
+                        else {
+                            ErrorFrmServerMsg(data.Status);
+                        }
+
+                    },
+                    error: function () { ErrorFrmClientMsg(); },
+                    // complete: function () { CompletedMsg(); },
+                }); //End of ajax call
+            }
+            else {
+                ValidationMsg();
+            }
+
+        });
+
+        var master = { "CurrencyCode": "", "CurrencyName": "", "ShortName": "", "Status": "" };
+
+        ////************************* To Chech UNSAVED Data in Details GRID ******************************//
+        //CheckUnSavedMasterData();
+
+
+    });
+
+    // ///////////////////////////  End of Ready function ..... ///////////// 
+
+
+
+
+
+    //function CheckUnSavedMasterData() {
+    //    $(".txtBox").change(function () {
+    //        changeStatus = 1;
+    //        $(".txtBox").css("border-color", ""); //Clear Red Color
+    //    });
+
+    //    $(".ddlBox").change(function () {
+    //        changeStatus = 1;
+    //        $("#MessageText").html("");
+    //        if (jQuery.trim($(".RequiredTextBox").val()).length > 0)
+    //            $(".RequiredTextBox").css("border-color", "white");
+    //    });
+    //}
+
+
+    //function ResetOnlyMasterPageData() {
+    //    $(".txtBox").val("");
+    //    $("#MessageText").html("");
+    //}
+
+
+    //////////////////////..............   Start Save Function.....................///////////
+    @*var master = { "CURRENCY_CODE": "", "CURRENCY_NAME": "", "SHORT_NAME": "" , "STATUS": "" };
+    //var manufacturerInfoModel = { "DivisonCode": "", "DivisonName": "", "SAPDivisonCode": "", "SlNo": "" };
+    var saveStatus = 1;
+    function Save() {
+        saveStatus = 1;
+
+
+        var Input = InputValidation('CURRENCY_NAME');
+
+        if (Input == 0 && saveStatus == 1) {
+            master.CURRENCY_CODE = $("#CURRENCY_CODE").val();
+            master.CURRENCY_NAME = $("#CURRENCY_NAME").val();
+            master.SHORT_NAME = $("#SHORT_NAME").val();
+            master.STATUS = $("#STATUS").val();
+            //master.SlNo = $("#SlNo").val();
+            master.SUStatus = $("#SUStatus").val();
+            //alert(changeStatus);
+            if (changeStatus == 1) {
+                $.ajax({
+                    url: '@Url.Action("SaveAndUpdateData", "CurrencyInfo")',
+                    data: JSON.stringify(master),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.msg.Type == 2) {
+                            //alert(changeStatus);
+                            changeStatus = 0;
+                            $("#SUStatus").val(1);
+                            //GridReload('PageDetailGrid');
+                            //$('#CURRENCY_CODE').val(response.CURRENCY_CODE);
+                            $('#MessageText').html(response.msg.Msg);
+                            $("#MessageText").css({ 'color': 'green', 'font-size': 'larger', 'font-weight': 'bold', 'text-align': 'left' });
+                        }
+                        else if (response.msg.Type == 3) {
+                            changeStatus = 0;
+                            //GridReload('PageDetailGrid');
+                            $('#MessageText').html(response.msg.Msg);
+                            $("#MessageText").css({ 'color': 'green', 'font-size': 'larger', 'font-weight': 'bold', 'text-align': 'left' });
+                        }
+                        else {
+                            changeStatus = 0;
+                            $('#MessageText').html(response.msg.Msg);
+                            $("#MessageText").css({ 'color': 'red', 'font-size': 'larger', 'font-weight': 'bold', 'text-align': 'left' });
+                        }
+                    }
+                });
+            }
+                // No Changes Exiting Data
+            else {
+                $("#MessageText").html("No Changes to Save.");
+                $("#MessageText").css({ 'color': 'red', 'font-size': 'larger', 'font-weight': 'bold', 'text-align': 'left' });
+                //$("#DivisonCode").focus();
+            }
+        }
+    };*@
+
+
+
+</script>
+
+
+
+<div class="box-header with-border">
+    @*Form Title*@
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> <div id="MessageText"></div></div>
+    <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+        <div style="text-align:right;">
+            <button id="btnSave" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
+            <button id="btnView" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+            <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+        </div>
+    </div>
+</div>
+<div class="box-body">
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">Currency Name :</div>
+            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                <input type="text" id="CurrencyName" name="CurrencyName" class="form-control RequiredField" placeholder="Currency Name">
+            </div>
+            @*<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+            </div>*@
+            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                <input type="text" id="CurrencyCode" name="CurrencyCode" class="form-control RequiredField" placeholder="Currency Code" disabled>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">Short Name :</div>
+            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                <input type="text" id="ShortName" name="ShortName" class="form-control RequiredField" placeholder="Short Name">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">Status :</div>
+            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                <select id="Status" class="form-control RequiredField ddlBox">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+            </div>
+        </div>
+    </div>
+
+<div class="box-footer">@*Form Footer*@</div>
+<div class="row">
+    <div id="PopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="PopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+
+
+

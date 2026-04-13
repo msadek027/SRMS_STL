@@ -1,0 +1,210 @@
+﻿@{
+    ViewBag.Title = "frmRptProductLcInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+    <div class="box-header with-border">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <form class="form" action="/Regulatory/Reports/frmRptProductLcInfo" id="R1Form" method="post" name="H1Form" target="_blank">
+                    <div class="row">
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"><div id="MessageText"></div></div>
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <div style="text-align:right;">
+                                <div class="btn-group">
+                                    <label class="btn btn-default blue">
+                                        <input type="radio" id="rptPDF" name="ReportType" checked="checked" value="PDF" /> PDF
+                                    </label>
+                                    <label class="btn btn-default blue">
+                                        <input type="radio" id="rptExcel" name="ReportType" value="EXCEL" />EXCEL
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <div style="text-align:right;">
+                                <button id="btnPreview" class="btn btn-primary btn-lg" type="submit"><i class="glyphicon glyphicon-search"></i>Preview</button>
+                                <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="btn-group-vertical">
+                                            <label class="control-label">
+                                                <input type="radio" id="ProductLifeCycleInfo" name="ReportName" checked="checked" value="ProductLifeCycleInfo" /> Product Life Cycle Information
+                                            </label><br />
+                                            <label class="control-label">
+                                                <input type="radio" id="ProductLifeCycleInfoSinglePage" name="ReportName" value="ProductLifeCycleInfoSinglePage" /> Product Life Cycle Info(SinglePage)
+                                            </label><br />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="row">
+                                    <div class="col-sm-3">Product Code : </div>
+                                    <div class="col-sm-6">
+                                        <input type="hidden" id="ProductCode" name="ProductCode" class="form-control txtBox" />
+                                        <input type="text" id="GenericCode" name="GenericCode" class="form-control txtBox" />
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <button id="btnProductFind" class="btn btn-primary btn-sm" type="button"> <i class="glyphicon glyphicon-search"></i>Find</button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">From Date : </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group date">
+                                            <input type="text" class="form-control txtBox" id="FromDate" name="FromDate" placeholder="dd/mm/yyyy">
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-1">To Date:</div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group date">
+                                            <input type="text" class="form-control txtBox" id="ToDate" name="ToDate" placeholder="dd/mm/yyyy">
+                                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<div class="box-footer">@*Form Footer*@</div>
+<div class="row">
+    <div id="DisplayPopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="DisplayPopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+    <div id="ProductWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="ProductWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $('#btnReset').click(function () {
+        ResetData();
+    });
+
+    $(document).ready(function () {
+        $('.input-group.date').datepicker({
+            format: "d/mm/yyyy",//dd M yyyy
+            // daysOfWeekDisabled: "5,6",
+            autoclose: true,
+            todayHighlight: true
+            //,todayBtn: true,
+        });
+
+        //for Product Info//
+        var ProductWindow = $("#ProductWindow").kendoWindow({
+            width: "70%",
+            height: "70%",
+            draggable: true,
+            modal: true,
+            title: "List of Product."
+        }).data("kendoWindow").center();
+
+
+        $('#btnProductFind').click(function () {
+            ProductWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetProduct", "ProductInfo")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#ProductWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        ProductWindow.close();
+                        AcknowledgeMsg();
+                    }
+
+                }
+            });
+
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var ProductGrid = $('#ProductWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "ProductCode",
+                        fields: {
+                            ProductCode: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 10
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtProductKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "ProductCode", title: "Product Code", width: 100 },
+                 { field: "SAPProductCode", title: "SAP Product Code", width: 100 },
+                 { field: "GenericCode", title: "Generic", width: 200 },
+                 { field: "PackSizeName", title: "Pack Size ", width: 100 },
+                 { field: "DosageFormName", title: "Dosage Form", width: 100 },
+                 { field: "BrandName", title: "Brand Name", width: 100 }
+            ]
+
+        }).data('kendoGrid');
+
+        $('#ProductWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+
+            ProductWindow.close();
+            SetMasterData(selectRow);
+
+        });
+
+        //Product Name wise Filter table row
+        $("#txtProductKeyword").keyup(function () {
+            var val = $(this).val();
+            $("#ProductWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "ProductCode", operator: "contains", value: val },
+                     { field: "SAPProductCode", operator: "contains", value: val },
+                     { field: "GenericCode", operator: "contains", value: val },
+                ]
+            });
+        });
+
+        //end of Product Info//
+
+        var model = { "ProductCode": "", "ProductName": "", "FromDate": "", "ToDate": "" };
+        var dataItemInfo = {};
+
+    });
+
+</script>
+

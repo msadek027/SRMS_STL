@@ -1,0 +1,45 @@
+﻿ /*-----------Group panel start 3C8DBC-----------*/
+
+    fieldset.panel-border {
+        border: 2px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;
+        margin: 0 0 1.5em 0 !important;
+        -webkit-box-shadow: 0px 0px 0px 0px #000;
+        box-shadow: 0px 0px 0px 0px #000;
+    }
+
+    legend.panel-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width: auto;
+        padding: 0 10px;
+        border-bottom: none !important;
+        margin-bottom: 10px !important;
+    }
+    /*-----------Group panel end-----------*/
+
+    .txtBox {
+    width: 100%;
+}
+.cbotxtBox {
+    width: 100%;
+}
+
+ /*-----------kendo grid row databound css start-----------#ff704d*/
+        .classRed {
+            background-color: #ff4d4d;
+        }
+         .classOrange {
+            background-color:#ff944d;
+        }
+
+    .classYellow {
+        background-color: #ffcc33;
+    }
+
+    .classGreen {
+        background-color:#4CAF50;
+    }
+
+    

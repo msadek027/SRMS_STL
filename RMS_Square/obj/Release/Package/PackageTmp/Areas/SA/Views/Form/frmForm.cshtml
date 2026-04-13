@@ -1,0 +1,206 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#btnReset').click(function () {
+
+            $(":checkbox").prop('checked', false);
+            //  $('.chk').prop('checked', false);
+            ResetData();
+            $(".k-textbox").val();
+
+
+        });
+
+        $('#btnView').click(function () {
+
+            PopupWindow.open();
+            PopupWindow.center();
+            $.ajax({
+                url: '/Form/GetForm',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#PopupWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        PopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+
+                },
+                error: function () {
+                    alert('Error occured!');
+                },
+                //complete: function () { },
+            });
+
+        });
+ 
+
+        //Initializing Main page details Kendo Grid Colums
+        var PopupGrid = $('#PopupWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "FormID",
+                        fields: {
+                            FormID: { type: "string" },
+                            FormName: { type: "string" }
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "FormID", title: "FormID", width: 80 ,hidden:true},
+                 { field: "FormName", title: "FormName", width: 150 },
+                 { field: "FormURL", title: "FormURL", width: 150 },
+                 { field: "IsActive", title: "IsActive", width: 80 }
+
+            ]
+
+        }).data('kendoGrid');
+
+        $('#PopupWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            PopupWindow.close();
+            SetMasterData(selectRow);
+
+            $('#IsActive').prop('checked', selectRow.IsActive);
+        });
+
+        //Produc Name twise Filter table row
+        $("#txtPopupInput").keyup(function () {
+            var val = $(this).val();
+            $("#PopupWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "FormID", operator: "contains", value: val },
+                     { field: "FormName", operator: "contains", value: val },
+                     { field: "FormURL", operator: "contains", value: val },
+                 
+                    // { field: "IsActive", operator: "contains", value: val },
+
+                ]
+            });
+        });
+
+
+
+
+
+        //function SetMasterData(data) {
+        //    $.each(data, function (key, value) {
+        //        $('#' + key).val(value);
+        //    });
+        //}
+        var chkValue = true;
+        $('#IsActive').click(function () {
+            if ($(this).is(':checked')) { chkValue = $('#IsActive').prop('checked'); }
+            else { chkValue = $('#IsActive').prop('checked'); }
+        });
+        $('#btnSave').click(function () {
+            var Input = InputValidation('FormName') + InputValidation('FormURL');
+
+            if (Input == 0) {
+                master.FormID = $('#FormID').val();
+                master.FormName = $('#FormName').val();
+                master.FormURL = $('#FormURL').val();
+                master.IsActive = chkValue;
+
+
+
+                $.ajax({
+                    url: '/Form/OperationsMode',
+                    data: JSON.stringify(master),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.Status == "Yes") {
+                            $("#FormID").val(data.ID);
+                            OperationMsg(data.Mode);
+                        }
+                        else {
+                            ErrorFrmServerMsg(data.Status);
+                        }
+
+                    },
+                    error: function () { ErrorFrmClientMsg(); },
+                    // complete: function () { CompletedMsg(); },
+                }); //End of ajax call
+            }
+            else {
+                ValidationMsg();
+            }
+
+        });
+        var master = { "FormID": "", "FormName": "", "FormURL": "", "IsActive": "" };
+    });
+</script>
+
+
+
+
+        <div class="box-header with-border">@*Form Title*@           
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> <div id="MessageText"></div></div>
+            <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+                <div style="text-align:right;">
+                    <button id="btnSave" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
+                    <button id="btnView" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+                    <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+                    @*<button id="btnDelete" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-trash"></i>Delete</button>*@
+                </div>
+            </div>
+        </div>
+        <div class="box-body">@*Form Body Content*@
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"> Form Name:</div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="FormName" name="FormName" placeholder="Form Name" class="RequiredField form-control" /></div>
+                <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"><input type="hidden" id="FormID" name="FormID" readonly="readonly" class="form-control" /></div>
+                <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2">Form URL:</div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="FormURL" name="FormURL" placeholder="Form URL" class="RequiredField form-control" /></div>
+                </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"> Is Active:</div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"> <input type="checkbox" id="IsActive" class="chk" name="IsActive" checked="checked"></div>
+                <div class="col-xs-0 col-sm-0 col-md-7 col-lg-7"></div>
+            </div>
+           
+        </div>
+<div class="box-footer">@*Form Footer*@</div>
+<div class="row">
+    <div id="PopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="PopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+
+

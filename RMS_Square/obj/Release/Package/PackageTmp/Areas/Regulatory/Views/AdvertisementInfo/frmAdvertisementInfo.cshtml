@@ -1,0 +1,751 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CustomCSS/InputText.css" rel="stylesheet" />
+
+<div class="box-header with-border">
+    <div class="col-lg-8"> <div id="MessageText"></div></div>
+    <div class="col-lg-4">
+        <div style="text-align:right;">
+            <button id="btnSave" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
+            <button id="btnView" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+            <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+        </div>
+    </div>
+</div>
+<div class="box-body">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-4"><input type="hidden" id="ID" name="ID" placeholder="ID" class="txtBox form-control" /></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-2">Product Code<span style="color: red">*</span></div>
+            <div class="col-lg-2"><input type="text" maxlength="50" id="ProductCode" name="ProductCode" readonly="readonly" class="RequiredField form-control" /></div>
+            <div class="col-lg-1"><button id="btnFindProduct" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+            <div class="col-lg-2">SAP Product Code</div>
+            <div class="col-lg-2"><input type="text" maxlength="50" id="SapProductCode" name="SapProductCode" readonly="readonly" class="RequiredField form-control" /></div>
+            <div class="col-lg-1">RVNo</div>
+            <div class="col-lg-1"><input type="text" maxlength="50" id="RevisionNo" name="RevisionNo" readonly="readonly" class="form-control" /></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-2">Generic and Strength</div>
+            <div class="col-lg-9"><textarea id="GenericStrength" name="GenericStrength" readonly="readonly" class="RequiredField form-control"> </textarea></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-2">Pack Size</div>
+            <div class="col-lg-3"><input type="text" maxlength="50" id="PackSize" name="PackSize" readonly="readonly" class="RequiredField form-control" /></div>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-2">Dosage Form</div>
+            <div class="col-lg-3"><input type="text" maxlength="50" id="DosageForm" name="DosageForm" readonly="readonly" class="RequiredField form-control" /></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-2">DAR No</div>
+            <div class="col-lg-3"><input type="text" maxlength="50" id="DarNo" name="DarNo" readonly="readonly" class="RequiredField form-control" /></div>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-2">Brand Name</div>
+            <div class="col-lg-3"><input type="text" maxlength="50" id="BrandName" name="BrandName" readonly="readonly" class="RequiredField form-control" /></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-2">Company</div>
+            <div class="col-lg-0"><input type="hidden"  id="CompanyCode" name="CompanyCode" class="RequiredField form-control" /></div>
+            <div class="col-lg-9"><input type="text"  id="CompanyName" name="CompanyName" readonly="readonly" class="RequiredField form-control" /></div>
+            @*<div class="col-lg-1"><button id="btnFindCom" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Find</button></div>*@
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-2">Annexure No</div>
+            <div class="col-lg-3"><input type="text" maxlength="50" id="AnnexureNo" name="AnnexureNo" readonly="readonly" class="RequiredField form-control" /></div>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-2">Received Date</div>
+            <div class="col-lg-3">
+                <div class="input-group">
+                    <input type="text" class="form-control txtBox" id="ProposalDate" name="ProposalDate" disabled placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-2">Submission Date</div>
+            <div class="col-lg-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="SubmissionDate" name="SubmissionDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-2">Approval Date</div>
+            <div class="col-lg-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="ApprovalDate" name="ApprovalDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-2">Valid Upto</div>
+            <div class="col-lg-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="ValiduptoDate" name="ValiduptoDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-2">Alarm Days</div>
+            <div class="col-lg-3"><input type="text" maxlength="5" id="NotificationDay" name="NotificationDay" class="txtBox form-control numeric" /></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-2">Remarks</div>
+            <div class="col-lg-9"><textarea id="Remarks" name="Remarks"  class="RequiredField form-control"> </textarea></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <fieldset class="panel-border">
+                <legend class="panel-border">Upload Documents :</legend>
+                <div class="row">
+                    <div class="col-sm-2">
+                        Document Name<span style="color: red">*</span>:
+                    </div>
+                    <div class="col-sm-3">
+                        <select id="RefNo" class="form-control txtBox" tabindex="" name="RefNo"></select>
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="file" class="txtBox" id="UploadFile" name="UploadFile" />
+                        <i class="glyphicon glyphicon-upload form-control-feedback"></i>
+                    </div>
+                    <div class="col-sm-3">
+                    </div>
+                </div>
+                <div class="row">
+                    <br />
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label>List of Document File</label>
+                        <div id="FileGrid" class=""></div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<div class="box-footer"></div>
+<div class="row">
+    <div id="DisplayPopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="DisplayPopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div id="FindProductPopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="FindProductPopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+<div class="row">
+    <div id="FindComPopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="FindComPopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $('#btnReset').click(function () {
+        ResetData();
+        $('#btnFindProduct').removeAttr('disabled');
+        $("#FileGrid").data("kendoGrid").dataSource.data([]);
+
+    });
+    $('#btnRevision').click(function () {
+        $('#ID').val('');
+        $("#FileGrid").data("kendoGrid").dataSource.data([]);
+    });
+    function CheckPagePartAccessPrivilege() {
+
+        switch ('@ViewBag.PageAccess') {
+            case "A":
+                var options = new Array();
+                options.push('<option  value="">--Select Any--</option>');
+                options.push('<option  value="Proposed Document">Proposed Document</option>');
+                options.push('<option  value="Approved Document">Approved Document</option>');
+                options.push('<option  value="Approval Letter">Approval Letter</option>');
+                $("#RefNo").html(options.join(''));
+                break;
+            case "P":
+                var options = new Array();
+                options.push('<option  value="">--Select Any--</option>');
+                options.push('<option  value="Proposed Document">Proposed Document</option>');
+                $("#RefNo").html(options.join(''));
+                break;
+            default:
+                var options = new Array();
+                options.push('<option  value="">--Select Any--</option>');
+                options.push('<option  value="Proposed Document">Proposed Document</option>');
+                $("#RefNo").html(options.join(''));
+                break;
+        }
+    }
+
+    $(document).ready(function () {
+        CheckUnSavedData();
+        EventPermission();
+        CheckPagePartAccessPrivilege();
+        $('.input-group.date').datepicker({
+            format: "d/mm/yyyy",//dd M yyyy
+            // daysOfWeekDisabled: "5,6",
+            autoclose: true,
+            todayHighlight: true
+            //,todayBtn: true,
+        });
+
+        //Display window
+        var DisplayPopupWindow = $("#DisplayPopupWindow").kendoWindow({
+            actions: ["Minimize", "Maximize", "Close"],
+            width: "95%",
+            height: "80%",
+            draggable: true,
+            modal: true,
+            title: "List of Record"
+        }).data("kendoWindow").center();
+
+        $('#btnView').click(function () {
+            DisplayPopupWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetAdvertisementInfo", "AdvertisementInfo")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#DisplayPopupWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        PopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+                }
+            });
+        });
+
+        var PopupGrid = $('#DisplayPopupWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            toolbar: ["excel", { template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            excel: {
+                fileName: "Export.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            navigatable: true,
+            height: 430,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "ID", hidden: true, title: "ID", width: 40 },
+                 { field: "SlNo", hidden: true, title: "SlNo", width: 70 },
+                 { field: "ProductCode", locked: true, title: "ProductCode", width: 125 },
+                 { field: "SapProductCode", locked: true, title: "SapCode", width: 120 },
+                 { field: "CompanyCode", locked: true, title: "C.Code", width: 80 },
+                 { field: "CompanyName", locked: true, title: "CompanyName", width: 160 },
+                 { field: "BrandName", locked: true, title: "BrandName", width: 100 },
+                 { field: "RevisionNo", locked: true, title: "RevisionNo", width: 100 },
+                 { field: "GenericStrength", title: "GenericAndStrength", width: 450 },
+                 { field: "PackSize", title: "PackSize", width: 120 },
+                 { field: "DosageForm", title: "DosageForm", width: 100 },
+                 { field: "DarNo", title: "DARNo", width: 120 },
+                 { field: "AnnexureNo", title: "AnnexureNo", width: 120 },
+                 { field: "ProposalDate", title: "ReceivedDate", width: 120 },
+                 { field: "SubmissionDate", title: "SubmissionDate", width: 120 },
+                 { field: "ApprovalDate", title: "ApprovalDate", width: 120 },
+                 { field: "ValiduptoDate", title: "ValidUpto", width: 120 },
+                 { field: "NotificationDay", title: "AlarmDays", width: 100 },
+                 { field: "Remarks", title: "Remarks", width: 120 }
+            ]
+
+        }).data('kendoGrid');
+
+        $('#DisplayPopupWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            DisplayPopupWindow.close();
+            SetMasterData(selectRow);
+            $('#btnFindProduct').attr('disabled', 'disabled');
+            $.ajax({
+                url: '@Url.Action("GetFileByRefId", "AdvertisementInfo")',
+                type: 'GET',
+                data: { refLevel1: selectRow.ID },
+                success: function (data) {
+                    $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                }
+            });
+        });
+
+        $("#txtPopupInput").keyup(function () {
+            var val = $(this).val();
+            $("#DisplayPopupWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "ProductCode", operator: "contains", value: val },
+                ]
+            });
+        });
+
+
+        //Product List
+        var PopupWindowProduct = $("#FindProductPopupWindow").kendoWindow({
+            actions: ["Minimize", "Maximize", "Close"],
+            width: "90%",
+            height: "80%",
+            draggable: true,
+            modal: true,
+            title: "Product List....."
+        }).data("kendoWindow").center();
+
+        $('#btnFindProduct').click(function () {
+            PopupWindowProduct.open();
+            $.ajax({
+                url: '@Url.Action("GetProductInfo", "AdvertisementInfo")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#FindProductPopupWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        PopupWindowProduct.close();
+                        AcknowledgeMsg();
+                    }
+                }
+            });
+        });
+        //Initializing Main page details Kendo Grid Colums
+        var annexureGrid = $('#FindProductPopupWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: false,
+                schema: {
+                    model: {
+                        id: "ProductCode",
+                        fields: {
+                            ProductCode: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 10
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: ["excel", { template: "<input type='text' id='txtFindProductPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            excel: {
+                fileName: "Export.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+
+                 { field: "ProductCode", locked: true, title: "ProductCode", width: 125 },
+                 { field: "SapProductCode", locked: true, title: "SapCode", width: 120 },
+                 { field: "CompanyCode", locked: true, title: "C.Code", width: 80 },
+                 { field: "CompanyName", locked: true, title: "CompanyName", width: 160 },
+                  { field: "BrandName", title: "BrandName", width: 100 },
+                 { field: "GenericStrength", title: "GenericAndStrength", width: 450 },
+                 { field: "AnnexureNo", title: "AnnexureNo", width: 120 },
+                 { field: "PackSize", title: "PackSize", width: 80 },
+                 { field: "DosageForm", title: "DosageForm", width: 100 },
+                 { field: "DarNo", title: "DARNo", width: 100 }
+            ]
+
+        }).data('kendoGrid');
+
+        $('#FindProductPopupWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            PopupWindowProduct.close();
+            SetMasterData(selectRow);
+        });
+
+        $("#txtFindProductPopupInput").keyup(function () {
+            var val = $(this).val();
+            $("#FindProductPopupWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "ProductCode", operator: "contains", value: val },
+                     { field: "SapProductCode", operator: "contains", value: val },
+                     { field: "GenericStrength", operator: "contains", value: val },
+                     { field: "PackSize", operator: "contains", value: val },
+                     { field: "DosageForm", operator: "contains", value: val },
+                     { field: "DarNo", operator: "contains", value: val },
+                     { field: "AnnexureNo", operator: "contains", value: val },
+                     { field: "CompanyCode", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val },
+                     { field: "BrandName", operator: "contains", value: val },
+                ]
+            });
+        });
+
+
+        //Company List
+        var ComPopupWindow = $("#FindComPopupWindow").kendoWindow({
+            actions: ["Minimize", "Maximize", "Close"],
+            width: "90%",
+            height: "80%",
+            draggable: true,
+            modal: true,
+            title: "Company List....."
+        }).data("kendoWindow").center();
+
+
+        $('#btnFindCom').click(function () {
+            ComPopupWindow.open();
+            $.ajax({
+                url: '/CompanyInfo/GetCompany',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#FindComPopupWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        ComPopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+                },
+                error: function () {
+                    alert('Error occured!');
+                },
+            });
+
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var PopupGrid = $('#FindComPopupWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "CompanyCode",
+                        fields: {
+                            CompanyCode: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtFindComPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Double Click on the company" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "CompanyName", title: "Company Name", width: 80 },
+                 { field: "CompanyCode", title: "Company Code", width: 40 },
+            ]
+
+        }).data('kendoGrid');
+
+        $('#FindComPopupWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+
+            $('#CompanyCode').val(selectRow.CompanyCode);
+            $('#CompanyName').val(selectRow.CompanyName);
+
+            ComPopupWindow.close();
+
+        });
+
+        $("#txtFindComPopupInput").keyup(function () {
+            var val = $(this).val();
+            $("#FindComPopupWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "CompanyCode", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val },
+                ]
+            });
+        });
+        //End of company
+
+        //To Define Data  for Kendo Grid
+        var fileDataSource = new kendo.data.DataSource({
+            batch: true,
+            schema: {
+                model: {
+                    id: "FileID",
+                    fields: {
+                        FileID: { editable: false },
+                        FileCode: { editable: false },
+                        Extention: { editable: false },
+                        FileName: { editable: false },
+                        RefNo: { editable: false },
+                        FileSize: { editable: false },
+                        SetOn: { editable: false },
+                        SetByName: { editable: false }
+                    }
+                }
+            },
+            pageSize: 10
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var grid = $('#FileGrid').kendoGrid({
+            dataSource: fileDataSource,
+            pageable: {
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            selectable: "row",
+            toolbar: [{ template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            groupable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+            { field: "FileID", hidden: true },
+            { field: "FileCode", hidden: true },
+            { field: "Extention", hidden: true },
+            { field: "RefNo", title: "Document Name", width: 150, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "FileName", title: "File Name", width: 350, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "FileSize", filterable: false, title: "Size(MB)", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { command: [{ name: "Download", text: "Download", imageClass: "glyphicon glyphicon-download", click: handleDownload }], title: "Download Action", width: "120px", attributes: { "class": "btnDownload" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { command: [{ name: "Delete", text: "Delete", imageClass: "glyphicon glyphicon-trash", click: handleFileDelete }], title: "Delete Action", width: "120px", attributes: { "class": "btnDelete" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
+            ]
+
+        }).data('kendoGrid');
+
+        $("#txtInput").keyup(function () {
+            var val = $(this).val();
+            $("#FileGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "RefNo", operator: "contains", value: val },
+                     { field: "FileName", operator: "contains", value: val },
+                     { field: "FileSize", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        function handleFileDelete(event) {
+            dataItemInfo = grid.dataItem($(event.currentTarget).closest("tr"));
+
+            if (confirm('Do you really want to delete this file?')) {
+                //event.preventDefault();
+                //event.stopPropagation();
+                $.ajax({
+                    url: '@Url.Action("DeleteFile", "AdvertisementInfo")',
+                    type: 'POST',
+                    data: JSON.stringify({ "fileId": dataItemInfo.FileID, "fileCode": dataItemInfo.FileCode, "extention": dataItemInfo.Extention }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    cache: false,
+                    success: function (response) {
+                        if (response.Status == "Yes") {
+                            toastr.success(OperationMsg("FD"));
+                            $("#FileGrid").data("kendoGrid").dataSource.remove(dataItemInfo);
+                        }
+                        else {
+                            toastr.error(OperationMsg("FND"));
+                        }
+                    }
+                });
+            }
+        };
+        // Download Button in Grid
+        function handleDownload(event) {
+            dataItemInfo = grid.dataItem($(event.currentTarget).closest("tr"));
+            window.location.href = '@Url.Action("Download", "General")' + '?path=' + dataItemInfo.FileCode + dataItemInfo.Extention + '&fileName=' + dataItemInfo.FileName + '&fileId=' + dataItemInfo.FileID;
+        };
+
+        $('#btnSave').click(function () {
+            //if (changeAny == 1) {
+                var Input = InputValidation('ProductCode');
+
+                if (Input == 0) {
+                    master.ID = $('#ID').val();
+                    master.SlNo = $('#SlNo').val();
+                    master.ProductCode = $('#ProductCode').val();
+                    master.CompanyCode = $('#CompanyCode').val();
+                    master.ProposalDate = $('#ProposalDate').val();
+                    master.SubmissionDate = $('#SubmissionDate').val();
+                    master.ApprovalDate = $('#ApprovalDate').val();
+                    master.ValiduptoDate = $('#ValiduptoDate').val();
+                    master.NotificationDay = $('#NotificationDay').val();
+                    master.Remarks = $('#Remarks').val();
+
+                    $.ajax({
+                        url: '@Url.Action("frmAdvertisementInfo", "AdvertisementInfo")',
+                    data: JSON.stringify(master),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.Status == "Yes") {
+                            $("#ID").val(data.ID);
+                            $('#RevisionNo').val(data.RevisionNo);
+                            OperationMsg(data.Mode);
+                            changeAny = 0;
+                        }
+                        else {
+                            ErrorFrmServerMsg(data.Status);
+                        }
+
+                    }
+                }); //End of ajax call
+            }
+            else {
+                ValidationMsg();
+            }
+            //}
+            //else {
+            //toastr.warning(OperationMsg("NC"));
+            //}
+        });
+        var master = { "ID": "", "SlNo": "", "ProductCode": "", "CompanyCode": "", "ProposalDate": "", "SubmissionDate": "", "ApprovalDate": "", "ValiduptoDate": "", "NotificationDay": "", "Remarks": "" };
+
+
+    });
+
+    //$('#image-file').bind('change', function ()
+    $('#UploadFile').on('change', function (e) {
+        var checkInput = InputValidation('RefNo');
+
+        if (checkInput == 0) {
+            var files = e.target.files;
+            var refId = $("#ID").val();
+            if (refId != "") {
+                var fileSize = 0;
+                var fSizeStrg = "";
+                $file = $("#UploadFile");
+                for (var f = 0; f < files.length; f++) {
+                    var iSize = ($file[0].files[f].size / 1024);
+                    fileSize = (Math.round((iSize / 1024) * 100) / 100);
+                    if (fSizeStrg != "") {
+                        fSizeStrg += ',' + fileSize;
+                    }
+                    else {
+                        fSizeStrg = fileSize;
+                    }
+                    if (iSize / 1024 > 25) {
+                        iSize = (Math.round((iSize / 1024) * 100) / 100);
+                        alert('File size is ' + iSize + ' MB');
+                        $("#divLoading").show();
+                        if (iSize > 25) {
+                            toastr.warning(OperationMsg("UFW"));
+                            $("#divLoading").hide();
+                            return;
+                        }
+                    }
+                }
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        var data = new FormData();
+                        for (var x = 0; x < files.length; x++) {
+                            data.append("file" + x, files[x]);
+                        }
+                        $("#divLoading").show();
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("UploadFile", "AdvertisementInfo")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val(),
+                            contentType: false,
+                            processData: false,
+                            data: data,
+                            success: function (result) {
+                                $("#divLoading").hide();
+                                if (result.msgType == "FUS") {
+                                    toastr.success(OperationMsg(result.msgType));
+                                    $("#FileGrid").data("kendoGrid").dataSource.data(result.FileList);
+                                    $("#RefNo").val('');
+                                    $("#ProposalDate").val(result.ReceiveDate);
+                                }
+                                else if (result.msgType == "FLI") {
+                                    toastr.warning(OperationMsg(result.msgType));
+                                }
+                                else {
+                                    toastr.warning(OperationMsg(result.msgType));
+                                }
+                            }
+
+                        });
+                    } else {
+                        alert("This browser doesn't support HTML5 file uploads!");
+                    }
+                }
+            }
+            else {
+                toastr.warning(OperationMsg("FI"));
+            }
+        }
+        else {
+            toastr.error(OperationMsg("SDN"));
+        }
+
+    });
+</script>
+

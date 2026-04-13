@@ -1,0 +1,70 @@
+﻿
+
+.focus {
+    border: 2px solid #AA88FF;
+    background-color: #FFEEAA;
+}
+ input:focus { 
+    background-color: lightskyblue;
+}
+
+ input [type=text] {
+    /*border-color:white;
+    border: 2px solid green;*/
+    border: 2px solid #dadada;
+    border-radius: 7px;
+}
+
+
+.RequiredSymbol {
+    color: Red;
+    margin-left: 5px;
+    margin-top: 2px;
+}
+
+
+
+
+
+.ReadOnlyTextbox {
+    background-color: Silver;
+    border: none;
+    height: 19px;
+    color: green;
+}
+
+#MessageText {
+    color: Red;
+    float: left;
+    text-align: center;
+    font-size: 11pt;
+     width: 30%;
+}
+
+
+
+
+
+
+
+.MainGrid {
+    margin-top: 10PX;
+    margin-left: 0PX;
+    margin-right: 0PX;
+}
+.PopUpGrid {
+    margin-top: 20PX;
+    margin-left: 0PX;
+    margin-right: 0PX;
+}
+/* Scrolling off Popup Window       */
+
+.PopupWindowLayout {
+       
+        width: auto;
+        height: auto;
+        overflow-x: hidden;
+        overflow-y: hidden;
+       
+    }
+

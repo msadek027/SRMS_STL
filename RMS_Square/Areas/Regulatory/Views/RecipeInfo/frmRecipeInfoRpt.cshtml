@@ -1,0 +1,356 @@
+﻿@{
+    // ViewBag.Title = "frmRptProductLcInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+@using (Html.BeginForm("frmRecipeInfoRpt", "RecipeInfo", FormMethod.Post, new { target = "_blank", name = "H1Form", id = "H1Form" }))
+{
+    <div class="box-header with-border">
+        <div class="row">
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <i class="glyphicon glyphicon-filter"></i> Filter By : >> >> >> >> >> >> >><div id="MessageText"></div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <div style="text-align:right;">
+                    <div class="btn-group">
+                        <label class="btn btn-default blue">
+                            <input type="radio" id="rptPDF" name="ReportType" checked="checked" value="PDF" /> PDF
+                        </label>
+                        <label class="btn btn-default blue">
+                            <input type="radio" id="rptExcel" name="ReportType" value="EXCEL" />EXCEL
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <div style="text-align:right;">
+                    <button id="btnSearch" class="btn btn-primary btn-lg" type="submit"><i class="glyphicon glyphicon-file"></i>Preview</button>
+                    <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-body">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Company Code : </div>
+            <div class="col-sm-3">
+                <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" readonly placeholder="All" />
+            </div>
+            <div class="col-sm-1"><button id="btnFindCompany" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+            <div class="col-sm-2">Company Name :</div>
+            <div class="col-sm-4"><input type="text" id="CompanyName" name="CompanyName" class="form-control" readonly />
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            @*<div class="col-sm-2">Product Code : </div>
+            <div class="col-sm-2">
+                <input type="text" id="ProductCode" name="ProductCode" class="form-control txtBox" readonly />
+            </div>
+            <div class="col-sm-1"></div>*@
+            <div class="col-sm-2">Brand Name :</div>
+            <div class="col-sm-3"><input type="text" id="BrandName" name="BrandName" class="form-control" readonly placeholder="All" /></div>
+            <div class="col-sm-1"><button id="btnFindProduct" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+            <div class="col-sm-2">Generic & Strength :</div>
+            <div class="col-sm-4"><input type="text" id="GenericStrength" name="GenericStrength" class="form-control" readonly /></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Submission Type :</div>
+            <div class="col-sm-3">
+                <select id="SubmissionType" class="txtBox" name="SubmissionType">
+                    <option selected value="All">All</option>
+                    <option value="Local">Local</option>
+                    <option value="DCC">DCC</option>
+                </select>
+            </div>
+            <div class="col-sm-2">Manufacturing Type :</div>
+            <div class="col-sm-3">
+                <select id="ManufacturerType" class="txtBox" name="ManufacturerType">
+                    <option selected value="All">All</option>
+                    <option value="Local">Local</option>
+                    <option value="Import">Import</option>
+                </select>
+            </div>
+            <div class="col-sm-2">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Choose Option : </div>
+            <div class="col-sm-2">
+                <select id="ChooseOption" class="txtBox" name="ChooseOption">
+                    <option selected value="All">All</option>
+                    <option value="ReceivedDate">ReceivedDate</option>
+                    <option value="SubmissionDate">SubmissionDate</option>
+                    <option value="ApprovalDate">ApprovalDate</option>
+                </select>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-1">(From, To)</div>
+            <div class="col-sm-2">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="FromDate" name="FromDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="ToDate" name="ToDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box-footer"></div>
+<div class="row">
+    <div id="DisplayPopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="DisplayPopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+    <div id="ProductWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="ProductWindowGrid" class="PopUpGrid"></div>
+    </div>
+    <div id="CompanyWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="CompanyWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+}
+
+<script type="text/javascript">
+
+    $('#btnReset').click(function () {
+        ResetData();
+        $("#SubmissionType").val("All");
+        $("#ManufacturerType").val("All");
+        $("#ChooseOption").val("All");
+    });
+
+    $(document).ready(function () {
+        $('.input-group.date').datepicker({
+            format: "d/mm/yyyy",//dd M yyyy
+            // daysOfWeekDisabled: "5,6",
+            autoclose: true,
+            todayHighlight: true
+            //,todayBtn: true,
+        });
+
+        // Company window for find button
+        var CompanyWindow = $("#CompanyWindow").kendoWindow({
+            actions: ["Minimize", "Maximize", "Close"],
+            width: "90%",
+            height: "80%",
+            draggable: true,
+            modal: true,
+            title: "List of Company."
+        }).data("kendoWindow").center();
+
+
+        $('#btnFindCompany').click(function () {
+            CompanyWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetAllCompany", "General")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        CompanyWindow.close();
+                        AcknowledgeMsg();
+                    }
+                }
+            });
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var companyGrid = $('#CompanyWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "CompanyCode",
+                        fields: {
+                            CompanyCode: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 10
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtCompanyKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "CompanyCode", title: "CompanyCode", width: 80 },
+                 { field: "CompanyName", title: "CompanyName", width: 100 },
+                 { field: "Address", title: "CompanyAddress", width: 160 },
+                 { field: "LicenseNo", title: "LicenseType & No", width: 120 }
+            ]
+
+        }).data('kendoGrid');
+
+        $('#CompanyWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            CompanyWindow.close();
+            SetMasterData(selectRow);
+            changeAny = 1;
+
+        });
+
+        //Company Name wise Filter table row
+        $("#txtCompanyKeyword").keyup(function () {
+            var val = $(this).val();
+            $("#CompanyWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "CompanyCode", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val },
+                     { field: "Address", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        //for Product Info//
+        var ProductWindow = $("#ProductWindow").kendoWindow({
+            actions: ["Minimize", "Maximize", "Close"],
+            width: "100%",
+            height: "80%",
+            draggable: true,
+            modal: true,
+            title: "List of Product."
+        }).data("kendoWindow").center();
+
+
+        $('#btnFindProduct').click(function () {
+            ProductWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetProductFromRecipe", "ProductInfo")',
+                // method: 'get',
+                //data: 'json',
+                type: 'GET',
+                data: { "companyCode": $('#CompanyCode').val() },
+                success: function (data) {
+                    if (data != "") {
+                        $('#ProductWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        ProductWindow.close();
+                        AcknowledgeMsg();
+                    }
+
+                }
+            });
+
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var ProductGrid = $('#ProductWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "ProductCode",
+                        fields: {
+                            ProductCode: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: ["excel",{ template: "<input type='text' id='txtProductKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            excel: {
+                fileName: "Export.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "ProductCode", title: "Product Code", width: 100 },
+                 { field: "SAPProductCode", title: "SAP Product Code", width: 100 },
+                 { field: "CompanyCode", title: "CompanyCode", width: 100 },
+                 { field: "CompanyName", title: "CompanyName", width: 150 },
+                 { field: "GenericStrength", title: "Generic & Strength", width: 200 },
+                 { field: "PackSize", title: "Pack Size ", width: 100 },
+                 { field: "DosageForm", title: "Dosage Form", width: 100 },
+                 { field: "BrandName", title: "Brand Name", width: 100 }
+            ]
+
+        }).data('kendoGrid');
+
+        $('#ProductWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            ProductWindow.close();
+            $('#BrandName').val(selectRow.BrandName);
+            $('#GenericStrength').val(selectRow.GenericStrength);
+            
+            //SetMasterData(selectRow);
+
+        });
+        //Product Name wise Filter table row
+        $("#txtProductKeyword").keyup(function () {
+            var val = $(this).val();
+            $("#ProductWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "ProductCode", operator: "contains", value: val },
+                     { field: "SAPProductCode", operator: "contains", value: val },
+                     { field: "GenericStrength", operator: "contains", value: val },
+                     { field: "PackSize", operator: "contains", value: val },
+                     { field: "DosageForm", operator: "contains", value: val },
+                     { field: "BrandName", operator: "contains", value: val },
+                     { field: "CompanyCode", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val },
+                     { field: "DarNo", operator: "contains", value: val }
+                ]
+            });
+        });
+            });
+
+</script>
+
+
+
+
+

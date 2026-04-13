@@ -1,0 +1,342 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+
+<style>
+    .has-success {
+        background: white;
+    }
+
+    .has-error {
+        /*background: red;*/
+        border: 1px Solid red !important;
+    }
+</style>
+
+
+
+
+<script type="text/javascript">
+
+   
+    $(document).ready(function () {
+        EventPermission();
+        LoadRole();
+        LoadEmployee();
+        //LoadBuyer();
+        $(".select2").select2();
+        function LoadRole() {
+            $.ajax({
+                url: '/Role/GetRole',
+                type: 'GET',
+                dataType: 'JSON',
+                data: "{}",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $.each(data, function (i, item) {
+                        $('#RoleID').append($('<option>', { value: item.RoleID, html: item.RoleName }, '<option/>'));
+                    });
+                }
+
+                //,error: function () {
+                //    alert("Failed to load...");
+                //}
+            });
+        }
+        function LoadEmployee() {
+            $.ajax({
+                url: '/UserInRole/GetEmployeeNotYetAssigned',
+                type: 'GET',
+                dataType: 'JSON',
+                data: "{}",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $.each(data, function (i, item) {
+                        $('#EmpID').append($('<option>', { value: item.EmpID, html: item.EmpName }, '<option/>'));
+                    });
+                }
+
+                //,error: function () {
+                //    alert("Failed to load...");
+                //}
+            });
+        }
+
+
+        //$('#EmpID').change(function () {
+        //    LoadBuyer();
+        //});
+        function LoadBuyer() {
+            $.ajax({
+                url: '/UserInRole/GetBuyer',
+                type: 'GET',
+                dataType: 'JSON',
+                data: "{}",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $.each(data, function (i, item) {
+                        $('#BuyerID').append($('<option>', { value: item.BuyerID, html: item.BuyerName }, '<option/>')).multiselect('rebuild');
+                    });
+                   // $('#BuyerID').multiselect('refresh');
+                  
+                },
+
+                error: function () {
+                    alert("Failed to load...");
+                }
+            });
+        }
+
+
+        $('#btnReset').click(function () {
+            //$('#BuyerID option:selected').each(function () {
+            //    alert($(this).text());
+            //});
+            $('#BuyerID').multiselect({
+                selectAllValue: 0
+            });
+
+          //  var val = $('option:selected', $("#MultiSelectID")).val();
+            if ($(this).is(":checked")) {
+                $("#BuyerID").val("").multiselect("refresh");
+            }
+        
+
+            $(".RequiredField").val("");
+              $('.chk').prop('checked', false);
+              ResetData();
+              //$('#EmpID').val('');
+              $('#EmpID').empty();
+              
+
+        });
+
+        $('#btnView').click(function () {
+
+            PopupWindow.open();
+            PopupWindow.center();
+            $.ajax({
+                url: '/UserInRole/GetUserInRole',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#PopupWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        PopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+
+                }
+                //complete: function () { },
+            });
+
+        });
+       
+
+        //Initializing Main page details Kendo Grid Colums
+        var PopupGrid = $('#PopupWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "UserID",
+                        fields: {
+                            UserID: { type: "string" },
+                            RoleID: { type: "string" },
+                            
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                  { field: "UserID", title: "UserID" },                         
+                  { field: "RoleID", title: "RoleID",hidden:true },
+                  { field: "RoleName", title: "RoleName" },
+                  { field: "EmpID", hidden: true },
+                  { field: "EmpCode", title: "EmpCode" },
+                  { field: "EmpName", title: "EmpName" },
+                  { field: "Password", title: "Password" },
+                  { field: "ConfirmPassword", title: "ConfirmPassword", hidden: true },
+                  { field: "IsActive", title: "IsActive" }
+            ]
+
+        }).data('kendoGrid');
+
+
+        //$('input[name=Password], input[name=ConfirmPassword]').on('change', function () {
+        //    var password = $('input[name=Password]'),
+        //        repassword = $('input[name=ConfirmPassword]'),
+        //        both = password.add(repassword).removeClass('has-success has-error');
+
+        //    password.addClass(
+        //        password.val().length > 0 ? 'has-success' : 'has-error'
+        //    );
+        //    repassword.addClass(
+        //        password.val().length > 0 ? 'has-success' : 'has-error'
+        //    );
+
+        //    if (password.val() != repassword.val()) {
+        //        both.addClass('has-error');
+        //    }
+        //});
+
+        $('#Password, #ConfirmPassword').on('keyup', function () {
+            if ($('#Password').val() == $('#ConfirmPassword').val()) {
+                $('#message').html('Matching').css('color', 'green');
+            } else
+                $('#message').html('Not Matching').css('color', 'red');
+        });
+
+        $('#PopupWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            PopupWindow.close();
+            SetMasterData(selectRow);
+            $('#EmpID').empty();
+            if (selectRow.EmpID != "")
+            {
+                $('#EmpID').append($('<option > selected', { value: selectRow.EmpID, html: selectRow.EmpName }, '<option/>'));
+            }
+            else
+            {
+                LoadEmployee();
+            }
+            $('#IsActive').prop('checked', selectRow.IsActive);    
+        });
+
+        
+        //Produc Name twise Filter table row
+        $("#txtPopupInput").keyup(function () {
+            var val = $(this).val();
+            $("#PopupWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "UserID", operator: "contains", value: val },
+                     { field: "RoleName", operator: "contains", value: val },
+                     { field: "EmpName", operator: "contains", value: val },
+                     { field: "EmpCode", operator: "contains", value: val }
+                ]
+            });
+        });
+        var chkValue = true;
+        $('#IsActive').click(function () {
+            if ($(this).is(':checked')) { chkValue = $('#IsActive').prop('checked'); }
+            else { chkValue = $('#IsActive').prop('checked'); }
+        });
+        $('#btnSave').click(function () {
+         
+            var msg = $('#message').html();
+
+            var Input = InputValidation('UserID') + InputValidation('Password') + InputValidation('ConfirmPassword') + InputValidation('RoleID');
+
+            if (Input == 0 && msg == "Matching") {
+               
+                master.RoleID = $('#RoleID').val();              
+                master.UserID = $('#UserID').val();
+                master.EmpID = $('#EmpID').val();
+                master.Password = $('#Password').val();
+                master.IsActive = chkValue;
+                $.ajax({
+                    url: '/UserInRole/OperationsMode',
+                    data: JSON.stringify(master),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.Status == "Yes") {
+                            $("#RoleID").val(data.ID);
+                            OperationMsg(data.Mode);
+                        }
+                        else {
+                            ErrorFrmServerMsg(data.Status);
+                        }
+
+                    },
+                    error: function () { ErrorFrmClientMsg(); },
+                    // complete: function () { CompletedMsg(); },
+                }); //End of ajax call
+            }
+            else {
+                ValidationMsg();
+            }
+
+        });
+        var master = { "RoleID": "", "EmpID": "", "UserID": "", "Password": "", "IsActive": "" };
+
+        $('#btnDetails').click(function () {
+            sessionStorage.setItem('keyID', $('#EmpID').val());
+            sessionStorage.setItem('keyName', $('#EmpName').val());
+
+            window.open("/SA/UserBuyerMapping/frmUserBuyerMapping");
+        });
+    });
+</script>
+        <div class="box-header with-border">@*Form Title*@
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> <div id="MessageText"></div></div>
+            <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+                <div style="text-align:right;">
+                    <button id="btnSave" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
+                    <button id="btnView" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+                    <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+                    @*<button id="btnDelete" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-trash"></i>Delete</button>*@
+               
+                </div>
+            </div>              
+            </div>
+        <div class="box-body">@*Form Body Content*@
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"> User ID:</div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="UserID" name="UserID" placeholder="User ID" class="RequiredField form-control" /></div>
+                <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
+                <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2">Role:</div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"> <select id="RoleID" class="RequiredField form-control"><option> </option></select></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">Password:</div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="Password" name="Password" placeholder="Password" class="RequiredField form-control" /></div>
+                <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"></div>
+                <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2">Employee:</div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"> <select id="EmpID"  class="form-control"><option> </option></select></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">Confirm Password:</div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="ConfirmPassword" name="ConfirmPassword" placeholder="ConfirmPassword" class="RequiredField form-control" /></div>
+                <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"><span id='message'></span></div>
+                <div class="col-xs-0 col-sm-0 col-md-2 col-lg-2"> Is Active:</div>
+                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"> <input type="checkbox" id="IsActive" class="chk" name="IsActive" checked="checked"></div>
+            </div>
+      
+            <div class="box-footer">@*Form Footer*@</div>
+            </div>
+<div class="box-footer">@*Form Footer*@</div>
+<div class="row">
+    <div id="PopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="PopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+
+

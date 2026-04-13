@@ -1,0 +1,138 @@
+﻿@{
+    ViewBag.Title = "frmProductReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .BoxStyle {
+        border: double;
+        background-color: #99e6ff;
+        padding-bottom: 20px;
+        border-radius: 25px;
+        height: 210px;
+    }
+</style>
+<h1 style="text-align:center; text-emphasis:double-circle;"><u><b>Product Summary</b></u></h1>
+<br />
+<div class="row">
+    <div class="form-group">
+        <div class="col-xs-3">Brand Name</div>
+        <div class="col-xs-3"><input type="text" id="BRAND_NAME" name="BRAND_NAME" maxlength="50" readonly /></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 BoxStyle">
+        <h3 style="text-align:center">Recipe</h3>
+        <div class="form-group">
+            <div class="col-xs-5">Submission</div>
+            <div class="col-xs-3"><input type="text" id="RCPSubmissionDate" name="RCPSubmissionDate" maxlength="50" readonly /></div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-5">Approval</div>
+            <div class="col-xs-3"><input type="text" id="RCPApprovalDate" name="RCPApprovalDate" maxlength="50" readonly /></div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-5">Valid To</div>
+            <div class="col-xs-3"><input type="text" id="RCPValidUpto" name="RCPValidUpto" maxlength="50" readonly /></div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-5">Remarks</div>
+            <div class="col-xs-3"><input type="text" id="RCPRemarks" name="RCPRemarks" maxlength="50" readonly /></div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-3 BoxStyle">
+        <h3 style="text-align:center">DTL</h3>
+        <div class="col-md-5">Submission</div>
+        <div class="col-md-3"><input type="text" id="DTLSubmissionDate" name="DTLSubmissionDate" maxlength="50" readonly /></div>
+        <br />
+        <div class="col-md-5">Approval</div>
+        <div class="col-md-3"><input type="text" id="DTLApprovalDate" name="DTLApprovalDate" maxlength="50" readonly /></div>
+        <br />
+        <div class="col-md-5">Valid To</div>
+        <div class="col-md-3"><input type="text" id="DTLRemarks" name="DTLRemarks" maxlength="50" readonly /></div>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-3 BoxStyle">
+        <h3 style="text-align:center">Product Registration</h3>
+        <div class="col-md-5">Submission</div>
+        <div class="col-md-3"><input type="text" id="REGSubmissionDate" name="REGSubmissionDate" maxlength="50" readonly /></div>
+        <br />
+        <div class="col-md-5">Approval</div>
+        <div class="col-md-3"><input type="text" id="REGApprovalDate" name="REGApprovalDate" maxlength="50" readonly /></div>
+        <br />
+        <div class="col-md-5">Valid To</div>
+        <div class="col-md-3"><input type="text" id="REGValidUptoDate" name="REGValidUptoDate" maxlength="50" readonly /></div>
+        <br />
+        <div class="col-md-5">DAR No</div>
+        <div class="col-md-3"><input type="text" id="REGDarNo" name="REGDarNo" maxlength="50" readonly /></div>
+        <br />
+        <div class="col-md-5">Remarks</div>
+        <div class="col-md-3"><input type="text" id="REGRemarks" name="REGRemarks" maxlength="50" readonly /></div>
+    </div>
+</div>
+<br />
+<div class="row">
+
+    <div class="col-md-3 BoxStyle">
+        <h3 style="text-align:center">Price</h3>
+        <div class="col-md-5">Submission</div>
+        <div class="col-md-3"><input type="text" id="PRCSubmissionDate" name="PRCSubmissionDate" maxlength="50" readonly /></div>
+        <br />
+        <div class="col-md-5">Approval</div>
+        <div class="col-md-3"><input type="text" id="PRCApprovalDate" name="PRCApprovalDate" maxlength="50" readonly /></div>
+        <br />
+        <div class="col-md-5">Valid To</div>
+        <div class="col-md-3"><input type="text" id="PRCRemarks" name="PRCRemarks" maxlength="50" readonly /></div>
+    </div>
+    <div class="col-md-1"></div>
+
+    <div class="col-md-3 BoxStyle">
+        <h3 style="text-align:center">MA Certificate</h3>
+        <div class="col-md-5">Submission</div>
+        <div class="col-md-3"><input type="text" id="MRKSubmissionDate" name="MRKSubmissionDate" maxlength="50" readonly /></div>
+        <br />
+        <div class="col-md-5">Approval</div>
+        <div class="col-md-3"><input type="text" id="MRKApprovalDate" name="MRKApprovalDate" maxlength="50" readonly /></div>
+        <br />
+        <div class="col-md-5">Valid To</div>
+        <div class="col-md-3"><input type="text" id="MRKValidUpto" name="MRKValidUpto" maxlength="50" readonly /></div>
+        <br />
+        <div class="col-md-5">Remarks</div>
+        <div class="col-md-3"><input type="text" id="MRKRemarks" name="MRKRemarks" maxlength="50" readonly /></div>
+    </div>
+
+    <div class="col-md-1"></div>
+
+    <div class="col-md-3 BoxStyle">
+        <h3 style="text-align:center">Amendment</h3>
+        <div class="col-md-5">Submission</div>
+        <div class="col-md-3"><input type="text" id="AMDSubmissionDate" name="AMDSubmissionDate" maxlength="50" readonly /></div>
+        <br />
+        <div class="col-md-5">Approval</div>
+        <div class="col-md-3"><input type="text" id="AMDApprovalDate" name="AMDApprovalDate" maxlength="50" readonly /></div>
+        <br />
+        <div class="col-md-5">Valid To</div>
+        <div class="col-md-3"><input type="text" id="AMDRemarks" name="AMDRemarks" maxlength="50" readonly /></div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $.ajax({
+            type: "Get",
+            url: "./Home/frmProductReport",
+            dataType: "json",
+            success: function (data) {
+                SetMasterData(data);
+            },
+            error: function () {
+                alert("json not found");
+            }
+        });
+
+    });
+</script>

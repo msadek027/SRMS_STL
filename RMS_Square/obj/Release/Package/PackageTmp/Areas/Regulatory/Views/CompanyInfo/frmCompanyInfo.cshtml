@@ -1,0 +1,249 @@
+﻿
+@{
+    ViewBag.Title = "frmCompanyInfo";
+}
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CustomCSS/InputText.css" rel="stylesheet" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        EventPermission();
+        $('#btnReset').click(function () {
+
+            ResetData();            
+        });
+
+
+        $('#btnView').click(function () {
+
+            PopupWindow.open();
+
+            $.ajax({
+                url: '/CompanyInfo/GetCompany',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#PopupWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        PopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+
+                },
+                error: function () {
+                    alert('Error occured!');
+                },
+                //complete: function () { },
+            });
+
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var PopupGrid = $('#PopupWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "CompanyCode",
+                        fields: {
+                            CompanyCode: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: ["excel",{ template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            excel: {
+                fileName: "Export.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "CompanyCode", title: "CompanyCode", width: 80 },
+                 { field: "CompanyName", title: "CompanyName", width: 100 },
+                 { field: "Address", title: "Address", width: 100 },
+                 { field: "LicenseNo", title: "LicenseNo", width: 100 }
+            ]
+
+        }).data('kendoGrid');
+
+        $('#PopupWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            PopupWindow.close();
+            SetMasterData(selectRow);
+
+        });
+
+        //Company Name twise Filter table row
+        $("#txtPopupInput").keyup(function () {
+            var val = $(this).val();
+            $("#PopupWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "CompanyCode", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val },
+                     { field: "Address", operator: "contains", value: val },
+                     { field: "LicenseNo", operator: "contains", value: val },
+                ]
+            });
+        });
+
+        $('#btnSave').click(function () {
+            var Input = InputValidation('CompanyName');
+
+            if (Input == 0) {
+                master.CompanyCode = $('#CompanyCode').val();
+                master.CompanyName = $('#CompanyName').val();
+                master.Address= $('#Address').val();;
+                master.ContactNo = $('#ContactNo').val();
+                master.EmailId = $('#EmailId').val();
+                master.Facility = $('#Facility').val();
+                master.LicenseNo = $('#LicenseNo').val();
+
+
+                $.ajax({
+                    url: '/CompanyInfo/frmCompanyInfo',
+                    data: JSON.stringify(master),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.Status == "Yes") {
+                            $("#CompanyCode").val(data.ID);
+                            OperationMsg(data.Mode);
+                        }
+                        else {
+                            ErrorFrmServerMsg(data.Status);
+                        }
+
+                    },
+                    error: function () { ErrorFrmClientMsg(); },
+                    // complete: function () { CompletedMsg(); },
+                }); //End of ajax call
+            }
+            else {
+                ValidationMsg();
+            }
+
+        });
+        var master = { "CompanyCode": "", "CompanyName": "", "Address": "", "ContactNo": "", "EmailId": "", "Facility": "", "LicenseNo": "" };
+    });
+</script>
+
+
+<div class="box-header with-border">
+    @*Form Title*@
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> <div id="MessageText"></div></div>
+    <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+        <div style="text-align:right;">
+           
+            
+            @*<button id="btnSave" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>*@
+            <button id="btnSave" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-save"></i>Save</button> 
+            <button id="btnView" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+            @*<button id="btnDelete" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-trash"></i>Delete</button>*@
+            <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+        </div>
+    </div>
+</div>
+<div class="box-body">
+    @*Form Body Content*@
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"><strong> Company Code:</strong></div>
+            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3"><input type="text" id="CompanyCode" name="CompanyCode" readonly="readonly" class="form-control" /></div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"><strong>Company Name:</strong></div>
+            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-6"><input type="text" maxlength="150" id="CompanyName" name="CompanyName" placeholder="Company Name" class="RequiredField form-control" /></div>
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"><strong> Address:</strong></div>
+            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-6">
+                <textarea class="form-control" id="Address" name="Address" placeholder="Address" rows="2"></textarea>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"><strong> Contact No:</strong> </div>
+            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-3"><input type="text"  id="ContactNo" name="ContactNo" placeholder="Contact No" class="form-control" /></div>
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"><strong>Email Id:</strong> </div>
+            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-6"><input type="text" id="EmailId" name="EmailId" placeholder="Email Id" class="form-control" /></div>
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"><strong>License No:</strong> </div>
+            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-6"><input type="text" id="LicenseNo" name="LicenseNo" placeholder="License No" class="form-control" /></div>
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"><strong>Facility:</strong></div>
+
+            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-6">
+                <textarea class="form-control" id="Facility" name="Facility" placeholder="Facility" rows="3"></textarea>                    
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<div class="box-footer">@*Form Footer*@</div>
+<div class="row">
+    <div id="PopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="PopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+
+
+
+
+
+

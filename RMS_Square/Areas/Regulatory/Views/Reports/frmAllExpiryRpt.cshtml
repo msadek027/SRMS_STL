@@ -1,0 +1,120 @@
+﻿@{
+     ViewBag.Title = "frmAllExpiryRpt";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+
+<div class="box-header with-border">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <form class="form" action="/Regulatory/Reports/frmAllExpiryRpt" id="R1Form" method="post" name="H1Form" target="_blank">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"><div id="MessageText"></div></div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <div style="text-align:right;">
+                            <div class="btn-group">
+                                <label class="btn btn-default blue">
+                                    <input type="radio" id="rptPDF" name="ReportType" checked="checked" value="PDF" /> PDF
+                                </label>
+                                <label class="btn btn-default blue">
+                                    <input type="radio" id="rptExcel" name="ReportType" value="EXCEL" />EXCEL
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <div style="text-align:right;">
+                            <button id="btnPreview" class="btn btn-primary btn-lg" type="submit"><i class="glyphicon glyphicon-search"></i>Preview</button>
+                            <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="btn-group-vertical">
+                                        <label class="control-label">
+                                            <input type="radio" id="CompanyLicInfo" name="ReportName" checked="checked" value="CompanyLicInfo" /> Company License Info
+                                        </label><br />
+                                        <label class="control-label">
+                                            <input type="radio" id="ProductLicInfo" name="ReportName" value="ProductLicInfo" /> Product License Info
+                                        </label><br />
+                                        <label class="control-label">
+                                            <input type="radio" id="GMPLicInfo" name="ReportName" value="GMPLicInfo" />GMP License Info
+                                        </label><br />
+                                        <label class="control-label">
+                                            <input type="radio" id="RecipeNotifyInfo" name="ReportName" value="RecipeNotifyInfo" /> Recipe Notify Info
+                                        </label><br />
+                                        <label class="control-label">
+                                            <input type="radio" id="NarcoticLicInfo" name="ReportName" value="NarcoticLicInfo" /> Narcotic License Info
+                                        </label><br />
+                                        <label class="control-label">
+                                            <input type="radio" id="ImportProductLicInfo" name="ReportName" value="ImportProductLicInfo" />Import Product License Info
+                                        </label><br />
+                                        <label class="control-label">
+                                            <input type="radio" id="AdvertisementNotifyInfo" name="ReportName" value="AdvertisementNotifyInfo" />Advertisement Notify Info
+                                        </label><br />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="row">
+                                <div class="col-sm-3">Expired Within :</div>
+                                <div class="col-sm-3"><input type="text" id="AlarmDays" name="AlarmDays" class="form-control txtBox numeric" maxlength="3" placeholder="days" /></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">From Date : </div>
+                                <div class="col-sm-3">
+                                    <div class="input-group date">
+                                        <input type="text" class="form-control txtBox" id="FromDate" name="FromDate" placeholder="dd/mm/yyyy">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">To Date:</div>
+                                <div class="col-sm-3">
+                                    <div class="input-group date">
+                                        <input type="text" class="form-control txtBox" id="ToDate" name="ToDate" placeholder="dd/mm/yyyy">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+
+    </div>
+
+</div>
+<div class="box-footer">@*Form Footer*@</div>
+
+<script type="text/javascript">
+
+    $('#btnReset').click(function () {
+        ResetData();
+    });
+
+    $(document).ready(function () {
+        $('.input-group.date').datepicker({
+            format: "d/mm/yyyy",//dd M yyyy
+            autoclose: true,
+            todayHighlight: true
+            //,todayBtn: true,
+        });
+
+        var model = { "AlarmDays": "", "FromDate": "", "ToDate": "" };
+        var dataItemInfo = {};
+
+    });
+
+</script>
+
+
+

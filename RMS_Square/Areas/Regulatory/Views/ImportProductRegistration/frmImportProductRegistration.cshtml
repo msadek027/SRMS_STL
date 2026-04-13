@@ -1,0 +1,879 @@
+﻿@{
+    //ViewBag.Title = "frmGmpCertificate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+
+<div class="box-header with-border">
+    @*Form Title*@
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> <div id="MessageText"></div></div>
+    <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+        <div style="text-align:right;">
+            <button id="btnSave" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
+            <button id="btnView" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+            @* <button id="btnDelete" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-trash"></i>Delete</button>*@
+            <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+        </div>
+    </div>
+</div>
+<div class="box-body">
+    <div class="form-group">
+        <div class="row">
+
+            <div class="col-sm-2">Revision No :</div>
+            <div class="col-sm-2"><input type="text" id="RevisionNo" name="RevisionNo" placeholder="Revision NO" class="form-control" readonly /></div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2">Revision Date :</div>
+            <div class="col-sm-3"><input type="text" id="RevisionDate" name="RevisionDate" placeholder="Revision Date" class="form-control" readonly /></div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-2">Company Code :</div>
+            <div class="col-sm-3"><input type="text" id="CompanyCode" name="CompanyCode" placeholder="Company Code" class="form-control" readonly /></div>
+            <div class="col-sm-2">Company Name :</div>
+            <div class="col-sm-4"><input type="text" id="CompanyName" name="CompanyName" placeholder="Company Name" class="form-control" readonly /></div>
+
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <fieldset class="panel-border">
+            <legend class="panel-border">Product Information :</legend>
+            <div class="form-group">
+                <div class="row">
+
+                    <div class="col-sm-2">Recipe ID<span style="color: red">*</span> : </div>
+                    <div class="col-sm-2">
+                        <input type="text" id="RecipeId" name="RecipeId" class="form-control txtBox" />
+                    </div>
+                    <div class="col-sm-1">
+                        <button id="btnProductFind" class="btn btn-primary btn-sm" type="button"> <i class="glyphicon glyphicon-search"></i>Search</button>
+                    </div>
+
+                    <div class="col-sm-1">Product Code<span style="color: red">*</span> : </div>
+                    <div class="col-sm-2">
+                        <input type="text" id="ProductCode" name="ProductCode" class="form-control txtBox" readonly />
+                    </div>
+
+                    <div class="col-sm-1">SAP Product Code : </div>
+                    <div class=" col-sm-2">
+                        <input type="hidden" id="ID" name="ID" class="txtBox" />
+                        <input type="text" id="SAPProductCode" name="SAPProductCode" class="form-control" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2"> Generic & Strength:</div>
+                    <div class="col-xs-0 col-sm-6 col-md-3 col-lg-10">
+                        <textarea class="form-control" id="GenericCode" name="GenericCode" placeholder="Generic & Strength" rows="1" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+
+                    <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">Pack Size :</div>
+                    <div class="col-xs-0 col-sm-6 col-md-3 col-lg-2">
+                        <input type="hidden" id="PackSizeCode" name="PackSizeCode" class="form-control" />
+                        <input type="text" id="PackSizeName" name="PackSizeName" placeholder="Pack Size" class="form-control" readonly />
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-3 col-lg-1">Dosage Form :</div>
+                    <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
+                        <input type="hidden" id="DosageFormCode" name="DosageFormCode" class="form-control" />
+                        <input type="text" id="DosageFormName" name="DosageFormName" placeholder="Dosage Form" class="form-control" readonly />
+                    </div>
+
+                    <div class="col-sm-1">Brand :</div>
+                    <div class="col-sm-3"><input type="text" id="BrandName" name="BrandName" placeholder="Brand Name" class="form-control" readonly /></div>
+
+                    @*<div class="col-xs-0 col-sm-0 col-md-3 col-lg-1">
+                            <button id="btnDosageForm" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Find</button>
+                        </div>*@
+
+                </div>
+
+            </div>
+
+        </fieldset>
+    </div>
+
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Manufacturer: </div>
+            <div class=" col-sm-5">
+                <input type="text" id="ManufacturerName" name="ManufacturerName" placeholder="Manufacturer" class="form-control" />
+            </div>
+            <div class="col-sm-1">Country of Origin : </div>
+            <div class=" col-sm-3">
+                <input type="hidden" id="CountryCode" name="CountryCode" class="form-control" />
+                <input type="text" id="CountryName" name="CountryName" class="form-control" />
+            </div>
+            <div class="col-sm-1"><button id="btnCountryFind" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Supplier :</div>
+            <div class="col-sm-5"><input type="text" id="SupplierName" name="SupplierName" placeholder="Supplier Name" class="form-control" /></div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <fieldset class="panel-border">
+            <legend class="panel-border">Registration Information :</legend>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Received date: </div>
+                    <div class="col-sm-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control txtBox" id="ProposalDate" name="ProposalDate" disabled placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-1"></div>
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Submission Date : </div>
+                    <div class="col-sm-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtBox" id="SubmissionDate" name="SubmissionDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Registration No: </div>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control txtBox" id="RegistrationNo" name="RegistrationNo" placeholder="Registration No">
+                    </div>
+                    <div class="col-sm-1"></div>
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Approval Date : </div>
+                    <div class="col-sm-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtBox" id="RegistrationDate" name="RegistrationDate" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Valid Up To: </div>
+                    <div class="col-sm-3">
+                        <div class="input-group date">
+                            <input type="text" class="form-control txtBox" id="ValidUpto" name="ValidUpto" placeholder="dd/mm/yyyy">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-1"></div>
+                    <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">Alarm Day's : </div>
+                    <div class="col-sm-3">
+                        <input type="text" id="NotificationDays" name="NotificationDays" maxlength="5" placeholder="Alarm Days" class="txtBox form-control numeric " />
+                    </div>
+                </div>
+            </div>
+
+        </fieldset>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2"> Remarks:</div>
+            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-10">
+                <textarea class="form-control" id="Remarks" name="Remarks" placeholder="Remarks" rows="2"></textarea>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-12">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">Upload Documents :</legend>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            Document Name<span style="color: red">*</span>:
+                        </div>
+                        <div class="col-sm-3">
+                            <select id="RefNo" class="form-control txtBox" tabindex="" name="RefNo">
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="file" class="txtBox" id="UploadFile" name="UploadFile" />
+                            <i class="glyphicon glyphicon-upload form-control-feedback"></i>
+                        </div>
+                        <div class="col-sm-3">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <br />
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label>List of Document File</label>
+                            <div id="FileGrid" class=""></div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-8">
+        </div>
+        <div class="col-sm-4">
+            <a class="btn btn-primary btn-md" href='@Url.Action("frmImportProductRegistrationView", "ImportProductRegistration")'>Click here to display All Report</a>
+        </div>
+    </div>
+</div>
+<div class="box-footer">@*Form Footer*@</div>
+<div class="row">
+    <div id="DisplayPopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="DisplayPopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+
+    <div id="ProductWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="ProductWindowGrid" class="PopUpGrid"></div>
+    </div>
+
+    <div id="CountryWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="CountryWindowGrid" class="PopUpGrid"></div>
+    </div>
+
+</div>
+<div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px;
+        top: 0px; width: 100%; height: 100%; background-color: #666666; z-index: 30001;
+        opacity: .8; filter: alpha(opacity=70);display:none">
+    <p style="position: absolute; top: 50%; left: 42%; color: White;">
+        Please wait... <img src="../../Content/Images/ajax-loader1.gif">
+    </p>
+</div>
+<script type="text/javascript">
+
+    $('#btnReset').click(function () {
+        ResetData();
+        $("#FileGrid").data("kendoGrid").dataSource.data([]);
+
+    });
+
+    //$('#btnRevision').click(function () {
+    //    $('#ID').val('');
+    //    $('#SlNo').val('');
+    //    $('#RevisionNo').val('');
+    //    $("#SubmissionType ").val('Renewal');
+    //    $("#divRenew").find('input, textarea, select').val('');
+    //    $("#FileGrid").data("kendoGrid").dataSource.data([]);
+    //});
+    function CheckPagePartAccessPrivilege() {
+        switch ('@ViewBag.PageAccess') {
+            case "A":
+                var options = new Array();
+                options.push('<option  value="">--Select Any--</option>');
+                options.push('<option  value="Proposed Packaging Material">Proposed Packaging Material</option>');
+                options.push('<option  value="Proposed Annexure">Proposed Annexure</option>');
+                options.push('<option  value="Product Dossier">Product Dossier</option>');
+                options.push('<option  value="Distribution Agreement">Distribution Agreement</option>');
+                options.push('<option  value="CPP/FSC">CPP/FSC</option>');
+                options.push('<option  value="Approval Letter">Approval Letter</option>');
+                options.push('<option  value="Approved Packaging Material">Approved Packaging Material</option>');
+                options.push('<option  value="Approved Annexure">Approved Annexure</option>');
+                $("#RefNo").html(options.join(''));
+                break;
+            case "P":
+                var options = new Array();
+                options.push('<option  value="">--Select Any--</option>');
+                options.push('<option  value="Proposed Packaging Material">Proposed Packaging Material</option>');
+                options.push('<option  value="Proposed Annexure">Proposed Annexure</option>');
+                options.push('<option  value="Product Dossier">Product Dossier</option>');
+                options.push('<option  value="Distribution Agreement">Distribution Agreement</option>');
+                $("#RefNo").html(options.join(''));
+                break;
+        }
+    }
+    $(document).ready(function () {
+        // EventPermission();
+        CheckPagePartAccessPrivilege();
+        $('.input-group.date').datepicker({
+            format: "d/mm/yyyy",//dd M yyyy
+            // daysOfWeekDisabled: "5,6",
+            autoclose: true,
+            todayHighlight: true
+            //,todayBtn: true,
+        });
+        $('#btnView').click(function () {
+
+            DisplayPopupWindow.open();
+
+            $.ajax({
+                url: '@Url.Action("GetAllInfo", "ImportProductRegistration")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#DisplayPopupWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        DisplayPopupWindow.close();
+                        AcknowledgeMsg();
+                    }
+
+                }
+            });
+
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var PopupGrid = $('#DisplayPopupWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "ID",
+                        fields: {
+                            ID: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 20,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: ["excel",{ template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            excel: {
+                fileName: "Export.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            navigatable: true,
+            height: "100%",
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "ID", hidden: true },
+                 { field: "SlNo ", title: "SlNo", width: 120 },
+                 { field: "RecipeId", title: "RecipeId", width: 120 },
+                 { field: "ProductCode", title: "Product Code", width: 120 },
+               //  { field: "SAPProductCode", title: "SAPProductCode", width: 140 },
+                 { field: "GenericCode", title: "Generic", width: 260 },
+                 { field: "CompanyCode", title: "Company", width: 140 },
+                 { field: "RevisionNo", title: "Revision No", width: 120 },
+                 { field: "RevisionDate", title: "Revision Date", width: 120 },
+
+                // { field: "PackSizeCode", title: "PackSizeCode", width: 60 },
+                 { field: "PackSizeName", title: "Pack Size", width: 120 },
+                // { field: "DosageFormCode", title: "DosageFormCode", width: 80 },
+                 { field: "DosageFormName", hidden: true, title: "Dosage Form", width: 120 },
+                 { field: "CountryCode", title: "CountryCode", width: 80, hidden: true },
+                 { field: "CountryName", hidden: true, title: "CountryName", width: 120 },
+                 { field: "BrandName", title: "Brand Name", width: 120 },
+                 { field: "ManufacturerName", title: "ManufacturerName", width: 80, hidden: true },
+                 { field: "SupplierName", title: "SupplierName", width: 80, hidden: true },
+                 { field: "ProposalDate", title: "Received Date", width: 80, hidden: true },
+                 { field: "SubmissionDate", title: "Submission Date", width: 80, hidden: true },
+                 { field: "RegistrationDate", title: "Approval Date", width: 120 },
+                 { field: "RegistrationNo", title: "Registration No", width: 120 },
+                 { field: "ValidUpto", title: "ValidUpto", width: 120 },
+
+            ]
+
+        }).data('kendoGrid');
+
+        $('#DisplayPopupWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            DisplayPopupWindow.close();
+            SetMasterData(selectRow);
+            $.ajax({
+                url: '@Url.Action("GetFileByRefId", "ImportProductRegistration")',
+                type: 'GET',
+                data: { refLevel1: selectRow.ID },
+                success: function (data) {
+                    $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                }
+            });
+        });
+
+        //Produc Name wise Filter table row
+        $("#txtPopupInput").keyup(function () {
+            var val = $(this).val();
+            $("#DisplayPopupWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "SlNo", operator: "contains", value: val },
+                     { field: "RecipeId", operator: "contains", value: val },
+                     { field: "ProductCode", operator: "contains", value: val },
+                     { field: "SAPProductCode", operator: "contains", value: val },
+                     { field: "GenericCode", operator: "contains", value: val },
+                     { field: "DosageFormName", operator: "contains", value: val },
+                     { field: "ValidUpto", operator: "contains", value: val },
+                     { field: "BrandName", operator: "contains", value: val },
+                     { field: "PackSizeCode", operator: "contains", value: val },
+                     { field: "RegistrationDate", operator: "contains", value: val },
+                     { field: "RegistrationNo", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        //Display window
+        var DisplayPopupWindow = $("#DisplayPopupWindow").kendoWindow({
+            actions: ["Minimize", "Maximize", "Close"],
+            width: "90%",
+            height: "80%",
+            draggable: true,
+            modal: true,
+            title: "List of Record."
+        }).data("kendoWindow").center();
+
+        // product window for find button
+        var ProductWindow = $("#ProductWindow").kendoWindow({
+            actions: ["Minimize", "Maximize", "Close"],
+            width: "90%",
+            height: "80%",
+            draggable: true,
+            modal: true,
+            title: "List of Product."
+        }).data("kendoWindow").center();
+
+
+        $('#btnProductFind').click(function () {
+            ProductWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetImportProduct", "ImportProductRegistration")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#ProductWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        ProductWindow.close();
+                        AcknowledgeMsg();
+                    }
+
+                }
+            });
+
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var ProductGrid = $('#ProductWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "ProductCode",
+                        fields: {
+                            ProductCode: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 10
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtProductKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "RecipeId", title: "Recipe Id", width: 100 },
+                 { field: "ProductCode", title: "Product Code", width: 100 },
+                 { field: "SAPProductCode", title: "SAP Product Code", width: 100 },
+                 { field: "GenericCode", title: "Generic", width: 200 },
+                 { field: "PackSizeName", title: "Pack Size ", width: 100 },
+                 { field: "DosageFormName", title: "Dosage Form", width: 100 },
+                 { field: "BrandName", title: "Brand Name", width: 100 },
+                 { field: "CompanyCode", title: "Company Code", width: 100 },
+                 { field: "CompanyName", title: "Company Name", width: 100 }
+
+
+            ]
+
+        }).data('kendoGrid');
+
+        $('#ProductWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+
+            ProductWindow.close();
+            SetMasterData(selectRow);
+
+        });
+
+        //Product Name wise Filter table row
+        $("#txtProductKeyword").keyup(function () {
+            var val = $(this).val();
+            $("#ProductWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "RecipeId", operator: "contains", value: val },
+                     { field: "ProductCode", operator: "contains", value: val },
+                     { field: "SAPProductCode", operator: "contains", value: val },
+                     { field: "GenericCode", operator: "contains", value: val },
+                     { field: "CompanyCode", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val },
+                     { field: "BrandName", operator: "contains", value: val },
+                ]
+            });
+        });
+
+        ///for country list////
+
+
+        // country window for find button
+        var CountryWindow = $("#CountryWindow").kendoWindow({
+            width: "50%",
+            height: "70%",
+            draggable: true,
+            modal: true,
+            title: "List of Country."
+        }).data("kendoWindow").center();
+
+
+        $('#btnCountryFind').click(function () {
+            CountryWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetCountry", "CountryInfo")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#CountryWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        CountryWindow.close();
+                        AcknowledgeMsg();
+                    }
+
+                }
+            });
+
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var CountryGrid = $('#CountryWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "CountryCode",
+                        fields: {
+                            CountryCode: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 10
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtCountryKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "CountryCode", title: "Country Code", width: 50 },
+                 { field: "CountryName", title: "Country Name", width: 100 }
+            ]
+
+        }).data('kendoGrid');
+
+        $('#CountryWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+
+            CountryWindow.close();
+            SetMasterData(selectRow);
+
+        });
+
+        //Product Name wise Filter table row
+        $("#txtCountryKeyword").keyup(function () {
+            var val = $(this).val();
+            $("#CountryWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "CountryCode", operator: "contains", value: val },
+                     { field: "CountryName", operator: "contains", value: val },
+                ]
+            });
+        });
+
+        ///end of country  list///
+
+
+        // $("#SubmissionDate").datepicker('setDate', new Date());
+        // $("#SubmissionDate").datepicker({ dateFormat: 'dd MMM yyyy' }).datepicker('setDate', new Date());
+        //To Define Data  for Kendo Grid
+        var fileDataSource = new kendo.data.DataSource({
+            batch: true,
+            schema: {
+                model: {
+                    id: "FileID",
+                    fields: {
+                        FileID: { editable: false },
+                        FileCode: { editable: false },
+                        Extention: { editable: false },
+                        FileName: { editable: false },
+                        RefNo: { editable: false },
+                        FileSize: { editable: false },
+                        SetOn: { editable: false },
+                        SetByName: { editable: false }
+                    }
+                }
+            },
+            pageSize: 10
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var grid = $('#FileGrid').kendoGrid({
+            dataSource: fileDataSource,
+            pageable: {
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            selectable: "row",
+            toolbar: [{ template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            groupable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+            { field: "FileID", hidden: true },
+            { field: "FileCode", hidden: true },
+            { field: "Extention", hidden: true },
+            { field: "RefNo", title: "Document Name", width: 150, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "FileName", title: "File Name", width: 350, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "FileSize", filterable: false, title: "Size(MB)", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { command: [{ name: "Download", text: "Download", imageClass: "glyphicon glyphicon-download", click: handleDownload }], title: "Download Action", width: "120px", attributes: { "class": "btnDownload" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { command: [{ name: "Delete", text: "Delete", imageClass: "glyphicon glyphicon-trash", click: handleFileDelete }], title: "Delete Action", width: "120px", attributes: { "class": "btnDelete" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
+            ]
+
+        }).data('kendoGrid');
+
+        $("#txtInput").keyup(function () {
+            var val = $(this).val();
+            $("#FileGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "RefNo", operator: "contains", value: val },
+                     { field: "FileName", operator: "contains", value: val },
+                     { field: "FileSize", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        function handleFileDelete(event) {
+            dataItemInfo = grid.dataItem($(event.currentTarget).closest("tr"));
+
+            if (confirm('Do you really want to delete this file?')) {
+                //event.preventDefault();
+                //event.stopPropagation();
+                $.ajax({
+                    url: '@Url.Action("DeleteFile", "General")',
+                    type: 'POST',
+                    data: JSON.stringify({ "fileId": dataItemInfo.FileID, "fileCode": dataItemInfo.FileCode, "extention": dataItemInfo.Extention }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    cache: false,
+                    success: function (response) {
+                        if (response.Status == "Yes") {
+                            toastr.success(OperationMsg("FD"));
+                            $("#FileGrid").data("kendoGrid").dataSource.remove(dataItemInfo);
+                        }
+                        else {
+                            toastr.error(OperationMsg("FND"));
+                        }
+                    }
+                });
+            }
+        };
+        // Download Button in Grid
+        function handleDownload(event) {
+            dataItemInfo = grid.dataItem($(event.currentTarget).closest("tr"));
+             window.location.href = '@Url.Action("Download", "General")' + '?path=' + dataItemInfo.FileCode + dataItemInfo.Extention + '&fileName=' + dataItemInfo.FileName + '&fileId=' + dataItemInfo.FileID;
+        };
+
+        $('#btnSave').click(function () {
+            var checkInput = InputValidation('ProductCode');
+
+            if (checkInput == 0) {
+                model.ID = $('#ID').val();
+                model.SlNo = $('#SlNo').val();
+                model.ProductCode = $('#ProductCode').val();
+                model.RecipeId = $('#RecipeId').val();
+                model.CompanyCode = $('#CompanyCode').val();
+                model.RevisionDate = $('#RevisionDate').val();
+                model.RevisionNo = $('#RevisionNo').val();
+                model.CountryCode = $('#CountryCode').val();
+                model.ManufacturerName = $('#ManufacturerName').val();
+                model.SupplierName = $('#SupplierName').val();
+                model.ProposalDate = $('#ProposalDate').val();
+                model.SubmissionDate = $('#SubmissionDate').val();
+                model.RegistrationNo = $('#RegistrationNo').val();
+                model.RegistrationDate = $('#RegistrationDate').val();
+                model.ValidUpto = $('#ValidUpto').val();
+                model.Remarks = $('#Remarks').val();
+                model.NotificationDays = $('#NotificationDays').val();
+
+                $.ajax({
+                    url: '@Url.Action("frmImportProductRegistration", "ImportProductRegistration")',
+                    data: JSON.stringify(model),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.Status == "Yes") {
+                            $("#ID").val(data.ID);
+                            $("#SlNo").val(data.SlNo);
+                            $("#RevisionDate").val(data.RevisionDate);
+                            $("#RevisionNo").val(data.RevisionNo);
+                            OperationMsg(data.Mode);
+                        }
+                        else {
+                            ErrorFrmServerMsg(data.Status);
+                        }
+
+                    }
+                }); //End of ajax call
+            }
+            else {
+                ValidationMsg();
+            }
+
+        });
+        var model = { "ID": "", "SlNo": "", "ProductCode": "", "SAPProductCode": "", "RevisionNo": "", "RevisionDate": "", "genericCode": "", "PackSizeCode": "", "PackSizeName": "", "DosageFormCode": "", "DosageFormName": "", "CountryCode": "", "CountryName": "", "BrandName": "", "ManufacturerName": "", "SupplierName": "", "SubmissionDate": "", "RegistrationDate": "", "RegistrationNo": "", "ValidUpto": "", "NotificationDays": "", "ProposalDate": "", "Remarks": "", "RecipeId": "", "CompanyCode": "" };
+        var dataItemInfo = {};
+
+    });
+
+    //$('#image-file').bind('change', function ()
+    $('#UploadFile').on('change', function (e) {
+        var checkInput = InputValidation('RefNo');
+
+        if (checkInput == 0) {
+            var files = e.target.files;
+            var refId = $("#ID").val();
+            if (refId != "") {
+                var fileSize = 0;
+                var fSizeStrg = "";
+                $file = $("#UploadFile");
+                for (var f = 0; f < files.length; f++) {
+                    var iSize = ($file[0].files[f].size / 1024);
+                    fileSize = (Math.round((iSize / 1024) * 100) / 100);
+                    if (fSizeStrg != "") {
+                        fSizeStrg += ',' + fileSize;
+                    }
+                    else {
+                        fSizeStrg = fileSize;
+                    }
+                    if (iSize / 1024 > 25) {
+                        iSize = (Math.round((iSize / 1024) * 100) / 100);
+                        alert('File size is ' + iSize + ' MB');
+                        $("#divLoading").show();
+                        if (iSize > 25) {
+                            toastr.warning(OperationMsg("UFW"));
+                            $("#divLoading").hide();
+                            return;
+                        }
+                    }
+                }
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        var data = new FormData();
+                        for (var x = 0; x < files.length; x++) {
+                            data.append("file" + x, files[x]);
+                        }
+                        $("#divLoading").show();
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("UploadFile", "ImportProductRegistration")' + '?refLevel1=' + refId + '&refLevel2=' + "" + '&fileSize=' + fSizeStrg + '&refNo=' + $("#RefNo").val(),
+                            contentType: false,
+                            processData: false,
+                            data: data,
+                            success: function (result) {
+                                $("#divLoading").hide();
+                                if (result.msgType == "FUS") {
+                                    toastr.success(OperationMsg(result.msgType));
+                                    $("#FileGrid").data("kendoGrid").dataSource.data(result.FileList);
+                                    $("#RefNo").val('--Select Any--');
+                                    $("#ProposalDate").val(result.ProposalDate);
+                                    
+                                }
+                                else if (result.msgType == "FLI") {
+                                    toastr.warning(OperationMsg(result.msgType));
+                                }
+                                else {
+                                    toastr.warning(OperationMsg(result.msgType));
+                                }
+                            }
+
+                        });
+                    } else {
+                        alert("This browser doesn't support HTML5 file uploads!");
+                    }
+                }
+            }
+            else {
+                toastr.warning(OperationMsg("FI"));
+            }
+        }
+        else {
+            toastr.error(OperationMsg("SDN"));
+        }
+
+    });
+
+
+
+</script>
+

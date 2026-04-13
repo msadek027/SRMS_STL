@@ -1,0 +1,429 @@
+﻿
+@{
+    ViewBag.Title = "RecipeNotify";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+<div class="box-header with-border">
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <i class="glyphicon glyphicon-filter"></i> Filter By : >> >> >> >> >> >> >><div id="MessageText"></div>
+    </div>
+    <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+        <div style="text-align:right;">
+            <button id="btnSearch" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+            <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+        </div>
+    </div>
+</div>
+<div class="box-body">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Company Code : </div>
+            <div class="col-sm-2">
+                <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" readonly />
+            </div>
+            <div class="col-sm-1"><button id="btnFind" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+            <div class="col-sm-2">Company Name :</div>
+            <div class="col-sm-5"><input type="text" id="CompanyName" name="CompanyName" class="form-control" readonly /></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Product Code </div>
+            <div class="col-sm-2">
+                <input type="text" id="ProductCode" name="ProductCode" class="form-control txtBox" readonly />
+            </div>
+            <div class="col-sm-1"><button id="btnFindProduct" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
+            <div class="col-sm-2">Expired Within :</div>
+            <div class="col-sm-2"><input type="text" id="AlarmDays" name="AlarmDays" class="form-control txtBox numeric" maxlength="3" placeholder="days" /></div>
+            <div class="col-sm-3">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Expiry From Date : </div>
+            <div class="col-sm-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="FromDate" name="FromDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+            <div class="col-sm-2">Expiry To Date : </div>
+            <div class="col-sm-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="ToDate" name="ToDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <fieldset class="panel-border" id="divRenew">
+            <legend class="panel-border">License/Renewal Information :</legend>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="LicenseInfoGrid" class=""></div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+</div>
+<div class="box-footer"></div>
+<div class="row">
+    <div id="CompanyWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="CompanyWindowGrid" class="PopUpGrid"></div>
+    </div>
+    <div id="ProductWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="ProductWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $('#btnReset').click(function () {
+        ResetData();
+        $("#LicenseInfoGrid").data("kendoGrid").dataSource.data([]);
+    });
+
+    $(document).ready(function () {
+
+        $('.input-group.date').datepicker({
+            format: "d/mm/yyyy",//dd M yyyy
+            // daysOfWeekDisabled: "5,6",
+            autoclose: true,
+            todayHighlight: true
+            //,todayBtn: true,
+        });
+
+        // Company window for find button
+        var CompanyWindow = $("#CompanyWindow").kendoWindow({
+            width: "70%",
+            height: "70%",
+            draggable: true,
+            modal: true,
+            title: "List of Company."
+        }).data("kendoWindow").center();
+
+
+        $('#btnFind').click(function () {
+            CompanyWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetAllCompany", "General")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        CompanyWindow.close();
+                        AcknowledgeMsg();
+                    }
+
+                }
+            });
+
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var companyGrid = $('#CompanyWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "CompanyCode",
+                        fields: {
+                            CompanyCode: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 10
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtCompanyKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "CompanyCode", title: "CompanyCode", width: 80 },
+                 { field: "CompanyName", title: "CompanyName", width: 100 },
+                 { field: "Address", title: "CompanyAddress", width: 160 },
+                 { field: "LicenseNo", title: "LicenseNo", width: 80 }
+            ]
+
+        }).data('kendoGrid');
+
+        $('#CompanyWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+
+            CompanyWindow.close();
+            SetMasterData(selectRow);
+
+        });
+
+        //Company Name wise Filter table row
+        $("#txtCompanyKeyword").keyup(function () {
+            var val = $(this).val();
+            $("#CompanyWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "CompanyCode", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val },
+                     { field: "Address", operator: "contains", value: val },
+                ]
+            });
+        });
+        //Start Product Popup Info
+        // Product window for find button
+        var ProductWindow = $("#ProductWindow").kendoWindow({
+            width: "70%",
+            height: "70%",
+            draggable: true,
+            modal: true,
+            title: "List of Product."
+        }).data("kendoWindow").center();
+
+
+        $('#btnFindProduct').click(function () {
+            ProductWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetAllProduct", "General")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#ProductWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        ProductWindow.close();
+                        AcknowledgeMsg();
+                    }
+                }
+            });
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var productGrid = $('#ProductWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "ProductCode",
+                        fields: {
+                            ProductCode: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtProductKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "ProductCode", title: "ProductCode", width: 120 },
+                 { field: "SAPProductCode", title: "SapProductCode", width: 120 },
+                 { field: "PackSize", title: "PackSize", width: 80 },
+                 { field: "GenericStrength", title: "GenAndStrength", width: 350 }
+            ]
+
+        }).data('kendoGrid');
+
+        $('#ProductWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+
+            ProductWindow.close();
+            SetMasterData(selectRow);
+            changeAny = 1;
+
+        });
+
+        //Product Name wise Filter table row
+        $("#txtProductKeyword").keyup(function () {
+            var val = $(this).val();
+            $("#ProductWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "ProductCode", operator: "contains", value: val },
+                     { field: "SAPProductCode", operator: "contains", value: val },
+                     { field: "PackSize", operator: "contains", value: val },
+                     { field: "GenericStrength", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        //end Product info
+        //To Define Data  for License info Kendo Grid
+        var licenseInfoDataSource = new kendo.data.DataSource({
+            batch: true,
+            schema: {
+                model: {
+                    id: "ID",
+                    fields: {
+                        ID: { editable: true },
+                        DateDiff:{editable:false}
+                    }
+                }
+            },
+            pageSize: 20,
+            transport: {
+                read: function () {
+                    $.ajax({
+                        url: '@Url.Action("GetRecipeNotifyAll", "Home")', // at first data
+                        type: "GET",
+                        contentType: 'application/json;',
+                        dataType: 'json',
+                        success: function (data) {
+                            $("#LicenseInfoGrid").data("kendoGrid").dataSource.data(data);
+                            $("#divLoading").hide();
+                        }
+                    });
+                }
+            }
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var licenseInfoGrid = $('#LicenseInfoGrid').kendoGrid({
+            dataSource: licenseInfoDataSource,
+            pageable: {
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            //height: 300,
+            selectable: "row",
+            toolbar: ["excel",{ template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            excel: {
+                fileName: "Export.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            navigatable: true,
+            groupable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "DateDiff", title: "LicDays", width: 100 },
+                 { field: "ProductCode", title: "ProductCode", width: 110 },
+                 { field: "CompanyName", title: "CompanyName", width: 160 },
+                 { field: "CompanyCode", title: "Code", width: 100 },
+                 { field: "LicenseNo", title: "LicenseNo", width: 100 },
+                 { field: "RevisionNo", title: "RevisionNo", width: 110 },
+                 { field: "ProductCategory", title: "ProductCategory", width: 110 },
+                 { field: "BrandName", title: "BrandName", width: 110 },
+                 { field: "GenAndStrength", title: "GenAndStrength", width: 260 },
+                 { field: "SAPProductCode", title: "SAPCode", width: 100 },
+                 { field: "DarNo", title: "DarNo", width: 120 },
+                 { field: "ApvValidUptoDate", title: "Valid Upto", width: 100 },
+                 { field: "ProposalDate", title: "ProposalDate", width: 100 },
+                 { field: "ApvSubmissionDate", title: "SubmissionDate", width: 100 },
+                 { field: "AlarmDays", title: "AlarmDays", width: 100 }
+            ],
+            dataBound: onDataBound
+        }).data('kendoGrid');
+
+        $("#txtInputLicense").keyup(function () {
+            var val = $(this).val();
+            $("#LicenseInfoGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "DarNo", operator: "contains", value: val },
+                     { field: "SlNo", operator: "contains", value: val },
+                     { field: "ProductCode", operator: "contains", value: val },
+                     { field: "CompanyName", operator: "contains", value: val },
+                     { field: "ProductCategory", operator: "contains", value: val },
+                     { field: "BrandName", operator: "contains", value: val },
+                     { field: "GenAndStrength", operator: "contains", value: val },
+                     { field: "ApvSubmissionDate", operator: "contains", value: val },
+                     { field: "CompanyCode", operator: "contains", value: val },
+                     { field: "ProposalDate", operator: "contains", value: val },
+                     { field: "ApvValidUptoDate", operator: "contains", value: val },
+                     { field: "AlarmDays", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        function onDataBound(arg) {
+            CustomRowDataBound("LicenseInfoGrid");
+        }
+
+        $('#btnSearch').click(function () {
+            var checkInput = 0; //InputValidation('CompanyCode');
+            if (checkInput == 0) {
+                model.CompanyCode = $('#CompanyCode').val();
+                model.ProductCode = $('#ProductCode').val();
+                model.AlarmDays = $('#AlarmDays').val();
+                model.FromDate = $('#FromDate').val();
+                model.ToDate = $('#ToDate').val();
+                $.ajax({
+                    url: '@Url.Action("GetRecipeNotify", "Home")',
+                    data: JSON.stringify(model),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.dataMaster.length > 0)
+                        {
+                            $("#LicenseInfoGrid").data("kendoGrid").dataSource.data(data.dataMaster);
+                        }
+                        else {
+                            $("#LicenseInfoGrid").data("kendoGrid").dataSource.data([]);
+                            toastr.error(OperationMsg("NRF"));
+                        }
+                    }
+                }); //End of ajax call
+            }
+            else {
+                ValidationMsg();
+            }
+
+        });
+        var model = { "CompanyCode": "", "ProductCode": "", "AlarmDays": "", "FromDate": "", "ToDate": "" };
+        var dataItemInfo = {};
+
+    });
+
+</script>
+
+
+
+

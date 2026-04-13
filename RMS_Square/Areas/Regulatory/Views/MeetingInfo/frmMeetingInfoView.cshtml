@@ -1,0 +1,303 @@
+﻿@{
+    // ViewBag.Title = "frmMeetingInfoView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+<div class="box-header with-border">
+    @*Form Title*@
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <i class="glyphicon glyphicon-filter"></i> Filter By : >> >> >> >> >> >> >><div id="MessageText"></div>
+    </div>
+    <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+        <div style="text-align:right;">
+            <button id="btnSearch" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+            <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+        </div>
+    </div>
+</div>
+<div class="box-body">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Meeting Type : </div>
+            <div class="col-sm-4">
+                <select id="MeetingType" class="form-control txtBox" tabindex="" name="MeetingType">
+                    <option value="">--ALL--</option>
+                    <option value="Recipe Meeting">Recipe Meeting</option>
+                    <option value="TSC Meeting">TSC Meeting</option>
+                    <option value="DCC Meeting">DCC Meeting</option>
+                    <option value="Indent Meeting">Indent Meeting</option>
+                    <option value="Block List Meeting">Block List Meeting</option>
+                    <option value="Price Fixation Meeting">Price Fixation Meeting</option>
+                    <option value="Herbal Advisory Meeting">Herbal Advisory Meeting</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Meeting From Date : </div>
+            <div class="col-sm-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="FromDate" name="FromDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+            <div class="col-sm-2">Meeting To Date : </div>
+            <div class="col-sm-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="ToDate" name="ToDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <fieldset class="panel-border" id="divRenew">
+            <legend class="panel-border">Meeting Information :</legend>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="LicenseInfoGrid" class=""></div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="row">
+            <div class="col-sm-12">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">Upload Documents :</legend>
+                    <div class="row">
+                        <br />
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label>List of Document File</label>
+                            <div id="FileGrid" class=""></div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="box-footer">@*Form Footer*@</div>
+<div class="row">
+    <div id="DisplayPopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="DisplayPopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $('#btnReset').click(function () {
+        ResetData();
+        $("#LicenseInfoGrid").data("kendoGrid").dataSource.data([]);
+        $("#FileGrid").data("kendoGrid").dataSource.data([]);
+    });
+
+    $(document).ready(function () {
+        $('.input-group.date').datepicker({
+            format: "d/mm/yyyy",//dd M yyyy
+            // daysOfWeekDisabled: "5,6",
+            autoclose: true,
+            todayHighlight: true
+            //,todayBtn: true,
+        });
+
+
+        //To Define Data  for License info Kendo Grid
+        var licenseInfoDataSource = new kendo.data.DataSource({
+            batch: true,
+            schema: {
+                model: {
+                    id: "ID",
+                    fields: {
+                        ID: { editable: true }
+                    }
+                }
+            },
+            pageSize: 10
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var licenseInfoGrid = $('#LicenseInfoGrid').kendoGrid({
+            dataSource: licenseInfoDataSource,
+            pageable: {
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            height: 350,
+            selectable: "row",
+            toolbar: ["excel", { template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            excel: {
+                fileName: "Export.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            navigatable: true,
+            groupable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "ID", title: "ID", width: 70 },
+                 { field: "SlNo ", hidden: true, title: "SlNo", width: 70 },
+                 { field: "MeetingType", title: "Meeting Type", width: 100 },
+                 { field: "MeetingYear", title: "Year", width: 80 },
+                 { field: "MeetingSubject", title: "Meeting Subject", width: 200 },
+                 { field: "MeetingDate", title: "MeetingDate", width: 100 },
+                 { field: "SetOn", title: "EntryDate", width: 100 },
+            { command: [{ name: "View", text: "View", imageClass: "fa fa-hand-o-right", click: handleView }], title: "Action", width: "120px", attributes: { "class": "btnView" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
+            ]
+        }).data('kendoGrid');
+        var paramModel = { "refLevel1": "", "refLevel2": "" }
+        // Download Button in Grid
+        function handleView(event) {
+            var selectedRow = licenseInfoGrid.dataItem($(event.currentTarget).closest("tr"));
+            $.ajax({
+                url: '@Url.Action("GetFileByRefId", "MeetingInfo")',
+                type: 'GET',
+                data: { "refLevel1": selectRow.ID, "refLevel2": "" },
+                success: function (data) {
+                    $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                }
+            });
+        };
+
+        $('#LicenseInfoGrid').click(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            $.ajax({
+                url: '@Url.Action("GetFileByRefId", "MeetingInfo")',
+                type: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                dataType: "JSON",
+                data: { "refLevel1": selectRow.ID, "refLevel2": "" },
+                success: function (data) {
+                    $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                }
+            });
+        });
+
+        $("#txtInputLicense").keyup(function () {
+            var val = $(this).val();
+            $("#LicenseInfoGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                      { field: "MeetingType", operator: "contains", value: val },
+                     { field: "MeetingSubject", operator: "contains", value: val },
+                     { field: "MeetingDate", operator: "contains", value: val },
+                     { field: "MeetingYear", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        //To Define Data  for File Kendo Grid
+        var fileDataSource = new kendo.data.DataSource({
+            batch: true,
+            schema: {
+                model: {
+                    id: "FileID",
+                    fields: {
+                        FileID: { editable: false },
+                        FileCode: { editable: false },
+                        Extention: { editable: false },
+                        FileName: { editable: false },
+                        RefNo: { editable: false },
+                        FileSize: { editable: false },
+                        SetOn: { editable: false },
+                        SetByName: { editable: false }
+                    }
+                }
+            },
+            pageSize: 10
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var grid = $('#FileGrid').kendoGrid({
+            dataSource: fileDataSource,
+            pageable: {
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            selectable: "row",
+            toolbar: [{ template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            groupable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+            { field: "FileID", hidden: true },
+            { field: "FileCode", hidden: true },
+            { field: "Extention", hidden: true },
+            { field: "RefNo", title: "Document Name", width: 150, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "FileName", title: "File Name", width: 350, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "FileSize", filterable: false, title: "Size(MB)", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { command: [{ name: "Download", text: "Download", imageClass: "glyphicon glyphicon-download", click: handleDownload }], title: "Download Action", width: "120px", attributes: { "class": "btnDownload" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
+            ]
+        }).data('kendoGrid');
+
+        $("#txtInput").keyup(function () {
+            var val = $(this).val();
+            $("#FileGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "RefNo", operator: "contains", value: val },
+                     { field: "FileName", operator: "contains", value: val },
+                     { field: "FileSize", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        // Download Button in Grid
+        function handleDownload(event) {
+            dataItemInfo = grid.dataItem($(event.currentTarget).closest("tr"));
+            window.location.href = '@Url.Action("Download", "General")' + '?path=' + dataItemInfo.FileCode + dataItemInfo.Extention + '&fileName=' + dataItemInfo.FileName + '&fileId=' + dataItemInfo.FileID;
+        };
+
+        $('#btnSearch').click(function () {
+
+            model.MeetingType = $('#MeetingType').val();
+            model.FromDate = $('#FromDate').val();
+            model.ToDate = $('#ToDate').val();
+            $.ajax({
+                url: '@Url.Action("GetInfoByParams", "MeetingInfo")',
+                data: JSON.stringify(model),
+                type: 'POST',
+                contentType: 'application/json;',
+                dataType: 'json',
+                success: function (data) {
+                    $("#LicenseInfoGrid").data().kendoGrid.bind('dataBound', function (e) {
+                        this.element.find('tbody tr:first').addClass('k-state-selected');
+                    });
+                    $("#LicenseInfoGrid").data("kendoGrid").dataSource.data(data.dataMaster);
+                    $("#FileGrid").data("kendoGrid").dataSource.data(data.dataLevel1);
+                }
+            }); //End of ajax call
+
+        });
+        var model = { "MeetingType": "", "FromDate": "", "ToDate": "" };
+        var dataItemInfo = {};
+
+    });
+
+</script>
+
+
+
+
+
+
+

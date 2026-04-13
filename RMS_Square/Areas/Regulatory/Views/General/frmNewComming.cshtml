@@ -1,0 +1,106 @@
+﻿
+@{
+    ViewBag.Title = "frmNewComming";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+<div class="box-header with-border">
+    @*Form Title*@
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+      <h3>@Session["PageName"]</h3>
+    </div>
+    <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+        <div style="text-align:right;">
+            <button id="btnSave" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
+            <button id="btnView" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+            @* <button id="btnDelete" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-trash"></i>Delete</button>*@
+            <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+        </div>
+    </div>
+</div>
+<div class="box-body">
+    <div class="form-group">
+        <fieldset class="panel-border" id="divRenew">
+            <legend class="panel-border">Comming New :</legend>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="LicenseInfoGrid" class=""></div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="box-footer"></div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        //To Define Data  for License info Kendo Grid
+        var licenseInfoDataSource = new kendo.data.DataSource({
+            batch: true,
+            schema: {
+                model: {
+                    id: "ID",
+                    fields: {
+                        ID: { editable: true }
+                    }
+                }
+            },
+            pageSize: 10,
+            transport: {
+                read: function () {
+                    $.ajax({
+                        url: '@Url.Action("GetNewComming", "General")', // at first data
+                        type: "GET",
+                        contentType: 'application/json;',
+                        dataType: 'json',
+                        success: function (data) {
+                            $("#LicenseInfoGrid").data("kendoGrid").dataSource.data(data);
+                        }
+                    });
+                }
+            }
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var licenseInfoGrid = $('#LicenseInfoGrid').kendoGrid({
+            dataSource: licenseInfoDataSource,
+            pageable: {
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            selectable: "row",
+            toolbar: ["excel", { template: "<input type='text' id='txtInputLicense'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            excel: {
+                fileName: "Export.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            navigatable: true,
+            groupable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "ID", hidden: true },
+                 { field: "ProductCode", title: "ProductCode", width: 120 },
+                 { field: "RevisionNo", title: "RevisionNo", width: 120 },
+                 { field: "SAPProductCode", title: "SAPCode", width: 120 },
+                 { field: "BrandName", title: "BrandName", width: 120 },
+                 { field: "GenAndStrength", title: "GenAndStrength", width: 360 },
+                 { field: "ProductSpecification", title: "ProductSpec", width: 120 },
+                 { field: "ProposedBy", title: "ProposedBy", width: 120 },
+                 { field: "CompanyCode", title: "C.Code", width: 100 },
+                 { field: "CompanyName", title: "CompanyName", width: 160 },
+            ]
+        }).data('kendoGrid');
+
+    });
+</script>

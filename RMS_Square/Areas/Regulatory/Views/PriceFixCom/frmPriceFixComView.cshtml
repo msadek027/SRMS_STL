@@ -1,0 +1,418 @@
+﻿@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+
+<div class="box-header with-border">
+    @*Form Title*@
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <i class="glyphicon glyphicon-filter"></i> Filter By : >> >> >> >> >> >> >><div id="MessageText"></div>
+    </div>
+    <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
+        <div style="text-align:right;">
+            <button id="btnSearch" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
+            <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+        </div>
+    </div>
+</div>
+<div class="box-body">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Meeting No :</div>
+            <div class="col-sm-3"><input type="text" id="MeetingNo" name="MeetingNo" class="form-control" readonly /></div>
+            <div class="col-sm-1">
+                <button id="btnMeetingFind" class="btn btn-primary btn-sm" type="button"> <i class="glyphicon glyphicon-search"></i>Search</button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-2">Meeting From Date : </div>
+            <div class="col-sm-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="FromDate" name="FromDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+            <div class="col-sm-2">Meeting To Date : </div>
+            <div class="col-sm-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="ToDate" name="ToDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <fieldset class="panel-border" id="divRenew">
+            <legend class="panel-border">Price Fixation Product Details:</legend>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="PriceFixComGrid" class=""></div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="row">
+            <div class="col-sm-12">
+                <fieldset class="panel-border">
+                    <legend class="panel-border">Upload Documents :</legend>
+                    <div class="row">
+                        <br />
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label>List of Document File</label>
+                            <div id="FileGrid" class=""></div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="box-footer">@*Form Footer*@</div>
+<div class="row">
+    <div id="DisplayPopupWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="DisplayPopupWindowGrid" class="PopUpGrid"></div>
+    </div>
+    <div id="MeetingWindow" class="PopupWindowLayout" style="display: none;">
+        <div id="MeetingWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $('#btnReset').click(function () {
+        ResetData();
+        $("#PriceFixComGrid").data("kendoGrid").dataSource.data([]);
+        $("#FileGrid").data("kendoGrid").dataSource.data([]);
+    });
+
+    $(document).ready(function () {
+        $('.input-group.date').datepicker({
+            format: "d/mm/yyyy",//dd M yyyy
+            // daysOfWeekDisabled: "5,6",
+            autoclose: true,
+            todayHighlight: true
+            //,todayBtn: true,
+        });
+
+        //for Meeting Info//
+        var MeetingWindow = $("#MeetingWindow").kendoWindow({
+            width: "50%",
+            height: "70%",
+            draggable: true,
+            modal: true,
+            title: "List of Meeting."
+        }).data("kendoWindow").center();
+
+
+        $('#btnMeetingFind').click(function () {
+            MeetingWindow.open();
+            $.ajax({
+                url: '@Url.Action("GetPriceFixComMeeting", "PriceFixCom")',
+                method: 'get',
+                data: 'json',
+                success: function (data) {
+                    if (data != "") {
+                        $('#MeetingWindowGrid').data('kendoGrid').dataSource.data(data);
+                    }
+                    else {
+                        MeetingWindow.close();
+                        AcknowledgeMsg();
+                    }
+
+                }
+            });
+
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var MeetingGrid = $('#MeetingWindowGrid').kendoGrid({
+            dataSource: new kendo.data.DataSource({
+                batch: true,
+                schema: {
+                    model: {
+                        id: "MeetingNo",
+                        fields: {
+                            MeetingNo: { type: "string" },
+                        }
+                    }
+                },
+                pageSize: 10,
+            }),
+            pageable: {
+                //refresh: true,
+                pageSizes: true, buttonCount: 10
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: false,
+            selectable: "row",
+            //selectable: "multiple",
+            toolbar: [{ template: "<input type='text' id='txtMeetingKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            height: 430,
+            // groupable: true,
+            groupable: { messages: { empty: "Custom message text" } },
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+                 { field: "MeetingNo", title: "Meeting No", width: 80 },
+                 { field: "MeetingDate", title: "Meeting Date", width: 80 }
+            ]
+
+        }).data('kendoGrid');
+
+        $('#MeetingWindowGrid').dblclick(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+
+            MeetingWindow.close();
+            SetMasterData(selectRow);
+
+        });
+
+        //Meeting wise Filter table row
+        $("#txtMeetingKeyword").keyup(function () {
+            var val = $(this).val();
+            $("#MeetingWindowGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "Meeting No", operator: "contains", value: val },
+                     { field: "Meeting Date", operator: "contains", value: val }
+
+                ]
+            });
+        });
+
+        //end of Meeting Info//
+
+        //To Define Data  for Import Registration info Kendo Grid
+        var PriceFixComDataSource = new kendo.data.DataSource({
+            batch: true,
+            schema: {
+                model: {
+                    id: "ID",
+                    fields: {
+                        ID: { editable: true },
+                        CompanyName: { editable: true },
+                        ProductCode: { editable: false },
+                        ProductSlNo: { editable: false },
+                        GenericCode: { editable: false },
+                        PackSizeName: { editable: false },
+                        BrandName: { editable: false },
+                        PriceSubmissionDate: { editable: false },
+                        ExistingPrice: { editable: false },
+                        ProposedPrice: { editable: false },
+                        DGDAMRP: { editable: false },
+                        PFCMRP: { editable: false },
+                        ApprovedMRP: { editable: false },
+                        GovtFixedHighSelling: { editable: false }
+                    }
+                }
+            },
+            pageSize: 20
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var PriceFixComGrid = $('#PriceFixComGrid').kendoGrid({
+            dataSource: PriceFixComDataSource,
+            pageable: {
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            height: 300,
+            width: 90,
+            selectable: "row",
+            toolbar: [{ template: "<input type='text' id='txtPriceFixCom'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            groupable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+            { field: "ID", hidden: true },
+            { field: "CompanyName", title: "Company", width: 100, height: 50, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "ProductSlNo", title: "Product SlNo", width: 60, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "ProductCode", title: "Product Code", width: 80, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "GenericCode", title: "Generic", width: 200, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "PackSizeName", title: "Pack Size", width: 80, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "BrandName", title: "Brand", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "PriceSubmissionDate", title: "Price Submission Date", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "ExistingPrice", title: "Existing Price", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "ProposedPrice", title: "Proposed Price", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "DGDAMRP", title: "DGDA MRP", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "PFCMRP", title: "PFC MRP", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "ApprovedMRP", title: "Approved MRP", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "GovtFixedHighSelling", title: "Govt Fixed High Selling", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { command: [{ name: "View", text: "View", imageClass: "fa fa-hand-o-right", click: handleView }], title: "Action", width: "120px", attributes: { "class": "btnView" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
+            ]
+        }).data('kendoGrid');
+        var paramModel = { "refLevel1": "", "refLevel2": "" }
+        // Download Button in Grid
+        function handleView(event) {
+            var selectedRow = PriceFixComGrid.dataItem($(event.currentTarget).closest("tr"));
+
+            $.ajax({
+                url: '@Url.Action("GetFileByRefId", "PriceFixCom")',
+                type: 'GET',
+                //   data: { "refLevel1": selectRow.ID, "refLevel2": "" },
+                data: { "refLevel1": selectRow.ID, "refLevel2": selectedRow.RevisionNo },
+                success: function (data) {
+                    $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                }
+            });
+        };
+
+        $('#PriceFixComGrid').click(function () {
+            var grid = $(this).data('kendoGrid');
+            var selectRow = grid.dataItem(grid.select());
+            paramModel.refLevel1 = selectRow.ID;
+            paramModel.refLevel2 = selectRow.ProductSlNo;
+            $.ajax({
+                url: '@Url.Action("GetFileByRefId", "PriceFixCom")',
+                type: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                dataType: "JSON",
+                data: { "refLevel1": selectRow.ID, "refLevel2": "" },
+                success: function (data) {
+                    $("#FileGrid").data("kendoGrid").dataSource.data(data);
+                }
+            });
+        });
+
+        $("#txtPriceFixCom").keyup(function () {
+            var val = $(this).val();
+            $("#PriceFixComGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "CompanyName", operator: "contains", value: val },
+                     { field: "ProductSlNo", operator: "contains", value: val },
+                     { field: "ProductCode", operator: "contains", value: val },
+                     { field: "GenericCode", operator: "contains", value: val },
+                     { field: "PackSizeName", operator: "contains", value: val },
+                     { field: "BrandName", operator: "contains", value: val },
+                     { field: "PriceSubmissionDate", operator: "contains", value: val },
+                     { field: "ExistingPrice", operator: "contains", value: val },
+                     { field: "ProposedPrice", operator: "contains", value: val },
+                     { field: "DGDAMRP", operator: "contains", value: val },
+                     { field: "PFCMRP", operator: "contains", value: val },
+                     { field: "ApprovedMRP", operator: "contains", value: val },
+                     { field: "GovtFixedHighSelling", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        //To Define Data  for File Kendo Grid
+        var fileDataSource = new kendo.data.DataSource({
+            batch: true,
+            schema: {
+                model: {
+                    id: "FileID",
+                    fields: {
+                        FileID: { editable: false },
+                        FileCode: { editable: false },
+                        Extention: { editable: false },
+                        FileName: { editable: false },
+                        RefNo: { editable: false },
+                        FileSize: { editable: false },
+                        SetOn: { editable: false },
+                        SetByName: { editable: false }
+                    }
+                }
+            },
+            pageSize: 10
+        });
+
+        //Initializing Main page details Kendo Grid Colums
+        var grid = $('#FileGrid').kendoGrid({
+            dataSource: fileDataSource,
+            pageable: {
+                pageSizes: true, buttonCount: 5
+            },
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            editable: true,
+            selectable: "row",
+            toolbar: [{ template: "<input type='text' id='txtInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            navigatable: true,
+            groupable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: [
+            { field: "FileID", hidden: true },
+            { field: "FileCode", hidden: true },
+            { field: "Extention", hidden: true },
+            { field: "RefNo",  title: "Document Name", width: 150, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "FileName", title: "File Name", width: 350, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { field: "FileSize", filterable: false, title: "Size(MB)", width: 100, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } },
+            { command: [{ name: "Download", text: "Download", imageClass: "glyphicon glyphicon-download", click: handleDownload }], title: "Download Action", width: "120px", attributes: { "class": "btnDownload" }, headerAttributes: { "class": "gridHeader", style: "font-weight: bold;font-size: 13px;" } }
+            ]
+        }).data('kendoGrid');
+
+        $("#txtInput").keyup(function () {
+            var val = $(this).val();
+            $("#FileGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                     { field: "RefNo", operator: "contains", value: val },
+                     { field: "FileName", operator: "contains", value: val },
+                     { field: "FileSize", operator: "contains", value: val }
+                ]
+            });
+        });
+
+        // Download Button in Grid
+        function handleDownload(event) {
+            dataItemInfo = grid.dataItem($(event.currentTarget).closest("tr"));
+            window.location.href = '@Url.Action("Download", "General")' + '?path=' + dataItemInfo.FileCode + dataItemInfo.Extention + '&fileName=' + dataItemInfo.FileName + '&fileId=' + dataItemInfo.FileID;
+        };
+
+        $('#btnSearch').click(function () {
+            var checkInput = InputValidation('MeetingNo');
+            if (checkInput == 0) {
+                model.MeetingNo = $('#MeetingNo').val();
+                model.MeetingDate = $('#MeetingDate').val();
+                model.FromDate = $('#FromDate').val();
+                model.ToDate = $('#ToDate').val();
+                $.ajax({
+                    url: '@Url.Action("GetInfoByParams", "PriceFixCom")',
+                    data: JSON.stringify(model),
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    dataType: 'json',
+                    success: function (data) {
+                        $("#PriceFixComGrid").data().kendoGrid.bind('dataBound', function (e) {
+                            this.element.find('tbody tr:first').addClass('k-state-selected');
+                        });
+                        $("#PriceFixComGrid").data("kendoGrid").dataSource.data(data.dataMaster);
+                        $("#FileGrid").data("kendoGrid").dataSource.data(data.dataLevel1);
+                    }
+                }); //End of ajax call
+            }
+            else {
+                ValidationMsg();
+            }
+
+        });
+        var model = { "MeetingNo": "", "MeetingDate": "", "FromDate": "", "ToDate": "" };
+        var dataItemInfo = {};
+
+    });
+
+</script>
