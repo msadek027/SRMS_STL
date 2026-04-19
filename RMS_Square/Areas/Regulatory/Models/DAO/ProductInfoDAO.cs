@@ -16,46 +16,103 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
         DBConnection dbConn = new DBConnection();
         DBHelper dbHelper = new DBHelper();
         IDGenerated idGenerated = new IDGenerated();
+        /*   public List<ProductInfoBEL> GetProductList()
+           {
+               string Qry = "SELECT C.COMPANY_CODE,C.COMPANY_NAME,C.LICENSE_NO, P.PRODUCT_CODE,P.SAP_PRODUCT_CODE,P.GENERIC_CODE ,P.STRENGTH_CODE,S.STRENGTH_NAME,P.DOSAGE_FORM_CODE,D.DOSAGE_FORM_NAME,P.PACK_SIZE_NAME," +
+                           "P.BRAND_NAME, P.PRODUCT_CATEGORY,P.THERAPEUTIC_CLASS_CODE,T.THERAPEUTIC_CLASS_NAME,P.PRODUCT_SPECIFICATION,P.INTRODUCED_BANGLADESH," +
+                           "P.MANUFACTURING_TYPE,P.PRODUCT_TYPE_CODE, FN_PRODUCT_TYPE_NAME(P.PRODUCT_TYPE_CODE) PRODUCT_TYPE_NAME,P.STATUS,P.REMARKS,TO_CHAR(p.SET_ON, 'YYYY')||TO_CHAR(p.SET_ON, 'MM') as YearMonth " +
+                           "FROM PRODUCT_INFO p,COMPANY_INFO C,STRENGTH_INFO S, DOSAGE_FORM_INFO D, THERAPEUTIC_CLASS_INFO T " +
+                           "WHERE P.COMPANY_CODE=C.COMPANY_CODE(+) AND P.STRENGTH_CODE=S.STRENGTH_CODE(+) AND P.DOSAGE_FORM_CODE=D.DOSAGE_FORM_CODE(+) AND P.THERAPEUTIC_CLASS_CODE=T.THERAPEUTIC_CLASS_CODE(+) ORDER BY P.SET_ON DESC";
+
+               DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), Qry);
+               List<ProductInfoBEL> item;
+
+               item = (from DataRow row in dt.Rows
+                       select new ProductInfoBEL
+                       {
+                           ProductCode = row["PRODUCT_CODE"].ToString(),
+                           SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
+                           GenericCode = row["GENERIC_CODE"].ToString(),
+                           GenAndStrength = row["GENERIC_CODE"].ToString(),
+                           StrengthCode = row["STRENGTH_CODE"].ToString(),
+                           StrengthName = row["STRENGTH_NAME"].ToString(),
+                           DosageFormCode = row["DOSAGE_FORM_CODE"].ToString(),
+                           DosageFormName = row["DOSAGE_FORM_NAME"].ToString(),
+                           PackSizeName = row["PACK_SIZE_NAME"].ToString(),
+                           BrandName = row["BRAND_NAME"].ToString(),
+                           CompanyCode = row["COMPANY_CODE"].ToString(),
+                           CompanyName = row["COMPANY_NAME"].ToString(),
+                           LicenseNo = row["LICENSE_NO"].ToString(),
+                           ProductCategory = row["PRODUCT_CATEGORY"].ToString(),
+                           TherapeuticClassCode = row["THERAPEUTIC_CLASS_CODE"].ToString(),
+                           TherapeuticClassName = row["THERAPEUTIC_CLASS_NAME"].ToString(),
+                           ProductSpecification = row["PRODUCT_SPECIFICATION"].ToString(),
+                           IntroducedInBD = row["INTRODUCED_BANGLADESH"].ToString(),
+                           ManufacturingType = row["MANUFACTURING_TYPE"].ToString(),
+                           ProductTypeCode = row["PRODUCT_TYPE_CODE"].ToString(),
+                           ProductTypeName = row["PRODUCT_TYPE_NAME"].ToString(),
+                           Status = row["STATUS"].ToString(),
+                           Remarks = row["REMARKS"].ToString(),
+                           YearMonth = row["YearMonth"].ToString()
+
+                       }).ToList();
+               return item;
+           }*/
         public List<ProductInfoBEL> GetProductList()
         {
-            string Qry = "SELECT C.COMPANY_CODE,C.COMPANY_NAME,C.LICENSE_NO, P.PRODUCT_CODE,P.SAP_PRODUCT_CODE,P.GENERIC_CODE ,P.STRENGTH_CODE,S.STRENGTH_NAME,P.DOSAGE_FORM_CODE,D.DOSAGE_FORM_NAME,P.PACK_SIZE_NAME," +
-                        "P.BRAND_NAME, P.PRODUCT_CATEGORY,P.THERAPEUTIC_CLASS_CODE,T.THERAPEUTIC_CLASS_NAME,P.PRODUCT_SPECIFICATION,P.INTRODUCED_BANGLADESH," +
-                        "P.MANUFACTURING_TYPE,P.PRODUCT_TYPE_CODE, FN_PRODUCT_TYPE_NAME(P.PRODUCT_TYPE_CODE) PRODUCT_TYPE_NAME,P.STATUS,P.REMARKS,TO_CHAR(p.SET_ON, 'YYYY')||TO_CHAR(p.SET_ON, 'MM') as YearMonth " +
-                        "FROM PRODUCT_INFO p,COMPANY_INFO C,STRENGTH_INFO S, DOSAGE_FORM_INFO D, THERAPEUTIC_CLASS_INFO T " +
-                        "WHERE P.COMPANY_CODE=C.COMPANY_CODE(+) AND P.STRENGTH_CODE=S.STRENGTH_CODE(+) AND P.DOSAGE_FORM_CODE=D.DOSAGE_FORM_CODE(+) AND P.THERAPEUTIC_CLASS_CODE=T.THERAPEUTIC_CLASS_CODE(+) ORDER BY P.SET_ON DESC";
+            string Qry = @"SELECT 
+                    C.COMPANY_CODE, C.COMPANY_NAME, C.LICENSE_NO, 
+                    U.COMPANY_UNIT_CODE, U.COMPANY_UNIT_NAME,
+                    P.PRODUCT_CODE, P.SAP_PRODUCT_CODE, P.GENERIC_CODE, P.STRENGTH_CODE, S.STRENGTH_NAME, 
+                    P.DOSAGE_FORM_CODE, D.DOSAGE_FORM_NAME, P.PACK_SIZE_NAME, P.BRAND_NAME, 
+                    P.PRODUCT_CATEGORY, P.THERAPEUTIC_CLASS_CODE, T.THERAPEUTIC_CLASS_NAME, 
+                    P.PRODUCT_SPECIFICATION, P.INTRODUCED_BANGLADESH, P.MANUFACTURING_TYPE, 
+                    P.PRODUCT_TYPE_CODE, FN_PRODUCT_TYPE_NAME(P.PRODUCT_TYPE_CODE) AS PRODUCT_TYPE_NAME, 
+                    P.STATUS, P.REMARKS, TO_CHAR(P.SET_ON, 'YYYYMM') AS YearMonth
+                FROM PRODUCT_INFO P
+                LEFT JOIN COMPANY_UNIT_INFO U      ON P.COMPANY_CODE = U.COMPANY_UNIT_CODE
+                LEFT JOIN COMPANY_INFO C           ON U.COMPANY_CODE = C.COMPANY_CODE
+                LEFT JOIN STRENGTH_INFO S          ON P.STRENGTH_CODE = S.STRENGTH_CODE
+                LEFT JOIN DOSAGE_FORM_INFO D       ON P.DOSAGE_FORM_CODE = D.DOSAGE_FORM_CODE
+                LEFT JOIN THERAPEUTIC_CLASS_INFO T ON P.THERAPEUTIC_CLASS_CODE = T.THERAPEUTIC_CLASS_CODE
+                ORDER BY P.SET_ON DESC";
 
             DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), Qry);
-            List<ProductInfoBEL> item;
 
-            item = (from DataRow row in dt.Rows
-                    select new ProductInfoBEL
-                    {
-                        ProductCode = row["PRODUCT_CODE"].ToString(),
-                        SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
-                        GenericCode = row["GENERIC_CODE"].ToString(),
-                        GenAndStrength = row["GENERIC_CODE"].ToString(),
-                        StrengthCode = row["STRENGTH_CODE"].ToString(),
-                        StrengthName = row["STRENGTH_NAME"].ToString(),
-                        DosageFormCode = row["DOSAGE_FORM_CODE"].ToString(),
-                        DosageFormName = row["DOSAGE_FORM_NAME"].ToString(),
-                        PackSizeName = row["PACK_SIZE_NAME"].ToString(),
-                        BrandName = row["BRAND_NAME"].ToString(),
-                        CompanyCode = row["COMPANY_CODE"].ToString(),
-                        CompanyName = row["COMPANY_NAME"].ToString(),
-                        LicenseNo = row["LICENSE_NO"].ToString(),
-                        ProductCategory = row["PRODUCT_CATEGORY"].ToString(),
-                        TherapeuticClassCode = row["THERAPEUTIC_CLASS_CODE"].ToString(),
-                        TherapeuticClassName = row["THERAPEUTIC_CLASS_NAME"].ToString(),
-                        ProductSpecification = row["PRODUCT_SPECIFICATION"].ToString(),
-                        IntroducedInBD = row["INTRODUCED_BANGLADESH"].ToString(),
-                        ManufacturingType = row["MANUFACTURING_TYPE"].ToString(),
-                        ProductTypeCode = row["PRODUCT_TYPE_CODE"].ToString(),
-                        ProductTypeName = row["PRODUCT_TYPE_NAME"].ToString(),
-                        Status = row["STATUS"].ToString(),
-                        Remarks = row["REMARKS"].ToString(),
-                        YearMonth = row["YearMonth"].ToString()
+            var item = (from DataRow row in dt.Rows
+                        select new ProductInfoBEL
+                        {
+                            // New Unit Fields
+                            CompanyUnitCode = row["COMPANY_UNIT_CODE"].ToString(),
+                            CompanyUnitName = row["COMPANY_UNIT_NAME"].ToString(),
 
-                    }).ToList();
+                            // Existing Fields
+                            ProductCode = row["PRODUCT_CODE"].ToString(),
+                            SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
+                            GenericCode = row["GENERIC_CODE"].ToString(),
+                            GenAndStrength = row["GENERIC_CODE"].ToString(),
+                            StrengthCode = row["STRENGTH_CODE"].ToString(),
+                            StrengthName = row["STRENGTH_NAME"].ToString(),
+                            DosageFormCode = row["DOSAGE_FORM_CODE"].ToString(),
+                            DosageFormName = row["DOSAGE_FORM_NAME"].ToString(),
+                            PackSizeName = row["PACK_SIZE_NAME"].ToString(),
+                            BrandName = row["BRAND_NAME"].ToString(),
+                            CompanyCode = row["COMPANY_CODE"].ToString(),
+                            CompanyName = row["COMPANY_NAME"].ToString(),
+                            LicenseNo = row["LICENSE_NO"].ToString(),
+                            ProductCategory = row["PRODUCT_CATEGORY"].ToString(),
+                            TherapeuticClassCode = row["THERAPEUTIC_CLASS_CODE"].ToString(),
+                            TherapeuticClassName = row["THERAPEUTIC_CLASS_NAME"].ToString(),
+                            ProductSpecification = row["PRODUCT_SPECIFICATION"].ToString(),
+                            IntroducedInBD = row["INTRODUCED_BANGLADESH"].ToString(),
+                            ManufacturingType = row["MANUFACTURING_TYPE"].ToString(),
+                            ProductTypeCode = row["PRODUCT_TYPE_CODE"].ToString(),
+                            ProductTypeName = row["PRODUCT_TYPE_NAME"].ToString(),
+                            Status = row["STATUS"].ToString(),
+                            Remarks = row["REMARKS"].ToString(),
+                            YearMonth = row["YearMonth"].ToString()
+                        }).ToList();
+
             return item;
         }
         public bool SaveUpdate(ProductInfoBEL master, string userId)

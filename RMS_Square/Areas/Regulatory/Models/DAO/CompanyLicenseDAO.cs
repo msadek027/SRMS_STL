@@ -79,33 +79,99 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             }
         }
 
+        /* public IList<CompanyLicenseBEL> GetAllInfo(CompanyLicenseBEL model, string orderBy)
+         {
+             var query = new StringBuilder();
+             query.Append(" SELECT CL.CLID, CL.COMP_LICENSE_SLNO,CL.REVISION_NO,CL.COMPANY_CODE,CL.LICENSE_NO,CL.SUBMISSION_TYPE,TO_CHAR(CL.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE ,");
+             query.Append(" TO_CHAR(CL.INSPECTION_DATE, 'dd/mm/yyyy')INSPECTION_DATE,TO_CHAR(CL.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,TO_CHAR(CL.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE,CL.NOTIFICATION_DAYS,TO_CHAR(CL.SET_ON, 'dd/mm/yyyy')SET_ON,");
+             query.Append(" C.COMPANY_NAME,C.ADDRESS");
+             query.Append(" FROM COMPANY_LICENSE CL");
+             query.Append(" LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=CL.COMPANY_CODE");
+             query.Append(" WHERE IS_DELETE <>'Y'");
+
+             if(!string.IsNullOrEmpty(model.CompanyCode))
+             {
+                 query.Append(" AND  CL.COMPANY_CODE='{0}'");
+             }
+
+             if (!string.IsNullOrEmpty(model.LicenseNo))
+             {
+                 query.Append(" AND  C.LICENSE_NO='{1}'");
+             }
+             if (!string.IsNullOrEmpty(model.SubmissionType) && !model.SubmissionType.Equals("All"))
+             {
+                 query.Append(" AND  CL.SUBMISSION_TYPE='{2}'");
+             }
+             //if (!string.IsNullOrEmpty(model.AlarmDays))
+             //{
+             //    query.Append(" AND ROUND(((CL.VALID_UPTO)-(SELECT  SYSDATE FROM DUAL)),0) < {3}");//  TRUNC((SELECT  SYSDATE + {3} FROM DUAL))>TRUNC (CL.VALID_UPTO) 
+             //}
+             if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
+             {
+                 query.Append(" AND TO_DATE(CL.SUBMISSION_DATE,'dd/mm/yyyy') BETWEEN TO_DATE('" + model.FromDate + "','dd/MM/yyyy') AND TO_DATE('" + model.ToDate + "','dd/MM/yyyy') ");
+             }
+
+             if (!string.IsNullOrEmpty(orderBy))
+             {
+                 query.Append(" ORDER BY  CL.CLID "+ orderBy);
+             }
+             DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(),string.Format(query.ToString(),model.CompanyCode,model.LicenseNo,model.SubmissionType));
+
+             var item = (from DataRow row in dt.Rows
+                         select new CompanyLicenseBEL
+                         {
+
+                             CLID = Convert.ToInt64(row["CLID"]),
+                             CompLicenseSlNo = row["COMP_LICENSE_SLNO"].ToString(),
+                             CompanyCode = row["COMPANY_CODE"].ToString(),
+                             CompanyName = row["COMPANY_NAME"].ToString(),
+                             Address = row["ADDRESS"].ToString(),
+                             LicenseNo = row["LICENSE_NO"].ToString(),
+                             SubmissionType = row["SUBMISSION_TYPE"].ToString(),
+                             SubmissionDate = row["SUBMISSION_DATE"].ToString(),
+                             InspectionDate = row["INSPECTION_DATE"].ToString(),
+                             ValidUpto = row["VALID_UPTO"].ToString(),
+                             ApprovalDate = row["APPROVAL_DATE"].ToString(),
+                             AlarmDays = row["NOTIFICATION_DAYS"].ToString(),
+                             RevisionDate = row["SET_ON"].ToString(),
+                             RevisionNo = row["REVISION_NO"].ToString()
+                         }).ToList();
+             return item;
+         }*/
+
         public IList<CompanyLicenseBEL> GetAllInfo(CompanyLicenseBEL model, string orderBy)
         {
             var query = new StringBuilder();
-            query.Append(" SELECT CL.CLID, CL.COMP_LICENSE_SLNO,CL.REVISION_NO,CL.COMPANY_CODE,CL.LICENSE_NO,CL.SUBMISSION_TYPE,TO_CHAR(CL.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE ,");
-            query.Append(" TO_CHAR(CL.INSPECTION_DATE, 'dd/mm/yyyy')INSPECTION_DATE,TO_CHAR(CL.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,TO_CHAR(CL.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE,CL.NOTIFICATION_DAYS,TO_CHAR(CL.SET_ON, 'dd/mm/yyyy')SET_ON,");
-            query.Append(" C.COMPANY_NAME,C.ADDRESS");
-            query.Append(" FROM COMPANY_LICENSE CL");
-            query.Append(" LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=CL.COMPANY_CODE");
-            query.Append(" WHERE IS_DELETE <>'Y'");
-            
-            if(!string.IsNullOrEmpty(model.CompanyCode))
+            // 1. SELECT: Include R.COMPANY_CODE as Unit Code and CU.COMPANY_UNIT_NAME
+            query.Append(" SELECT CL.CLID, CL.COMP_LICENSE_SLNO, CL.REVISION_NO, ");
+            query.Append(" CL.COMPANY_CODE AS COMPANY_UNIT_CODE, CU.COMPANY_UNIT_NAME, "); // New mappings
+            query.Append(" CL.COMPANY_CODE, CL.LICENSE_NO, CL.SUBMISSION_TYPE, TO_CHAR(CL.SUBMISSION_DATE, 'dd/mm/yyyy') SUBMISSION_DATE, ");
+            query.Append(" TO_CHAR(CL.INSPECTION_DATE, 'dd/mm/yyyy') INSPECTION_DATE, TO_CHAR(CL.VALID_UPTO, 'dd/mm/yyyy') VALID_UPTO, ");
+            query.Append(" TO_CHAR(CL.APPROVAL_DATE, 'dd/mm/yyyy') APPROVAL_DATE, CL.NOTIFICATION_DAYS, TO_CHAR(CL.SET_ON, 'dd/mm/yyyy') SET_ON, ");
+            query.Append(" C.COMPANY_NAME, C.ADDRESS ");
+            query.Append(" FROM COMPANY_LICENSE CL ");
+
+            // 2. JOINS: Link Transaction -> Unit (6-digit) -> Company (4-digit)
+            query.Append(" LEFT JOIN COMPANY_UNIT_INFO CU ON CL.COMPANY_CODE = CU.COMPANY_UNIT_CODE ");
+            query.Append(" LEFT JOIN COMPANY_INFO C ON CU.COMPANY_CODE = C.COMPANY_CODE ");
+
+            query.Append(" WHERE CL.IS_DELETE <> 'Y' ");
+
+            if (!string.IsNullOrEmpty(model.CompanyCode))
             {
-                query.Append(" AND  CL.COMPANY_CODE='{0}'");
+                query.Append(" AND CL.COMPANY_CODE = '{0}' ");
             }
-           
+
             if (!string.IsNullOrEmpty(model.LicenseNo))
             {
-                query.Append(" AND  C.LICENSE_NO='{1}'");
+                query.Append(" AND CL.LICENSE_NO = '{1}' "); // Filtered from transaction table for accuracy
             }
+
             if (!string.IsNullOrEmpty(model.SubmissionType) && !model.SubmissionType.Equals("All"))
             {
-                query.Append(" AND  CL.SUBMISSION_TYPE='{2}'");
+                query.Append(" AND CL.SUBMISSION_TYPE = '{2}' ");
             }
-            //if (!string.IsNullOrEmpty(model.AlarmDays))
-            //{
-            //    query.Append(" AND ROUND(((CL.VALID_UPTO)-(SELECT  SYSDATE FROM DUAL)),0) < {3}");//  TRUNC((SELECT  SYSDATE + {3} FROM DUAL))>TRUNC (CL.VALID_UPTO) 
-            //}
+
             if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
             {
                 query.Append(" AND TO_DATE(CL.SUBMISSION_DATE,'dd/mm/yyyy') BETWEEN TO_DATE('" + model.FromDate + "','dd/MM/yyyy') AND TO_DATE('" + model.ToDate + "','dd/MM/yyyy') ");
@@ -113,17 +179,24 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
 
             if (!string.IsNullOrEmpty(orderBy))
             {
-                query.Append(" ORDER BY  CL.CLID "+ orderBy);
+                query.Append(" ORDER BY CL.CLID " + orderBy);
             }
-            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(),string.Format(query.ToString(),model.CompanyCode,model.LicenseNo,model.SubmissionType));
+
+            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString(), model.CompanyCode, model.LicenseNo, model.SubmissionType));
 
             var item = (from DataRow row in dt.Rows
                         select new CompanyLicenseBEL
                         {
-
                             CLID = Convert.ToInt64(row["CLID"]),
                             CompLicenseSlNo = row["COMP_LICENSE_SLNO"].ToString(),
+
+                            // Maps the combined unit code (6-digit) to CompanyCode
                             CompanyCode = row["COMPANY_CODE"].ToString(),
+
+                            // 3. MAPPING: New properties for UI display
+                            CompanyUnitCode = row["COMPANY_UNIT_CODE"].ToString(),
+                            CompanyUnitName = row["COMPANY_UNIT_NAME"] != DBNull.Value ? row["COMPANY_UNIT_NAME"].ToString() : "",
+
                             CompanyName = row["COMPANY_NAME"].ToString(),
                             Address = row["ADDRESS"].ToString(),
                             LicenseNo = row["LICENSE_NO"].ToString(),

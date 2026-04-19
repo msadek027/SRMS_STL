@@ -573,6 +573,8 @@
             columns: [
                  { field: "CompanyCode", title: "CompanyCode", width: 80 },
                  { field: "CompanyName", title: "CompanyName", width: 150 },
+                { field: "CompanyUnitCode", title: "CompanyUnitCode", width: 150 },
+                { field: "CompanyUnitName", title: "CompanyUnitName", width: 150 },
                  { field: "ProductCode", title: "Product Code", width: 80 },
                  { field: "SAPProductCode", title: "SAP Product Code", width: 80 },
                  { field: "BrandName", title: "Brand Name", width: 100 },
@@ -602,6 +604,8 @@
                 filters: [
                      { field: "CompanyCode", operator: "contains", value: val },
                      { field: "CompanyName", operator: "contains", value: val },
+                    { field: "CompanyUnitCode", operator: "contains", value: val },
+                    { field: "CompanyUnitName", operator: "contains", value: val },
                      { field: "ProductCode", operator: "contains", value: val },
                      { field: "SAPProductCode", operator: "contains", value: val },
                      { field: "YearMonth", operator: "contains", value: val },
@@ -662,7 +666,7 @@
             }
 
         });
-        var master = {"CompanyCode":"", "ProductCode": "", "SAPProductCode": "", "BrandName": "", "GenericCode": "", "DosageFormCode": "", "DosageFormName": "", "PackSizeName": "", "ProductCategory": "", "TherapeuticClassCode": "", "TherapeuticClassName": "", "ProductSpecification": "", "IntroducedInBD": "", "ManufacturingType": "", "ProductTypeCode": "", "ProductTypeName": "", "Status": "", "Remarks": "" };
+        var master = { "CompanyCode": "", "CompanyUnitCode": "", "ProductCode": "", "SAPProductCode": "", "BrandName": "", "GenericCode": "", "DosageFormCode": "", "DosageFormName": "", "PackSizeName": "", "ProductCategory": "", "TherapeuticClassCode": "", "TherapeuticClassName": "", "ProductSpecification": "", "IntroducedInBD": "", "ManufacturingType": "", "ProductTypeCode": "", "ProductTypeName": "", "Status": "", "Remarks": "" };
     });
 </script>
 

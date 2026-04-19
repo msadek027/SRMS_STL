@@ -32,6 +32,8 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string UnitPrice { get; set; }
         public string HighestPrice { get; set; }
         public string PriceRemarks { get; set; }
+        public string CompanyUnitCode { get; set; }
+        public string CompanyUnitName { get; set; }
         public string PriceProposedBy { get; set; }
         public string SetBy { get; set; }
         public string SetOn { get; set; }

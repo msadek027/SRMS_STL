@@ -3,44 +3,108 @@
   "WorkspaceRootPath": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\views\\recipeinfo\\frmrecipeinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\views\\recipeinfo\\frmrecipeinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\models\\bel\\companylicensebel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\bel\\companylicensebel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\models\\dao\\recipedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\dao\\recipedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\models\\dao\\companylicensedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\dao\\companylicensedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\controllers\\companyinfocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\controllers\\companyinfocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\controllers\\companylicensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\controllers\\companylicensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\controllers\\recipeinfocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\controllers\\recipeinfocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\views\\companylicense\\frmcompanylicense.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\views\\companylicense\\frmcompanylicense.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\models\\dao\\productregistrationdao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\dao\\productregistrationdao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\views\\productprice\\frmproductprice.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\views\\productprice\\frmproductprice.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|D:\\Office Project\\SRMS_STL\\SRMS_STL\\rms_square\\areas\\regulatory\\models\\dao\\productinfodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\dao\\productinfodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\models\\bel\\marketauthcertificatebel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\bel\\marketauthcertificatebel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|D:\\Office Project\\SRMS_STL\\SRMS_STL\\rms_square\\areas\\regulatory\\views\\productinfo\\frmproductinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\views\\productinfo\\frmproductinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\models\\dao\\marketauthcertificatedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\dao\\marketauthcertificatedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\controllers\\marketauthcertificatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\controllers\\marketauthcertificatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\views\\marketauthcertificate\\frmmarketauthcertificate.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\views\\marketauthcertificate\\frmmarketauthcertificate.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|D:\\Office Project\\SRMS_STL\\SRMS_STL\\rms_square\\areas\\regulatory\\controllers\\generalcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\controllers\\generalcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\controllers\\productregcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\controllers\\productregcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|D:\\Office Project\\SRMS_STL\\SRMS_STL\\rms_square\\areas\\regulatory\\models\\dao\\productinfodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\dao\\productinfodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\models\\bel\\productpricebel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\bel\\productpricebel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\models\\dao\\productpricedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\dao\\productpricedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\controllers\\productpricecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\controllers\\productpricecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\views\\recipeinfo\\frmrecipeinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\views\\recipeinfo\\frmrecipeinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\views\\productreg\\frmproductreg.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\views\\productreg\\frmproductreg.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\models\\dao\\recipedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\dao\\recipedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|D:\\Office Project\\SRMS_STL\\SRMS_STL\\rms_square\\areas\\regulatory\\controllers\\productinfocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\controllers\\productinfocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\models\\bel\\productregistrationbel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\bel\\productregistrationbel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\models\\dao\\productregistrationdao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\dao\\productregistrationdao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\controllers\\productregcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\controllers\\productregcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\models\\bel\\recipebel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\bel\\recipebel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|D:\\Office Project\\SRMS_STL\\SRMS_STL\\rms_square\\areas\\regulatory\\views\\productinfo\\frmproductinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\views\\productinfo\\frmproductinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\models\\bel\\productinfobel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\models\\bel\\productinfobel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\controllers\\recipeinfocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\controllers\\recipeinfocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\areas\\regulatory\\controllers\\companyinfocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\areas\\regulatory\\controllers\\companyinfocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,62 +114,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 15,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "frmProductInfo.cshtml",
-              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\ProductInfo\\frmProductInfo.cshtml",
-              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Views\\ProductInfo\\frmProductInfo.cshtml",
-              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\ProductInfo\\frmProductInfo.cshtml",
-              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Views\\ProductInfo\\frmProductInfo.cshtml",
-              "ViewState": "AgIAAPUAAAAAAAAAAAAowAIBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-16T06:18:54.945Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ProductInfoDAO.cs",
-              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductInfoDAO.cs",
-              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductInfoDAO.cs",
-              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductInfoDAO.cs",
-              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductInfoDAO.cs",
-              "ViewState": "AgIAAGUAAAAAAAAAAAAAwGoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-16T03:47:19.4Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CompanyInfoController.cs",
-              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\CompanyInfoController.cs",
-              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Controllers\\CompanyInfoController.cs",
-              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\CompanyInfoController.cs",
-              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Controllers\\CompanyInfoController.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAQwCAAAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-19T05:21:52.075Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "RecipeDAO.cs",
-              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\RecipeDAO.cs",
-              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\RecipeDAO.cs",
-              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\RecipeDAO.cs",
-              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\RecipeDAO.cs",
-              "ViewState": "AgIAAPEAAAAAAAAAAAAIwHUBAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-19T05:06:49.638Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3fd5e0cc-709a-4f8c-94c3-7f0f8dff5bb2}"
@@ -119,85 +129,356 @@
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "frmProductInfo.cshtml",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\ProductInfo\\frmProductInfo.cshtml",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Views\\ProductInfo\\frmProductInfo.cshtml",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\ProductInfo\\frmProductInfo.cshtml",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Views\\ProductInfo\\frmProductInfo.cshtml",
+              "ViewState": "AgIAABQAAAAAAAAAAAAowEEAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-16T06:18:54.945Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ProductInfoDAO.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductInfoDAO.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductInfoDAO.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductInfoDAO.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductInfoDAO.cs",
+              "ViewState": "AgIAAL0AAAAAAAAAAAAuwMgAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-16T03:47:19.4Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "ProductInfoController.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\ProductInfoController.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Controllers\\ProductInfoController.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\ProductInfoController.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Controllers\\ProductInfoController.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAcwCIAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-16T03:47:19.39Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "frmProductReg.cshtml",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\ProductReg\\frmProductReg.cshtml",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Views\\ProductReg\\frmProductReg.cshtml",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\ProductReg\\frmProductReg.cshtml",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Views\\ProductReg\\frmProductReg.cshtml",
+              "ViewState": "AgIAABsAAAAAAAAAAAAowDoAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-19T06:51:59.474Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "frmRecipeInfo.cshtml",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\RecipeInfo\\frmRecipeInfo.cshtml",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Views\\RecipeInfo\\frmRecipeInfo.cshtml",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\RecipeInfo\\frmRecipeInfo.cshtml",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Views\\RecipeInfo\\frmRecipeInfo.cshtml",
+              "ViewState": "AgIAACYAAAAAAAAAAAAowEUAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-19T03:51:57.828Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ProductPriceController.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\ProductPriceController.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Controllers\\ProductPriceController.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\ProductPriceController.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Controllers\\ProductPriceController.cs",
+              "ViewState": "AgIAAHIAAAAAAAAAAAAuwH4AAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T09:07:58.426Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ProductPriceDAO.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductPriceDAO.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductPriceDAO.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductPriceDAO.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductPriceDAO.cs",
+              "ViewState": "AgIAADoBAAAAAAAAAAAQwD8BAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T04:10:22.133Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "frmProductPrice.cshtml",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\ProductPrice\\frmProductPrice.cshtml",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Views\\ProductPrice\\frmProductPrice.cshtml",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\ProductPrice\\frmProductPrice.cshtml",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Views\\ProductPrice\\frmProductPrice.cshtml",
+              "ViewState": "AgIAAE0AAAAAAAAAAAAmwFUAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-19T09:18:51Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "GeneralController.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\GeneralController.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Controllers\\GeneralController.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\GeneralController.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Controllers\\GeneralController.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAWwCcAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-16T09:11:20.339Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "MarketAuthCertificateController.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\MarketAuthCertificateController.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Controllers\\MarketAuthCertificateController.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\MarketAuthCertificateController.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Controllers\\MarketAuthCertificateController.cs",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAuwDoAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T10:07:03.257Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CompanyLicenseController.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\CompanyLicenseController.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Controllers\\CompanyLicenseController.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\CompanyLicenseController.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Controllers\\CompanyLicenseController.cs",
+              "ViewState": "AgIAAFsAAAAAAAAAAAAuwGcAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T10:26:32.078Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CompanyLicenseBEL.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\BEL\\CompanyLicenseBEL.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\BEL\\CompanyLicenseBEL.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\BEL\\CompanyLicenseBEL.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\BEL\\CompanyLicenseBEL.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAAwA4AAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T10:27:54.429Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CompanyLicenseDAO.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\CompanyLicenseDAO.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\CompanyLicenseDAO.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\CompanyLicenseDAO.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\CompanyLicenseDAO.cs",
+              "ViewState": "AgIAAMAAAAAAAAAAAAAQwMcAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T10:26:38.477Z",
+              "EditorCaption": ""
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "RecipeInfoController.cs",
-              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\RecipeInfoController.cs",
-              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Controllers\\RecipeInfoController.cs",
-              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\RecipeInfoController.cs",
-              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Controllers\\RecipeInfoController.cs",
-              "ViewState": "AgIAAHMAAAAAAAAAAAAwwIAAAAApAAAAAAAAAA==",
+              "Title": "frmCompanyLicense.cshtml",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\CompanyLicense\\frmCompanyLicense.cshtml",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Views\\CompanyLicense\\frmCompanyLicense.cshtml",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\CompanyLicense\\frmCompanyLicense.cshtml",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Views\\CompanyLicense\\frmCompanyLicense.cshtml",
+              "ViewState": "AgIAAHwBAAAAAAAAAAAUwNkBAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-19T10:18:31.097Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MarketAuthCertificateBEL.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\BEL\\MarketAuthCertificateBEL.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\BEL\\MarketAuthCertificateBEL.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\BEL\\MarketAuthCertificateBEL.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\BEL\\MarketAuthCertificateBEL.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAAwA8AAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T10:16:16.098Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "frmMarketAuthCertificate.cshtml",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\MarketAuthCertificate\\frmMarketAuthCertificate.cshtml",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Views\\MarketAuthCertificate\\frmMarketAuthCertificate.cshtml",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\MarketAuthCertificate\\frmMarketAuthCertificate.cshtml",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Views\\MarketAuthCertificate\\frmMarketAuthCertificate.cshtml",
+              "ViewState": "AgIAAD4AAAAAAAAAAAAkwEkAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-19T09:37:27.658Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "ProductPriceBEL.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\BEL\\ProductPriceBEL.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\BEL\\ProductPriceBEL.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\BEL\\ProductPriceBEL.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\BEL\\ProductPriceBEL.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAuwCMAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T09:25:00.077Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "MarketAuthCertificateDAO.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\MarketAuthCertificateDAO.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\MarketAuthCertificateDAO.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\MarketAuthCertificateDAO.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\MarketAuthCertificateDAO.cs",
+              "ViewState": "AgIAAGgAAAAAAAAAAAAQwHUAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T04:10:22.149Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "ProductRegistrationDAO.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductRegistrationDAO.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductRegistrationDAO.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductRegistrationDAO.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductRegistrationDAO.cs",
+              "ViewState": "AgIAAHsBAAAAAAAAAAAnwIcBAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-19T04:10:22.196Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 20,
               "Title": "ProductRegController.cs",
               "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\ProductRegController.cs",
               "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Controllers\\ProductRegController.cs",
               "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\ProductRegController.cs",
               "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Controllers\\ProductRegController.cs",
-              "ViewState": "AgIAAJAAAAAAAAAAAAAnwJkAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAACAAAAAAAAAAAIA9wC4AAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-19T04:10:22.227Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "frmRecipeInfo.cshtml",
-              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\RecipeInfo\\frmRecipeInfo.cshtml",
-              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Views\\RecipeInfo\\frmRecipeInfo.cshtml",
-              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Views\\RecipeInfo\\frmRecipeInfo.cshtml",
-              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Views\\RecipeInfo\\frmRecipeInfo.cshtml",
-              "ViewState": "AgIAAL4CAAAAAAAAAAAgwOMCAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-19T03:51:57.828Z",
+              "DocumentIndex": 16,
+              "Title": "RecipeDAO.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\RecipeDAO.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\RecipeDAO.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\RecipeDAO.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\RecipeDAO.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAcwCkAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T05:06:49.638Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ProductRegistrationDAO.cs",
-              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductRegistrationDAO.cs",
-              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductRegistrationDAO.cs",
-              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductRegistrationDAO.cs",
-              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\DAO\\ProductRegistrationDAO.cs",
-              "ViewState": "AgIAAKIAAAAAAAAAAAAIwK0AAAAIAAAAAAAAAA==",
+              "DocumentIndex": 21,
+              "Title": "RecipeBEL.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\BEL\\RecipeBEL.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\BEL\\RecipeBEL.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\BEL\\RecipeBEL.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\BEL\\RecipeBEL.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAiwBAAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T05:40:02.058Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "RecipeInfoController.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\RecipeInfoController.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Controllers\\RecipeInfoController.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\RecipeInfoController.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Controllers\\RecipeInfoController.cs",
+              "ViewState": "AgIAAGwAAAAAAAAAAAAjwHoAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-19T04:10:22.196Z",
               "EditorCaption": ""
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
-            },
-            {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "GeneralController.cs",
-              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\GeneralController.cs",
-              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Controllers\\GeneralController.cs",
-              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\GeneralController.cs",
-              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Controllers\\GeneralController.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAAAWwCwAAAAvAAAAAAAAAA==",
+              "DocumentIndex": 23,
+              "Title": "ProductInfoBEL.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\BEL\\ProductInfoBEL.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\BEL\\ProductInfoBEL.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\BEL\\ProductInfoBEL.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\BEL\\ProductInfoBEL.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwA4AAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-16T09:11:20.339Z",
+              "WhenOpened": "2026-04-19T06:34:50.609Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ProductInfoController.cs",
-              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\ProductInfoController.cs",
-              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Controllers\\ProductInfoController.cs",
-              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\ProductInfoController.cs",
-              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Controllers\\ProductInfoController.cs",
-              "ViewState": "AgIAADMAAAAAAAAAAAAIwD4AAAAIAAAAAAAAAA==",
+              "DocumentIndex": 18,
+              "Title": "ProductRegistrationBEL.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\BEL\\ProductRegistrationBEL.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Models\\BEL\\ProductRegistrationBEL.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Models\\BEL\\ProductRegistrationBEL.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Models\\BEL\\ProductRegistrationBEL.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAiwBAAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-16T03:47:19.39Z",
+              "WhenOpened": "2026-04-19T09:04:46.763Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "CompanyInfoController.cs",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\CompanyInfoController.cs",
+              "RelativeDocumentMoniker": "RMS_Square\\Areas\\Regulatory\\Controllers\\CompanyInfoController.cs",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\Areas\\Regulatory\\Controllers\\CompanyInfoController.cs",
+              "RelativeToolTip": "RMS_Square\\Areas\\Regulatory\\Controllers\\CompanyInfoController.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAQwCAAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T05:21:52.075Z",
               "EditorCaption": ""
             }
           ]

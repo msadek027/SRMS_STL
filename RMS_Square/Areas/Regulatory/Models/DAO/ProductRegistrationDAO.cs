@@ -170,7 +170,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
         //        throw errorException;
         //    }
         //}
-        public IList<ProductRegistrationBEL> GetAllInfo(ProductRegistrationBEL model, string orderBy)
+        /*public IList<ProductRegistrationBEL> GetAllInfo(ProductRegistrationBEL model, string orderBy)
         {
             var query = new StringBuilder();
             query.Append(" SELECT D.ANNEX_ID,D.ANNEXURE_NO,D.REVISION_NO,D.RECIPE_ID,D.DAR_NO,D.DTL_REMARKS,D.STATE_STATUS,");
@@ -279,6 +279,133 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                         }).ToList();
             return item;
         }
+        */
+
+        public IList<ProductRegistrationBEL> GetAllInfo(ProductRegistrationBEL model, string orderBy)
+        {
+            var query = new StringBuilder();
+            query.Append(" SELECT D.ANNEX_ID,D.ANNEXURE_NO,D.REVISION_NO,D.RECIPE_ID,D.DAR_NO,D.DTL_REMARKS,D.STATE_STATUS,");
+            query.Append(" TO_CHAR(D.DTL_RECEIVE_DATE, 'dd/mm/yyyy')DTL_RECEIVE_DATE,TO_CHAR(D.DTL_SUBMISSION_DATE, 'dd/mm/yyyy')DTL_SUBMISSION_DATE,");
+            query.Append(" TO_CHAR(D.DTL_APPROVAL_DATE, 'dd/mm/yyyy')DTL_APPROVAL_DATE,TO_CHAR(D.PROPOSAL_DATE, 'dd/mm/yyyy')PROPOSAL_DATE,");
+            query.Append(" TO_CHAR(D.RECEIVE_DATE, 'dd/mm/yyyy')RECEIVE_DATE,TO_CHAR(D.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE,");
+            query.Append(" TO_CHAR(D.INCLUSION_DATE, 'dd/mm/yyyy')INCLUSION_DATE,TO_CHAR(D.RENEWAL_DATE, 'dd/mm/yyyy')RENEWAL_DATE,");
+            query.Append(" TO_CHAR(D.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,D.REMARKS,D.PROPOSED_BY,D.ANNEXURE_STATUS,");
+            query.Append(" D.NOTIFICATION_DAYS,TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON,P.PRODUCT_CODE,P.PRODUCT_SPECIFICATION,");
+
+            // ADDED: Unit Code and Unit Name selection
+            query.Append(" R.SLNO, R.COMPANY_CODE AS COMPANY_UNIT_CODE, CU.COMPANY_UNIT_NAME, ");
+
+            // REMOVED: DF.DOSAGE_FORM_NAME
+            query.Append(" C.COMPANY_CODE,C.COMPANY_NAME,C.LICENSE_NO,P.SAP_PRODUCT_CODE,P.GENERIC_CODE,P.PRODUCT_CATEGORY,P.BRAND_NAME,P.PACK_SIZE_NAME");
+
+            query.Append(" FROM PRODUCT_REGISTRATION_INFO D");
+            query.Append(" LEFT JOIN  RECIPE_INFO R ON R.ID=D.RECIPE_ID");
+
+            // ADDED: Joins for Unit and Company
+            query.Append(" LEFT JOIN  COMPANY_UNIT_INFO CU ON R.COMPANY_CODE = CU.COMPANY_UNIT_CODE");
+            query.Append(" LEFT JOIN  COMPANY_INFO C ON CU.COMPANY_CODE = C.COMPANY_CODE");
+
+            query.Append(" LEFT JOIN  PRODUCT_INFO P ON P.PRODUCT_CODE=R.PRODUCT_CODE");
+
+            // REMOVED: DOSAGE_FORM_INFO Join
+            query.Append(" WHERE D.IS_DELETE <>'Y' ");
+            query.Append(" AND P.STATUS = 'Active' ");
+
+            if (!string.IsNullOrEmpty(model.CompanyCode))
+            {
+                query.Append(" AND C.COMPANY_CODE='{0}'");
+            }
+            if (!string.IsNullOrEmpty(model.ProductCode))
+            {
+                query.Append(" AND P.PRODUCT_CODE='{1}'");
+            }
+
+            // Date Filtering Logic
+            if (model.ChooseOption != "All")
+            {
+                if (model.ChooseOption == "SubmissionDate")
+                {
+                    if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
+                    {
+                        query.Append(" AND D.SUBMISSION_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(model.FromDate) + "','yyyy/mm/dd') AND TO_DATE('" + General.SetDateStrYYYYMMDD(model.ToDate) + "','yyyy/mm/dd') ");
+                    }
+                }
+                else if (model.ChooseOption == "ApprovalDate")
+                {
+                    if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
+                    {
+                        query.Append(" AND D.RENEWAL_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(model.FromDate) + "','yyyy/mm/dd') AND TO_DATE('" + General.SetDateStrYYYYMMDD(model.ToDate) + "','yyyy/mm/dd') ");
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
+                    {
+                        query.Append(" AND D.RECEIVE_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(model.FromDate) + "','yyyy/mm/dd') AND TO_DATE('" + General.SetDateStrYYYYMMDD(model.ToDate) + "','yyyy/mm/dd') ");
+                    }
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
+                {
+                    query.Append(" AND ( D.SUBMISSION_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(model.FromDate) + "','yyyy/mm/dd') AND TO_DATE('" + General.SetDateStrYYYYMMDD(model.ToDate) + "','yyyy/mm/dd') ");
+                    query.Append(" OR D.RECEIVE_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(model.FromDate) + "','yyyy/mm/dd') AND TO_DATE('" + General.SetDateStrYYYYMMDD(model.ToDate) + "','yyyy/mm/dd') ");
+                    query.Append(" OR D.RENEWAL_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(model.FromDate) + "','yyyy/mm/dd') AND TO_DATE('" + General.SetDateStrYYYYMMDD(model.ToDate) + "','yyyy/mm/dd')) ");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(orderBy))
+            {
+                query.Append(" ORDER BY D.ANNEX_ID " + orderBy);
+            }
+
+            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString(), model.CompanyCode, model.ProductCode));
+
+            var item = (from DataRow row in dt.Rows
+                        select new ProductRegistrationBEL
+                        {
+                            AnnexId = Convert.ToInt64(row["ANNEX_ID"]),
+                            AnnexureNo = row["ANNEXURE_NO"].ToString(),
+                            RecipeId = Convert.ToInt64(row["RECIPE_ID"]),
+                            SlNo = row["SLNO"].ToString(),
+                            AnnexRevisionNo = row["REVISION_NO"].ToString(),
+                            DarNo = row["DAR_NO"].ToString(),
+                            StateStatus = row["STATE_STATUS"].ToString(),
+                            DtlRemarks = row["DTL_REMARKS"].ToString(),
+                            DtlReceivedDate = row["DTL_RECEIVE_DATE"].ToString(),
+                            DtlSubmissionDate = row["DTL_SUBMISSION_DATE"].ToString(),
+                            DtlApprovalDate = row["DTL_APPROVAL_DATE"].ToString(),
+                            ProposalDate = row["PROPOSAL_DATE"].ToString(),
+                            ReceivedDate = row["RECEIVE_DATE"].ToString(),
+                            SubmissionDate = row["SUBMISSION_DATE"].ToString(),
+                            InclusionDate = row["INCLUSION_DATE"].ToString(),
+                            RenewalDate = row["RENEWAL_DATE"].ToString(),
+                            ValidUptoDate = row["VALID_UPTO"].ToString(),
+                            Remarks = row["REMARKS"].ToString(),
+                            ProposedBy = row["PROPOSED_BY"].ToString(),
+                            AnnexStatus = row["ANNEXURE_STATUS"].ToString(),
+                            AlarmDays = row["NOTIFICATION_DAYS"].ToString(),
+                            SetOn = row["SET_ON"].ToString(),
+
+                            // Added Mappings
+                            CompanyUnitCode = row["COMPANY_UNIT_CODE"].ToString(),
+                            CompanyUnitName = row["COMPANY_UNIT_NAME"] != DBNull.Value ? row["COMPANY_UNIT_NAME"].ToString() : "",
+
+                            CompanyCode = row["COMPANY_CODE"].ToString(),
+                            CompanyName = row["COMPANY_NAME"].ToString(),
+                            LicenseNo = row["LICENSE_NO"].ToString(),
+                            ProductCode = row["PRODUCT_CODE"].ToString(),
+                            SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
+                            GenAndStrength = row["GENERIC_CODE"].ToString(),
+                            PackSizeName = row["PACK_SIZE_NAME"].ToString(),
+                            ProductCategory = row["PRODUCT_CATEGORY"].ToString(),
+                            BrandName = row["BRAND_NAME"].ToString(),
+                            ProductSpecification = row["PRODUCT_SPECIFICATION"].ToString()
+                        }).ToList();
+            return item;
+        }
+
         public IList<ProductRegistrationBEL> GetProductExpireLicense(ProductRegistrationBEL model, string orderBy)
         {
             var query = new StringBuilder();

@@ -22,7 +22,7 @@
         <div class="row">
             <div class="col-sm-2">Company Code<span style="color: red">*</span> : </div>
             <div class="col-sm-3">
-                <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" placeholder="Press Any"  readonly />
+                <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" placeholder="Press Any" readonly />
             </div>
             <div class="col-sm-1">@*<button id="btnFind" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>*@</div>
             <div class="col-sm-2">Company Name :</div>
@@ -31,16 +31,30 @@
     </div>
     <div class="form-group">
         <div class="row">
+            <div class="col-sm-2"> Unit Code:</div>
+            <div class="col-sm-2"><input type="text" id="CompanyUnitCode" name="CompanyUnitCode" readonly="readonly" class="form-control" placeholder="Auto" /></div>
+
+            <div class="col-sm-1"></div>
+
+            <div class="col-sm-2"> Unit Name:</div>
+            <div class="col-sm-3">
+                <input type="text" id="CompanyUnitName" name="CompanyUnitName" readonly="readonly" class="form-control" placeholder="Auto" />
+            </div>
+
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
             <div class="col-sm-2">Company Address : </div>
             <div class=" col-sm-3">
                 <textarea class="form-control" id="Address" name="Address" placeholder="Company Address" rows="2" readonly></textarea>
             </div>
-       
+
             <div class="col-sm-1"><input type="hidden" id="ID" name="ID" class="txtBox" /></div>
-        
+
             <div class="col-sm-2">Revision No :</div>
             <div class="col-sm-2"><input type="text" id="RevisionNo" name="RevisionNo" placeholder="Auto" class="form-control" readonly /></div>
-           
+
         </div>
     </div>
     <div class="form-group">
@@ -263,7 +277,9 @@
                  { field: "ID", hidden: true },
                  { field: "SlNo ", title: "SlNo", width: 70 },
                  { field: "CompanyCode", title: "Code", width: 70 },
-                 { field: "CompanyName", title: "CompanyName", width: 140 },
+                { field: "CompanyName", title: "CompanyName", width: 140 },
+                { field: "CompanyUnitCode", title: "UnitCode", width: 70 },
+                { field: "CompanyUnitName", title: "UnitName", width: 140 },
                  { field: "RevisionNo", title: "RevisionNo", width: 60 },
                  { field: "SubmissionType", title: "SubmissionType", width: 100 },
                  { field: "LicenseNo", title: "LicenseType & No", width: 120 },
@@ -299,7 +315,8 @@
                 logic: "or",
                 filters: [
                      { field: "SlNo", operator: "contains", value: val },
-                     { field: "CompanyCode", operator: "contains", value: val },
+                    { field: "CompanyCode", operator: "contains", value: val },
+                    { field: "CompanyUnitCode", operator: "contains", value: val },
                      { field: "SubmissionType", operator: "contains", value: val },
                      { field: "RevisionNo", operator: "contains", value: val },
                      { field: "LicenseNo", operator: "contains", value: val },
@@ -333,7 +350,7 @@
 
         $('#btnFind').click(function () {
             CompanyWindow.open();
-            $.ajax({
+            @*$.ajax({
                 url: '@Url.Action("GetAllCompany", "General")',
                 method: 'get',
                 data: 'json',
@@ -347,13 +364,56 @@
                     }
 
                 }
+            });*@
+            $.ajax({
+    url: '@Url.Action("GetAllCompany", "General")',
+    method: 'get',
+    dataType: 'json',
+    success: function (data) {
+        if (data != "") {
+            // --- FLATTEN LOGIC START ---
+            var flatData = [];
+            $.each(data, function (i, company) {
+                if (company.Units && company.Units.length > 0) {
+                    // Create a row for every unit
+                    $.each(company.Units, function (j, unit) {
+                        flatData.push({
+                            CompanyCode: company.CompanyCode,
+                            CompanyName: company.CompanyName,
+                            Address: company.Address,
+                            LicenseNo: company.LicenseNo,
+                            CompanyUnitCode: unit.CompanyUnitCode, // Map nested unit code
+                            CompanyUnitName: unit.CompanyUnitName  // Map nested unit name
+                        });
+                    });
+                } else {
+                    // Fallback if company has no units
+                    flatData.push({
+                        CompanyCode: company.CompanyCode,
+                        CompanyName: company.CompanyName,
+                        Address: company.Address,
+                        LicenseNo: company.LicenseNo,
+                        CompanyUnitCode: "",
+                        CompanyUnitName: ""
+                    });
+                }
             });
+            // Load the flattened data
+            $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(flatData);
+            // --- FLATTEN LOGIC END ---
+        }
+        else {
+            CompanyWindow.close();
+            AcknowledgeMsg();
+        }
+    }
+});
 
         });
 
         $("#CompanyCode").on('keyup keypress keydown click dblclick', function (e) {
             CompanyWindow.open();
-            $.ajax({
+          @*  $.ajax({
                 url: '@Url.Action("GetAllCompany", "General")',
                 method: 'get',
                 data: 'json',
@@ -367,7 +427,50 @@
                     }
 
                 }
+            });*@
+          $.ajax({
+    url: '@Url.Action("GetAllCompany", "General")',
+    method: 'get',
+    dataType: 'json',
+    success: function (data) {
+        if (data != "") {
+            // --- FLATTEN LOGIC START ---
+            var flatData = [];
+            $.each(data, function (i, company) {
+                if (company.Units && company.Units.length > 0) {
+                    // Create a row for every unit
+                    $.each(company.Units, function (j, unit) {
+                        flatData.push({
+                            CompanyCode: company.CompanyCode,
+                            CompanyName: company.CompanyName,
+                            Address: company.Address,
+                            LicenseNo: company.LicenseNo,
+                            CompanyUnitCode: unit.CompanyUnitCode, // Map nested unit code
+                            CompanyUnitName: unit.CompanyUnitName  // Map nested unit name
+                        });
+                    });
+                } else {
+                    // Fallback if company has no units
+                    flatData.push({
+                        CompanyCode: company.CompanyCode,
+                        CompanyName: company.CompanyName,
+                        Address: company.Address,
+                        LicenseNo: company.LicenseNo,
+                        CompanyUnitCode: "",
+                        CompanyUnitName: ""
+                    });
+                }
             });
+            // Load the flattened data
+            $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(flatData);
+            // --- FLATTEN LOGIC END ---
+        }
+        else {
+            CompanyWindow.close();
+            AcknowledgeMsg();
+        }
+    }
+});
         });
         //Initializing Main page details Kendo Grid Colums
         var companyGrid = $('#CompanyWindowGrid').kendoGrid({
@@ -403,7 +506,9 @@
             resizable: true,
             columns: [
                  { field: "CompanyCode", title: "CompanyCode", width: 80 },
-                 { field: "CompanyName", title: "CompanyName", width: 100 },
+                { field: "CompanyName", title: "CompanyName", width: 100 },
+                { field: "CompanyUnitCode", title: "UnitCode", width: 80 },
+                { field: "CompanyUnitName", title: "UnitName", width: 100 },
                  { field: "Address", title: "CompanyAddress", width: 160 },
                  { field: "LicenseNo", title: "LicenseType & No", width: 120 }
 
@@ -536,7 +641,7 @@
                 if (checkInput == 0) {
                     model.ID = $('#ID').val();
                     model.SlNo = $('#SlNo').val();
-                    model.CompanyCode = $('#CompanyCode').val();
+                    model.CompanyCode = $('#CompanyUnitCode').val();
                     model.LicenseNo = $('#LicenseNo').val();
                     model.RevisionNo = $('#RevisionNo').val();
                     model.SubmissionType = $('#SubmissionType').val();

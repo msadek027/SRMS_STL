@@ -23,50 +23,116 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             _idGenerated = new IDGenerated();
         }
 
+        /*  public List<MarketAuthCertificateBEL> GetMarketAuthCertificateList()
+          {
+              var query = new StringBuilder();
+
+              query.Append(" SELECT D.ID,D.SLNO,D.REVISION_NO,D.MARKET_AUTHORIZATION_NO,RP.DAR_NO,C.Address, ");
+              query.Append(" TO_CHAR(D.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE, TO_CHAR(D.RECEIVE_DATE, 'dd/mm/yyyy')RECEIVE_DATE, TO_CHAR(D.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE,TO_CHAR(D.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,D.REMARKS,D.NOTIFICATION_DAYS, ");
+              query.Append(" TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON,P.PRODUCT_CODE,P.BRAND_NAME,P.PRODUCT_CATEGORY,C.COMPANY_CODE,C.COMPANY_NAME, C.LICENSE_NO,P.SAP_PRODUCT_CODE,P.GENERIC_CODE,P.PACK_SIZE_NAME,DF.DOSAGE_FORM_NAME");
+              query.Append(" FROM MARKET_AUTH_CERTIFICATE D  LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=D.COMPANY_CODE LEFT JOIN  PRODUCT_INFO P ON P.PRODUCT_CODE=D.PRODUCT_CODE");
+              query.Append(" LEFT JOIN  DOSAGE_FORM_INFO DF ON DF.DOSAGE_FORM_CODE=P.DOSAGE_FORM_CODE ");
+              query.Append(" LEFT JOIN ( SELECT R.PRODUCT_CODE,R.COMPANY_CODE,PR.DAR_NO FROM ");
+              query.Append(" (SELECT A.ID, A.PRODUCT_CODE,A.COMPANY_CODE FROM RECIPE_INFO A INNER JOIN (SELECT COMPANY_CODE,PRODUCT_CODE,MAX(REVISION_NO) AS MaxRvNo FROM RECIPE_INFO GROUP BY COMPANY_CODE,PRODUCT_CODE)");
+              query.Append(" B ON B.COMPANY_CODE=A.COMPANY_CODE AND B.PRODUCT_CODE=A.PRODUCT_CODE AND B.MaxRvNo=A.REVISION_NO)R");
+              query.Append(" INNER JOIN( SELECT A.ANNEX_ID,A.ANNEXURE_NO,A.REVISION_NO,A.RECIPE_ID,A.DAR_NO FROM PRODUCT_REGISTRATION_INFO A INNER JOIN (SELECT RECIPE_ID,MAX(REVISION_NO) AS MaxRvNo FROM PRODUCT_REGISTRATION_INFO GROUP BY RECIPE_ID) B ON B.RECIPE_ID=A.RECIPE_ID AND B.MaxRvNo=A.REVISION_NO");
+              query.Append(" )PR ON R.ID=PR.RECIPE_ID ) RP ON RP.PRODUCT_CODE=P.PRODUCT_CODE AND RP.COMPANY_CODE=C.COMPANY_CODE");
+              query.Append(" AND P.STATUS = 'Active' ");
+              query.Append(" ORDER BY D.ID DESC");
+
+              DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), query.ToString());
+              List<MarketAuthCertificateBEL> item;
+
+              item = (from DataRow row in dt.Rows
+                      select new MarketAuthCertificateBEL
+                      {
+                          ID = Convert.ToInt64(row["ID"]),
+                          SlNo = row["SLNO"].ToString(),
+                          RevisionNo = row["REVISION_NO"].ToString(),
+                          CompanyCode = row["COMPANY_CODE"].ToString(),
+                          CompanyName = row["COMPANY_NAME"].ToString(),
+                          Address = row["ADDRESS"].ToString(),
+                          ProductCode = row["PRODUCT_CODE"].ToString(),
+                          SapProductCode = row["SAP_PRODUCT_CODE"].ToString(),
+                          GenericStrength = row["GENERIC_CODE"].ToString(),
+                          PackSize = row["PACK_SIZE_NAME"].ToString(),
+                          DosageForm = row["DOSAGE_FORM_NAME"].ToString(),
+                          DarNo = row["DAR_NO"].ToString(),
+                          BrandName = row["BRAND_NAME"].ToString(),
+                          SubmissionDate = row["SUBMISSION_DATE"].ToString(),
+                          ReceiveDate = row["RECEIVE_DATE"].ToString(),
+                          ApprovalDate = row["APPROVAL_DATE"].ToString(),
+                          ValiduptoDate = row["VALID_UPTO"].ToString(),
+                          MarketAuthorizationNo = row["MARKET_AUTHORIZATION_NO"].ToString(),
+                          NotificationDay = row["NOTIFICATION_DAYS"].ToString(),
+                          Remarks = row["REMARKS"].ToString()
+                      }).ToList();
+              return item;
+          }*/
+
         public List<MarketAuthCertificateBEL> GetMarketAuthCertificateList()
         {
             var query = new StringBuilder();
 
-            query.Append(" SELECT D.ID,D.SLNO,D.REVISION_NO,D.MARKET_AUTHORIZATION_NO,RP.DAR_NO,C.Address, ");
+            query.Append(" SELECT D.ID,D.SLNO,D.REVISION_NO,D.MARKET_AUTHORIZATION_NO,RP.DAR_NO,C.ADDRESS, ");
             query.Append(" TO_CHAR(D.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE, TO_CHAR(D.RECEIVE_DATE, 'dd/mm/yyyy')RECEIVE_DATE, TO_CHAR(D.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE,TO_CHAR(D.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,D.REMARKS,D.NOTIFICATION_DAYS, ");
-            query.Append(" TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON,P.PRODUCT_CODE,P.BRAND_NAME,P.PRODUCT_CATEGORY,C.COMPANY_CODE,C.COMPANY_NAME, C.LICENSE_NO,P.SAP_PRODUCT_CODE,P.GENERIC_CODE,P.PACK_SIZE_NAME,DF.DOSAGE_FORM_NAME");
-            query.Append(" FROM MARKET_AUTH_CERTIFICATE D  LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=D.COMPANY_CODE LEFT JOIN  PRODUCT_INFO P ON P.PRODUCT_CODE=D.PRODUCT_CODE");
-            query.Append(" LEFT JOIN  DOSAGE_FORM_INFO DF ON DF.DOSAGE_FORM_CODE=P.DOSAGE_FORM_CODE ");
+
+            // ADDED: Unit Name and mapping D.COMPANY_CODE as Unit Code
+            query.Append(" TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON,P.PRODUCT_CODE,P.BRAND_NAME,P.PRODUCT_CATEGORY,CU.COMPANY_UNIT_NAME, D.COMPANY_CODE AS COMPANY_UNIT_CODE, ");
+
+            // REMOVED: DF.DOSAGE_FORM_NAME
+            query.Append(" C.COMPANY_CODE,C.COMPANY_NAME, C.LICENSE_NO,P.SAP_PRODUCT_CODE,P.GENERIC_CODE,P.PACK_SIZE_NAME");
+
+            query.Append(" FROM MARKET_AUTH_CERTIFICATE D ");
+
+            // UPDATED JOIN: Link to Unit Info (6-digit) then to Company Info (4-digit)
+            query.Append(" LEFT JOIN COMPANY_UNIT_INFO CU ON D.COMPANY_CODE = CU.COMPANY_UNIT_CODE ");
+            query.Append(" LEFT JOIN COMPANY_INFO C ON CU.COMPANY_CODE = C.COMPANY_CODE ");
+
+            query.Append(" LEFT JOIN PRODUCT_INFO P ON P.PRODUCT_CODE = D.PRODUCT_CODE ");
+
+            // REMOVED: DOSAGE_FORM_INFO Join
+
             query.Append(" LEFT JOIN ( SELECT R.PRODUCT_CODE,R.COMPANY_CODE,PR.DAR_NO FROM ");
             query.Append(" (SELECT A.ID, A.PRODUCT_CODE,A.COMPANY_CODE FROM RECIPE_INFO A INNER JOIN (SELECT COMPANY_CODE,PRODUCT_CODE,MAX(REVISION_NO) AS MaxRvNo FROM RECIPE_INFO GROUP BY COMPANY_CODE,PRODUCT_CODE)");
             query.Append(" B ON B.COMPANY_CODE=A.COMPANY_CODE AND B.PRODUCT_CODE=A.PRODUCT_CODE AND B.MaxRvNo=A.REVISION_NO)R");
             query.Append(" INNER JOIN( SELECT A.ANNEX_ID,A.ANNEXURE_NO,A.REVISION_NO,A.RECIPE_ID,A.DAR_NO FROM PRODUCT_REGISTRATION_INFO A INNER JOIN (SELECT RECIPE_ID,MAX(REVISION_NO) AS MaxRvNo FROM PRODUCT_REGISTRATION_INFO GROUP BY RECIPE_ID) B ON B.RECIPE_ID=A.RECIPE_ID AND B.MaxRvNo=A.REVISION_NO");
-            query.Append(" )PR ON R.ID=PR.RECIPE_ID ) RP ON RP.PRODUCT_CODE=P.PRODUCT_CODE AND RP.COMPANY_CODE=C.COMPANY_CODE");
-            query.Append(" AND P.STATUS = 'Active' ");
+            query.Append(" )PR ON R.ID=PR.RECIPE_ID ) RP ON RP.PRODUCT_CODE=P.PRODUCT_CODE AND RP.COMPANY_CODE=D.COMPANY_CODE");
+
+            query.Append(" WHERE P.STATUS = 'Active' ");
             query.Append(" ORDER BY D.ID DESC");
 
             DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), query.ToString());
-            List<MarketAuthCertificateBEL> item;
 
-            item = (from DataRow row in dt.Rows
-                    select new MarketAuthCertificateBEL
-                    {
-                        ID = Convert.ToInt64(row["ID"]),
-                        SlNo = row["SLNO"].ToString(),
-                        RevisionNo = row["REVISION_NO"].ToString(),
-                        CompanyCode = row["COMPANY_CODE"].ToString(),
-                        CompanyName = row["COMPANY_NAME"].ToString(),
-                        Address = row["ADDRESS"].ToString(),
-                        ProductCode = row["PRODUCT_CODE"].ToString(),
-                        SapProductCode = row["SAP_PRODUCT_CODE"].ToString(),
-                        GenericStrength = row["GENERIC_CODE"].ToString(),
-                        PackSize = row["PACK_SIZE_NAME"].ToString(),
-                        DosageForm = row["DOSAGE_FORM_NAME"].ToString(),
-                        DarNo = row["DAR_NO"].ToString(),
-                        BrandName = row["BRAND_NAME"].ToString(),
-                        SubmissionDate = row["SUBMISSION_DATE"].ToString(),
-                        ReceiveDate = row["RECEIVE_DATE"].ToString(),
-                        ApprovalDate = row["APPROVAL_DATE"].ToString(),
-                        ValiduptoDate = row["VALID_UPTO"].ToString(),
-                        MarketAuthorizationNo = row["MARKET_AUTHORIZATION_NO"].ToString(),
-                        NotificationDay = row["NOTIFICATION_DAYS"].ToString(),
-                        Remarks = row["REMARKS"].ToString()
-                    }).ToList();
+            var item = (from DataRow row in dt.Rows
+                        select new MarketAuthCertificateBEL
+                        {
+                            ID = Convert.ToInt64(row["ID"]),
+                            SlNo = row["SLNO"].ToString(),
+                            RevisionNo = row["REVISION_NO"].ToString(),
+
+                            // Added Mappings
+                            CompanyUnitCode = row["COMPANY_UNIT_CODE"].ToString(),
+                            CompanyUnitName = row["COMPANY_UNIT_NAME"] != DBNull.Value ? row["COMPANY_UNIT_NAME"].ToString() : "",
+
+                            CompanyCode = row["COMPANY_CODE"].ToString(),
+                            CompanyName = row["COMPANY_NAME"].ToString(),
+                            Address = row["ADDRESS"].ToString(),
+                            ProductCode = row["PRODUCT_CODE"].ToString(),
+                            SapProductCode = row["SAP_PRODUCT_CODE"].ToString(),
+                            GenericStrength = row["GENERIC_CODE"].ToString(),
+                            PackSize = row["PACK_SIZE_NAME"].ToString(),
+                            // DosageForm removed here
+                            DarNo = row["DAR_NO"].ToString(),
+                            BrandName = row["BRAND_NAME"].ToString(),
+                            SubmissionDate = row["SUBMISSION_DATE"].ToString(),
+                            ReceiveDate = row["RECEIVE_DATE"].ToString(),
+                            ApprovalDate = row["APPROVAL_DATE"].ToString(),
+                            ValiduptoDate = row["VALID_UPTO"].ToString(),
+                            MarketAuthorizationNo = row["MARKET_AUTHORIZATION_NO"].ToString(),
+                            NotificationDay = row["NOTIFICATION_DAYS"].ToString(),
+                            Remarks = row["REMARKS"].ToString()
+                        }).ToList();
             return item;
         }
 

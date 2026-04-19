@@ -12,6 +12,8 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string RevisionNo { get; set; }
         public string CompanyCode { get; set; }
         public string CompanyName { get; set; }
+        public string CompanyUnitCode { get; set; }
+        public string CompanyUnitName { get; set; }
         public string Address { get; set; }
         public string ProductCode { get; set; }
         public string SapProductCode { get; set; }

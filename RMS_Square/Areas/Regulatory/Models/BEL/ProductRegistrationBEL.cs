@@ -14,6 +14,8 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string  SlNo { get; set; }
         public string AnnexRevisionNo { get; set; }
         public string CompanyCode { get; set; }
+        public string CompanyUnitCode { get; set; }
+        public string CompanyUnitName { get; set; }
         public string CompanyName { get; set; }
         public string LicenseNo { get; set; }
         public string StateStatus { get; set; }

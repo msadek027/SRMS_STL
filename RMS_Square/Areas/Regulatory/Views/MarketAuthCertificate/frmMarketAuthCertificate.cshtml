@@ -39,6 +39,20 @@
             </div>
             <div class="form-group">
                 <div class="row">
+                    <div class="col-sm-2"> Unit Code:</div>
+                    <div class="col-sm-2"><input type="text" id="CompanyUnitCode" name="CompanyUnitCode" readonly="readonly" class="form-control" placeholder="Auto" /></div>
+
+                    <div class="col-sm-1"></div>
+
+                    <div class="col-sm-2"> Unit Name:</div>
+                    <div class="col-sm-3">
+                        <input type="text" id="CompanyUnitName" name="CompanyUnitName" readonly="readonly" class="form-control" placeholder="Auto" />
+                    </div>
+
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
                     <div class="col-lg-2">Address</div>
                     <div class="col-lg-9"><input type="text" id="Address" name="Address" readonly="readonly" class="RequiredField form-control" /></div>
                 </div>
@@ -57,25 +71,16 @@
                     <div class="col-lg-2"><input type="text" maxlength="50" id="ProductCode" name="ProductCode" readonly="readonly" class="RequiredField form-control" /></div>
                     <div class="col-lg-1"><button id="btnFindProd" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
                     <div class="col-lg-2"></div>
-                    <div class="col-lg-2">SAP Product Code</div>
-                    <div class="col-lg-2"><input type="text" maxlength="50" id="SapProductCode" name="SapProductCode" readonly="readonly" class="RequiredField form-control" /></div>
-                </div>
+                     </div>
             </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-lg-2">Generic and Strength</div>
-                    <div class="col-lg-9"><textarea id="GenericStrength" name="GenericStrength" readonly="readonly" class="RequiredField form-control"> </textarea></div>
-                </div>
-            </div>
+           
 
             <div class="form-group">
                 <div class="row">
                     <div class="col-lg-2">Pack Size</div>
                     <div class="col-lg-3"><input type="text" maxlength="50" id="PackSize" name="PackSize" readonly="readonly" class="RequiredField form-control" /></div>
                     <div class="col-lg-1"></div>
-                    <div class="col-lg-2">Dosage Form</div>
-                    <div class="col-lg-3"><input type="text" maxlength="50" id="DosageForm" name="DosageForm" readonly="readonly" class="RequiredField form-control" /></div>
-                </div>
+                    </div>
             </div>
 
             <div class="form-group">
@@ -337,7 +342,9 @@
                  { field: "SlNo", hidden: true, title: "SlNo", width: 120 },
                  { field: "MarketAuthorizationNo", title: "MANo", width: 120 },
                  { field: "CompanyCode", locked: true, title: "C.Code", width: 120 },
-                 { field: "CompanyName", locked: true, title: "CompanyName", width: 160 },
+                { field: "CompanyName", locked: true, title: "CompanyName", width: 160 },
+                { field: "CompanyUnitCode", locked: true, title: "UnitCode", width: 160 },
+                { field: "CompanyUnitName", locked: true, title: "UnitName", width: 160 },
                  { field: "Address", locked: true, title: "Address", width: 160 },
                  { field: "ProductCode", locked: true, title: "ProductCode", width: 125 },
                  { field: "SAPProductCode", locked: true, title: "SapCode", width: 120 },
@@ -402,7 +409,7 @@
         }).data("kendoWindow").center();
 
 
-        $('#btnFindCom').click(function () {
+      @*  $('#btnFindCom').click(function () {
             CompanyWindow.open();
             $.ajax({
                 url: '@Url.Action("GetAllCompany", "General")',
@@ -418,7 +425,53 @@
                     }
                 }
             });
-        });
+        });*@
+
+      $('#btnFindCom').click(function () {
+    CompanyWindow.open();
+    $.ajax({
+        url: '@Url.Action("GetAllCompany", "General")',
+        method: 'get',
+        dataType: 'json', // Fixed from 'data: json'
+        success: function (data) {
+            if (data != "") {
+                var flatData = [];
+                // Loop through each company
+                $.each(data, function (i, company) {
+                    // Check if the company has Units
+                    if (company.Units && company.Units.length > 0) {
+                        $.each(company.Units, function (j, unit) {
+                            flatData.push({
+                                CompanyCode: company.CompanyCode,
+                                CompanyName: company.CompanyName,
+                                Address: company.Address,
+                                // Map these specifically for the grid
+                                CompanyUnitCode: unit.CompanyUnitCode,
+                                CompanyUnitName: unit.CompanyUnitName
+                            });
+                        });
+                    } else {
+                        // Fallback if a company has no units
+                        flatData.push({
+                            CompanyCode: company.CompanyCode,
+                            CompanyName: company.CompanyName,
+                            Address: company.Address,
+                            CompanyUnitCode: "",
+                            CompanyUnitName: ""
+                        });
+                    }
+                });
+
+                // Load the flattened data into the grid
+                $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(flatData);
+            }
+            else {
+                CompanyWindow.close();
+                AcknowledgeMsg();
+            }
+        }
+    });
+});
 
         //Initializing Main page details Kendo Grid Colums
         var companyGrid = $('#CompanyWindowGrid').kendoGrid({
@@ -455,6 +508,8 @@
             columns: [
                  { field: "CompanyCode", title: "CompanyCode", width: 80 },
                  { field: "CompanyName", title: "CompanyName", width: 100 },
+                { field: "CompanyUnitCode", title: "UnitCode", width: 100 },
+                { field: "CompanyUnitName", title: "UnitName", width: 100 },
                  { field: "Address", title: "Address", width: 160 }
             ]
 
@@ -465,6 +520,8 @@
             var selectRow = grid.dataItem(grid.select());
             $('#CompanyCode').val(selectRow.CompanyCode);
             $('#CompanyName').val(selectRow.CompanyName);
+            $('#CompanyUnitCode').val(selectRow.CompanyUnitCode);
+            $('#CompanyUnitName').val(selectRow.CompanyUnitName);
             $('#Address').val(selectRow.Address);
             CompanyWindow.close();
             //SetMasterData(selectRowc);
@@ -478,7 +535,9 @@
                 logic: "or",
                 filters: [
                      { field: "CompanyCode", operator: "contains", value: val },
-                     { field: "CompanyName", operator: "contains", value: val },
+                    { field: "CompanyName", operator: "contains", value: val },
+                    { field: "CompanyUnitCode", title: "UnitCode", width: 100 },
+                    { field: "CompanyUnitName", title: "UnitName", width: 100 },
                      { field: "Address", operator: "contains", value: val }
                 ]
             });
@@ -495,12 +554,13 @@
         }).data("kendoWindow").center();
 
 
-        $('#btnFindProd').click(function () {
+       @* $('#btnFindProd').click(function () {
+            debugger
             ProductWindow.open();
             $.ajax({
                 url: '@Url.Action("GetAllProduct", "General")',
                 type: 'GET',
-                data: { "companyCode": $('#CompanyCode').val() },
+                data: { "companyCode": $('#CompanyUnitCode').val() },
                 success: function (data) {
                     if (data != "") {
                         $('#ProductWindowGrid').data('kendoGrid').dataSource.data(data);
@@ -511,7 +571,54 @@
                     }
                 }
             });
-        });
+        });*@
+
+        @*$('#btnFindProd').click(function () {
+            debugger
+      ProductWindow.open();
+
+      // Variable-e niye check kora bhalo j unit code asholei ache kina
+      var unitCode = $('#CompanyUnitCode').val();
+
+      $.ajax({
+          url: '@Url.Action("GetAllProduct", "General")',
+          type: 'GET',
+          // Ekhane 'companyUnitCode' likhun jate backend parameter-er sathe match kore
+          data: { "companyUnitCode": unitCode },
+          success: function (data) {
+              if (data != "") {
+                  $('#ProductWindowGrid').data('kendoGrid').dataSource.data(data);
+              }
+              else {
+                  ProductWindow.close();
+                  AcknowledgeMsg();
+              }
+          }
+      });
+  });*@
+        $('#btnFindProd').click(function () {
+    var unitCode = $('#CompanyUnitCode').val(); // Get the 6-digit code
+
+    if (!unitCode) {
+        toastr.warning("Please select a Company/Unit first.");
+        return;
+    }
+
+    ProductWindow.open();
+    $.ajax({
+        url: '@Url.Action("GetAllProduct", "General")',
+        type: 'GET',
+        data: { "companyCode": unitCode }, // Sending 6-digit code to backend
+        success: function (data) {
+            if (data != "") {
+                $('#ProductWindowGrid').data('kendoGrid').dataSource.data(data);
+            } else {
+                ProductWindow.close();
+                AcknowledgeMsg();
+            }
+        }
+    });
+});
 
         //Initializing Main page details Kendo Grid Colums
         var productGrid = $('#ProductWindowGrid').kendoGrid({
@@ -728,7 +835,7 @@
             //toastr.warning(OperationMsg("NC"));
             //}
         });
-        var master = { "ID": "", "SlNo": "", "RevisionNo": "", "ProductCode": "", "CompanyCode": "", "ReceiveDate": "", "SubmissionDate": "", "ApprovalDate": "", "ValiduptoDate": "", "MarketAuthorizationNo": "", "NotificationDay": "", "Remarks": "" };
+        var master = { "ID": "", "SlNo": "", "RevisionNo": "", "ProductCode": "", "CompanyCode": "", "UnitCode": "", "ReceiveDate": "", "SubmissionDate": "", "ApprovalDate": "", "ValiduptoDate": "", "MarketAuthorizationNo": "", "NotificationDay": "", "Remarks": "" };
 
 
     });
