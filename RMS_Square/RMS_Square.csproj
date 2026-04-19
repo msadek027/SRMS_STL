@@ -1357,6 +1357,7 @@
     <Content Include="Areas\Regulatory\Views\SourceValidation\frmSourceValidation.cshtml" />
     <Content Include="Areas\Regulatory\Views\SourceValidation\frmSourceValidationRpt.cshtml" />
     <Content Include="Areas\Regulatory\Views\NarcoticLicense\frmNarcoticLicenseRpt.cshtml" />
+    <Content Include="Areas\Regulatory\Views\CompanyUnitInfo\frmCompanyUnitInfo.cshtml" />
     <None Include="Properties\PublishProfiles\RMS_Square.pubxml" />
     <Content Include="Reports\SourceValidationMainRpt.rpt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1447,6 +1448,7 @@
     <Compile Include="Areas\Regulatory\Controllers\BrandExportController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\CompanyInfoController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\CompanyLicenseController.cs" />
+    <Compile Include="Areas\Regulatory\Controllers\CompanyUnitInfoController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\CountryInfoController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\CurrencyInfoController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\DepartmentInfoController.cs" />
@@ -1480,6 +1482,7 @@
     <Compile Include="Areas\Regulatory\Models\BEL\BlockListBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\BrandExportBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\CompanyLicenseBEL.cs" />
+    <Compile Include="Areas\Regulatory\Models\BEL\CompanyUnitInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\CountryInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\CurrencyInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\DepartmentInfoBEL.cs" />
@@ -1520,6 +1523,7 @@
     <Compile Include="Areas\Regulatory\Models\DAO\BrandExportDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\CompanyInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\CompanyLicenseDAO.cs" />
+    <Compile Include="Areas\Regulatory\Models\DAO\CompanyUnitInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\CountryInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\CurrencyInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\DepartmentInfoDAO.cs" />

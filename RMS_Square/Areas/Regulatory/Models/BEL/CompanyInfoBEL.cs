@@ -14,7 +14,8 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string EmailId { get; set; }
         public string Facility { get; set; }
         public string LicenseNo { get; set; }
-
+        // New: include unit data from COMPANY_UNIT_INFO
+        public List<CompanyUnitInfoBEL> Units { get; set; } = new List<CompanyUnitInfoBEL>();
 
     }
 }

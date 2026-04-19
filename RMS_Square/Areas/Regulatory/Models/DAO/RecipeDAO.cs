@@ -121,38 +121,179 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             }
         }
 
-        public IList<RecipeBEL> GetAllInfo(RecipeBEL model, string orderBy)
+        /*   public IList<RecipeBEL> GetAllInfo(RecipeBEL model, string orderBy)
+           {
+               var query = new StringBuilder();
+               query.Append(" SELECT D.ID, D.SLNO,D.REVISION_NO,D.COMPANY_CODE,D.PRODUCT_CODE,D.MEETING_TYPE,D.MANUFACTURING_TYPE,D.DCC_NO,TO_CHAR(D.RECEIVE_DATE, 'dd/mm/yyyy')RECEIVE_DATE,");
+               query.Append(" TO_CHAR(D.PROPOSAL_DATE, 'dd/mm/yyyy')PROPOSAL_DATE,TO_CHAR(D.IMPORT_PROPOSAL_DATE, 'dd/mm/yyyy')IMPORT_PROPOSAL_DATE,TO_CHAR(D.IMPORT_SUBMISSION_DATE, 'dd/mm/yyyy')IMPORT_SUBMISSION_DATE,");
+               query.Append(" TO_CHAR(D.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE,TO_CHAR(D.MEETING_DATE, 'dd/mm/yyyy')MEETING_DATE,TO_CHAR(D.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE,");
+               query.Append(" TO_CHAR(D.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,TO_CHAR(D.DATE_OF_EXTENSION, 'dd/mm/yyyy')DATE_OF_EXTENSION,TO_CHAR(D.INSPECTION_DATE, 'dd/mm/yyyy')INSPECTION_DATE,");
+               query.Append(" D.MEETING_REMARKS,D.COUNTRY_CODE,D.MANUFACTURER_NAME,D.IMPORT_REMARKS,D.APPROVAL_STATUS,D.REMARKS,D.INSPECTION_REMARKS,D.INSPECTION_STATUS,D.PROPOSED_BY,");
+               query.Append(" D.NOTIFICATION_DAYS,TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON, P.PRODUCT_CATEGORY,P.BRAND_NAME,P.PRODUCT_SPECIFICATION,");
+               query.Append(" C.COMPANY_NAME,C.LICENSE_NO,P.SAP_PRODUCT_CODE,P.GENERIC_CODE,P.INTRODUCED_BANGLADESH,P.PACK_SIZE_NAME,DF.DOSAGE_FORM_NAME");
+               query.Append(" FROM RECIPE_INFO D");
+               query.Append(" LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=D.COMPANY_CODE");
+               query.Append(" LEFT JOIN  PRODUCT_INFO P ON P.PRODUCT_CODE=D.PRODUCT_CODE");
+               query.Append(" LEFT JOIN  DOSAGE_FORM_INFO DF ON DF.DOSAGE_FORM_CODE=P.DOSAGE_FORM_CODE");
+               query.Append(" WHERE D.IS_DELETE <>'Y' " );
+               query.Append(" AND P.STATUS = 'Active' " );
+
+               if (!string.IsNullOrEmpty(model.CompanyCode))
+               {
+                   query.Append(" AND  D.COMPANY_CODE='{0}'");
+               }
+               if (!string.IsNullOrEmpty(model.ProductCode))
+               {
+                   query.Append(" AND  D.PRODUCT_CODE='{1}'");
+               }
+               if (!string.IsNullOrEmpty(model.MeetingType) && !model.MeetingType.Equals("All"))
+               {
+                   query.Append(" AND  D.MEETING_TYPE='{2}'");
+               }
+               if (!string.IsNullOrEmpty(model.ManufacturerType) && !model.ManufacturerType.Equals("All"))
+               {
+                   query.Append(" AND  D.MANUFACTURING_TYPE='{3}'");
+               }
+               if (model.ChooseOption != "All")
+               {
+                   if (model.ChooseOption == "SubmissionDate")
+                   {
+                       if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
+                       {
+                           query.Append(" AND D.SUBMISSION_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(model.FromDate) + "','yyyy/mm/dd') AND TO_DATE('" + General.SetDateStrYYYYMMDD(model.ToDate) + "','yyyy/mm/dd') ");
+                       }
+                   }
+                   else if (model.ChooseOption == "ApprovalDate")
+                   {
+                       if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
+                       {
+                           query.Append(" AND D.APPROVAL_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(model.FromDate) + "','yyyy/mm/dd') AND TO_DATE('" + General.SetDateStrYYYYMMDD(model.ToDate) + "','yyyy/mm/dd') ");
+                       }
+                   }
+                   else
+                   {
+                       if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
+                       {
+                           query.Append(" AND D.PROPOSAL_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(model.FromDate) + "','yyyy/mm/dd') AND TO_DATE('" + General.SetDateStrYYYYMMDD(model.ToDate) + "','yyyy/mm/dd') ");
+                       }
+                   }
+               }
+               else
+               {
+                   if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
+                   {
+                       query.Append(" AND ( D.SUBMISSION_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(model.FromDate) + "','yyyy/mm/dd') AND TO_DATE('" + General.SetDateStrYYYYMMDD(model.ToDate) + "','yyyy/mm/dd') ");
+                       query.Append(" OR D.PROPOSAL_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(model.FromDate) + "','yyyy/mm/dd') AND TO_DATE('" + General.SetDateStrYYYYMMDD(model.ToDate) + "','yyyy/mm/dd') ");
+                       query.Append(" OR D.APPROVAL_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(model.FromDate) + "','yyyy/mm/dd') AND TO_DATE('" + General.SetDateStrYYYYMMDD(model.ToDate) + "','yyyy/mm/dd')) ");
+                   }
+               }
+
+               //if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
+               //{
+               //    query.Append(" AND TO_DATE(D.SUBMISSION_DATE,'dd/mm/yyyy') BETWEEN TO_DATE('" + model.FromDate + "','dd/MM/yyyy') AND TO_DATE('" + model.ToDate + "','dd/MM/yyyy') ");
+               //}
+               if (!string.IsNullOrEmpty(orderBy))
+               {
+                   query.Append(" ORDER BY  D.ID " + orderBy);
+               }
+               DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString(), model.CompanyCode, model.ProductCode, model.MeetingType, model.ManufacturerType));
+
+               var item = (from DataRow row in dt.Rows
+                           select new RecipeBEL
+                           {
+                               ID = Convert.ToInt64(row["ID"]),
+                               RecipeId = Convert.ToInt64(row["ID"]),
+                               SlNo = row["SLNO"].ToString(),
+                               RevisionNo = row["REVISION_NO"].ToString(),
+                               CompanyCode = row["COMPANY_CODE"].ToString(),
+                               CompanyName = row["COMPANY_NAME"].ToString(),
+                               LicenseNo = row["LICENSE_NO"].ToString(),
+                               ProductCode = row["PRODUCT_CODE"].ToString(),
+                               SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
+                               GenAndStrength = row["GENERIC_CODE"].ToString(),
+                               PackSizeName = row["PACK_SIZE_NAME"].ToString(),
+                               DosageFormName = row["DOSAGE_FORM_NAME"].ToString(),
+                               IntroducedInBD = row["INTRODUCED_BANGLADESH"].ToString(),
+                               MeetingType = row["MEETING_TYPE"].ToString(),
+                               ManufacturerType = row["MANUFACTURING_TYPE"].ToString(),
+                               DccNo = row["DCC_NO"].ToString(),
+                               ReceivedDate = row["RECEIVE_DATE"].ToString(),
+                               ProposalDate = row["PROPOSAL_DATE"].ToString(),
+                               ImportProposalDate = row["IMPORT_PROPOSAL_DATE"].ToString(),
+                               ImportSubmissionDate = row["IMPORT_SUBMISSION_DATE"].ToString(),
+                               ApvSubmissionDate = row["SUBMISSION_DATE"].ToString(),
+                               ApvMeetingDate = row["MEETING_DATE"].ToString(),
+                               ApvApprovalDate = row["APPROVAL_DATE"].ToString(),
+                               ApvValidUptoDate = row["VALID_UPTO"].ToString(),
+                               ApvDateOfExtension = row["DATE_OF_EXTENSION"].ToString(),
+                               InspectionDate = row["INSPECTION_DATE"].ToString(),
+                               MeetingRemarks = row["MEETING_REMARKS"].ToString(),
+                               CountryOfOrigin = row["COUNTRY_CODE"].ToString(),
+                               ManufacturerName = row["MANUFACTURER_NAME"].ToString(),
+                               ImportRemarks = row["IMPORT_REMARKS"].ToString(),
+                               ApprovalStatus = row["APPROVAL_STATUS"].ToString(),
+                               ApvRemarks = row["REMARKS"].ToString(),
+                               InspectionRemarks = row["INSPECTION_REMARKS"].ToString(),
+                               ProposedBy = row["PROPOSED_BY"].ToString(),
+                              // Ins = row["INSPECTION_STATUS"].ToString(),
+                               AlarmDays = row["NOTIFICATION_DAYS"].ToString(),
+                               SetOn = row["SET_ON"].ToString(),
+                               ProductCategory=row["PRODUCT_CATEGORY"].ToString(),
+                               BrandName=row["BRAND_NAME"].ToString(),
+                               ProductSpecification = row["PRODUCT_SPECIFICATION"].ToString()
+                           }).ToList();
+               return item;
+           }*/
+
+
+        
+public IList<RecipeBEL> GetAllInfo(RecipeBEL model, string orderBy)
         {
             var query = new StringBuilder();
-            query.Append(" SELECT D.ID, D.SLNO,D.REVISION_NO,D.COMPANY_CODE,D.PRODUCT_CODE,D.MEETING_TYPE,D.MANUFACTURING_TYPE,D.DCC_NO,TO_CHAR(D.RECEIVE_DATE, 'dd/mm/yyyy')RECEIVE_DATE,");
-            query.Append(" TO_CHAR(D.PROPOSAL_DATE, 'dd/mm/yyyy')PROPOSAL_DATE,TO_CHAR(D.IMPORT_PROPOSAL_DATE, 'dd/mm/yyyy')IMPORT_PROPOSAL_DATE,TO_CHAR(D.IMPORT_SUBMISSION_DATE, 'dd/mm/yyyy')IMPORT_SUBMISSION_DATE,");
-            query.Append(" TO_CHAR(D.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE,TO_CHAR(D.MEETING_DATE, 'dd/mm/yyyy')MEETING_DATE,TO_CHAR(D.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE,");
-            query.Append(" TO_CHAR(D.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO,TO_CHAR(D.DATE_OF_EXTENSION, 'dd/mm/yyyy')DATE_OF_EXTENSION,TO_CHAR(D.INSPECTION_DATE, 'dd/mm/yyyy')INSPECTION_DATE,");
-            query.Append(" D.MEETING_REMARKS,D.COUNTRY_CODE,D.MANUFACTURER_NAME,D.IMPORT_REMARKS,D.APPROVAL_STATUS,D.REMARKS,D.INSPECTION_REMARKS,D.INSPECTION_STATUS,D.PROPOSED_BY,");
-            query.Append(" D.NOTIFICATION_DAYS,TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON, P.PRODUCT_CATEGORY,P.BRAND_NAME,P.PRODUCT_SPECIFICATION,");
-            query.Append(" C.COMPANY_NAME,C.LICENSE_NO,P.SAP_PRODUCT_CODE,P.GENERIC_CODE,P.INTRODUCED_BANGLADESH,P.PACK_SIZE_NAME,DF.DOSAGE_FORM_NAME");
-            query.Append(" FROM RECIPE_INFO D");
-            query.Append(" LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=D.COMPANY_CODE");
-            query.Append(" LEFT JOIN  PRODUCT_INFO P ON P.PRODUCT_CODE=D.PRODUCT_CODE");
-            query.Append(" LEFT JOIN  DOSAGE_FORM_INFO DF ON DF.DOSAGE_FORM_CODE=P.DOSAGE_FORM_CODE");
-            query.Append(" WHERE D.IS_DELETE <>'Y' " );
-            query.Append(" AND P.STATUS = 'Active' " );
+
+            // Make sure D.PRODUCT_CODE is here to avoid the DataTable missing column error
+            query.Append(" SELECT D.ID, D.SLNO, D.REVISION_NO, D.COMPANY_CODE, D.PRODUCT_CODE, ");
+
+            // Add the Unit Name from our new JOIN
+            query.Append(" CU.COMPANY_UNIT_NAME, ");
+
+            query.Append(" D.MEETING_TYPE, D.MANUFACTURING_TYPE, D.DCC_NO, TO_CHAR(D.RECEIVE_DATE, 'dd/mm/yyyy')RECEIVE_DATE, ");
+            query.Append(" TO_CHAR(D.PROPOSAL_DATE, 'dd/mm/yyyy')PROPOSAL_DATE, TO_CHAR(D.IMPORT_PROPOSAL_DATE, 'dd/mm/yyyy')IMPORT_PROPOSAL_DATE, TO_CHAR(D.IMPORT_SUBMISSION_DATE, 'dd/mm/yyyy')IMPORT_SUBMISSION_DATE, ");
+            query.Append(" TO_CHAR(D.SUBMISSION_DATE, 'dd/mm/yyyy')SUBMISSION_DATE, TO_CHAR(D.MEETING_DATE, 'dd/mm/yyyy')MEETING_DATE, TO_CHAR(D.APPROVAL_DATE, 'dd/mm/yyyy')APPROVAL_DATE, ");
+            query.Append(" TO_CHAR(D.VALID_UPTO, 'dd/mm/yyyy')VALID_UPTO, TO_CHAR(D.DATE_OF_EXTENSION, 'dd/mm/yyyy')DATE_OF_EXTENSION, TO_CHAR(D.INSPECTION_DATE, 'dd/mm/yyyy')INSPECTION_DATE, ");
+            query.Append(" D.MEETING_REMARKS, D.COUNTRY_CODE, D.MANUFACTURER_NAME, D.IMPORT_REMARKS, D.APPROVAL_STATUS, D.REMARKS, D.INSPECTION_REMARKS, D.INSPECTION_STATUS, D.PROPOSED_BY, ");
+            query.Append(" D.NOTIFICATION_DAYS, TO_CHAR(D.SET_ON, 'dd/mm/yyyy')SET_ON, P.PRODUCT_CATEGORY, P.BRAND_NAME, P.PRODUCT_SPECIFICATION, ");
+
+            // Selecting the standard Company fields
+            query.Append(" C.COMPANY_NAME, C.LICENSE_NO, P.SAP_PRODUCT_CODE, P.GENERIC_CODE, P.INTRODUCED_BANGLADESH, P.PACK_SIZE_NAME ");
+
+            query.Append(" FROM RECIPE_INFO D ");
+
+            // 1. Join Recipe Info (D.COMPANY_CODE is 6 digits) to Unit Info (COMPANY_UNIT_CODE is 6 digits)
+            query.Append(" LEFT JOIN COMPANY_UNIT_INFO CU ON D.COMPANY_CODE = CU.COMPANY_UNIT_CODE ");
+
+            // 2. Join Unit Info (COMPANY_CODE is 4 digits) to Company Info (COMPANY_CODE is 4 digits)
+            query.Append(" LEFT JOIN COMPANY_INFO C ON CU.COMPANY_CODE = C.COMPANY_CODE ");
+
+            query.Append(" LEFT JOIN PRODUCT_INFO P ON P.PRODUCT_CODE = D.PRODUCT_CODE ");
+            query.Append(" WHERE D.IS_DELETE <> 'Y' ");
+            query.Append(" AND P.STATUS = 'Active' ");
 
             if (!string.IsNullOrEmpty(model.CompanyCode))
             {
-                query.Append(" AND  D.COMPANY_CODE='{0}'");
+                query.Append(" AND D.COMPANY_CODE='{0}'");
             }
             if (!string.IsNullOrEmpty(model.ProductCode))
             {
-                query.Append(" AND  D.PRODUCT_CODE='{1}'");
+                query.Append(" AND D.PRODUCT_CODE='{1}'");
             }
             if (!string.IsNullOrEmpty(model.MeetingType) && !model.MeetingType.Equals("All"))
             {
-                query.Append(" AND  D.MEETING_TYPE='{2}'");
+                query.Append(" AND D.MEETING_TYPE='{2}'");
             }
             if (!string.IsNullOrEmpty(model.ManufacturerType) && !model.ManufacturerType.Equals("All"))
             {
-                query.Append(" AND  D.MANUFACTURING_TYPE='{3}'");
+                query.Append(" AND D.MANUFACTURING_TYPE='{3}'");
             }
             if (model.ChooseOption != "All")
             {
@@ -187,15 +328,12 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                     query.Append(" OR D.APPROVAL_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(model.FromDate) + "','yyyy/mm/dd') AND TO_DATE('" + General.SetDateStrYYYYMMDD(model.ToDate) + "','yyyy/mm/dd')) ");
                 }
             }
-           
-            //if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
-            //{
-            //    query.Append(" AND TO_DATE(D.SUBMISSION_DATE,'dd/mm/yyyy') BETWEEN TO_DATE('" + model.FromDate + "','dd/MM/yyyy') AND TO_DATE('" + model.ToDate + "','dd/MM/yyyy') ");
-            //}
+
             if (!string.IsNullOrEmpty(orderBy))
             {
-                query.Append(" ORDER BY  D.ID " + orderBy);
+                query.Append(" ORDER BY D.ID " + orderBy);
             }
+
             DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), string.Format(query.ToString(), model.CompanyCode, model.ProductCode, model.MeetingType, model.ManufacturerType));
 
             var item = (from DataRow row in dt.Rows
@@ -205,14 +343,19 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                             RecipeId = Convert.ToInt64(row["ID"]),
                             SlNo = row["SLNO"].ToString(),
                             RevisionNo = row["REVISION_NO"].ToString(),
+
+                            // This stores the 6-digit combined code
                             CompanyCode = row["COMPANY_CODE"].ToString(),
+
+                            // Maps the new column to your C# object
+                            CompanyUnitName = row["COMPANY_UNIT_NAME"] != DBNull.Value ? row["COMPANY_UNIT_NAME"].ToString() : "",
+
                             CompanyName = row["COMPANY_NAME"].ToString(),
                             LicenseNo = row["LICENSE_NO"].ToString(),
                             ProductCode = row["PRODUCT_CODE"].ToString(),
                             SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
                             GenAndStrength = row["GENERIC_CODE"].ToString(),
                             PackSizeName = row["PACK_SIZE_NAME"].ToString(),
-                            DosageFormName = row["DOSAGE_FORM_NAME"].ToString(),
                             IntroducedInBD = row["INTRODUCED_BANGLADESH"].ToString(),
                             MeetingType = row["MEETING_TYPE"].ToString(),
                             ManufacturerType = row["MANUFACTURING_TYPE"].ToString(),
@@ -235,15 +378,15 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                             ApvRemarks = row["REMARKS"].ToString(),
                             InspectionRemarks = row["INSPECTION_REMARKS"].ToString(),
                             ProposedBy = row["PROPOSED_BY"].ToString(),
-                           // Ins = row["INSPECTION_STATUS"].ToString(),
                             AlarmDays = row["NOTIFICATION_DAYS"].ToString(),
                             SetOn = row["SET_ON"].ToString(),
-                            ProductCategory=row["PRODUCT_CATEGORY"].ToString(),
-                            BrandName=row["BRAND_NAME"].ToString(),
+                            ProductCategory = row["PRODUCT_CATEGORY"].ToString(),
+                            BrandName = row["BRAND_NAME"].ToString(),
                             ProductSpecification = row["PRODUCT_SPECIFICATION"].ToString()
                         }).ToList();
             return item;
         }
+
 
         public IList<RecipeBEL> GetAllRecipeForAnnex(RecipeBEL model, string orderBy)
         {

@@ -50,11 +50,24 @@
                 <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" placeholder="Press Any" readonly />
             </div>
             <div class="col-sm-1">@*<button id="btnFind" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>*@</div>
-            <div class="col-sm-2">Name & LicenseNo :</div>
+            <div class="col-sm-2">Name :</div>
             <div class="col-sm-3"><input type="text" id="CompanyName" name="CompanyName" class="form-control" readonly /></div>
-            <div class="col-sm-2"><input type="text" id="LicenseNo" name="LicenseNo" class="form-control" readonly /></div>
-        </div>
+             </div>
     </div>
+    <div class="form-group">
+    <div class="row">
+        <div class="col-sm-2"> Unit Code:</div>
+        <div class="col-sm-2"><input type="text" id="CompanyUnitCode" name="CompanyUnitCode" readonly="readonly" class="form-control" placeholder="Auto" /></div>
+
+        <div class="col-sm-1"></div>
+
+        <div class="col-sm-2"> Unit Name:</div>
+        <div class="col-sm-3">
+            <input type="text" id="CompanyUnitName" name="CompanyUnitName" readonly="readonly" class="form-control" placeholder="Auto" />
+        </div>
+
+    </div>
+</div>
     <div class="form-group">
         <fieldset class="panel-border">
             <legend class="panel-border">Product Information :</legend>
@@ -82,11 +95,11 @@
                     <div class="col-sm-2">
                         <input type="text" id="IntroducedInBD" name="IntroducedInBD" class="form-control txtBox" readonly />
                     </div>
-                    <div class="col-sm-1">SAP Code</div>
+                   @* <div class="col-sm-1">SAP Code</div>
                     <div class="col-sm-2"><input type="text" id="SAPProductCode" name="SAPProductCode" class="form-control" readonly /></div>
-                </div>
+                *@</div>
             </div>
-            <div class="form-group">
+            <!--<div class="form-group">
                 <div class="row">
                     <div class="col-sm-2">Dosage Form :</div>
                     <div class="col-sm-2"><input type="text" id="DosageFormName" name="DosageFormName" class="form-control" readonly /></div>
@@ -95,7 +108,7 @@
                         <div class="col-sm-2">Generic Name & Strength : </div>
                         <div class=" col-sm-3">
                             <textarea class="form-control" id="GenAndStrength" name="GenAndStrength" placeholder="Generic Name and Strength" rows="4" readonly></textarea>
-                        </div>
+                        </div>-->
 
                         @*<div class="col-sm-3">Introduced in Bangladesh </div>
             <div class="col-sm-1">
@@ -103,8 +116,8 @@
             </div>*@
 
 
-                    </div>
-                </div>
+                    <!--</div>
+                </div>-->
         </fieldset>
     </div>
     <div class="form-group">
@@ -383,7 +396,7 @@
         $("#FileGrid").data("kendoGrid").dataSource.data([]);
         DisplayPageView();
     });
-    
+
 
     $('#btnRevision').click(function () {
         $('#ID').val('');
@@ -492,7 +505,7 @@
         //Initializing Main page details Kendo Grid Colums
         var licenseInfoGrid = $('#LicenseInfoGrid').kendoGrid({
             dataSource: licenseInfoDataSource,
-            
+
             pageable: {
                 pageSizes: true, buttonCount: 5
             },
@@ -563,6 +576,8 @@
                         id: "ID",
                         fields: {
                             ID: { type: "string" },
+                            // ADD THIS LINE so Kendo knows to parse it
+                            CompanyUnitName: { type: "string" }
                         }
                     }
                 },
@@ -606,7 +621,9 @@
                  { field: "ID", hidden: true },
                  { field: "SlNo ", title: "RecipeNo", width: 120 },
                  { field: "CompanyCode", title: "CompCode", width: 120 },
-                 { field: "CompanyName", title: "CompanyName", width: 140, filterable: { multi: true } },
+                { field: "CompanyName", title: "CompanyName", width: 140, filterable: { multi: true } },
+                // ADD THIS LINE so the column exists in the row data
+                { field: "CompanyUnitName", hidden: true },
                  { field: "ProductCode", title: "ProductCode", width: 120 },
                  { field: "RevisionNo", title: "RevisionNo", width: 120 },
                  { field: "SAPProductCode", title: "SAPCode", width: 120 },
@@ -628,44 +645,68 @@
 
         }).data('kendoGrid');
 
+      
+
         $('#DisplayPopupWindowGrid').dblclick(function () {
-            var grid = $(this).data('kendoGrid');
-            var selectRow = grid.dataItem(grid.select());
-            DisplayPopupWindow.close();
-            SetMasterData(selectRow);
-            if (selectRow.MeetingType == "Local") {
-                document.getElementById("lgMeetingType").innerHTML = "Local :";
-                $("#divLocal").show();
-            }
-            else {
-                document.getElementById("lgMeetingType").innerHTML = "DCC :";
-                $("#divLocal").show();
-            }
+            debugger
+    var grid = $(this).data('kendoGrid');
+    var selectRow = grid.dataItem(grid.select());
+    DisplayPopupWindow.close();
 
-            if (selectRow.ManufacturerType == "Import") {
-                $("#divImportInfo").show();
-            }
-            else {
-                $("#divImportInfo").hide();
-            }
-            if (selectRow.ApprovalStatus == "Inspection") {
-                $("#divInspection").show();
-            }
-            else {
-                $("#divInspection").hide();
-            }
-            $('#btnFind').attr('disabled', 'disabled');
-            $('#btnFindProduct').attr('disabled', 'disabled');
+    // --- START OF FRONTEND FIX ---
+    // selectRow.CompanyCode currently holds the full 6-digit unit code (e.g., "123456")
+    var fullUnitCode = selectRow.CompanyCode || "";
 
-            $.ajax({
-                url: '@Url.Action("GetFileByRefId", "RecipeInfo")',
-                type: 'GET',
-                data: { refLevel1: selectRow.ID },
-                success: function (data) {
-                    $("#FileGrid").data("kendoGrid").dataSource.data(data);
-                }
-            });
-        });
+    // Extract the first 4 digits for the base Company Code
+    var baseCompanyCode = fullUnitCode.length >= 4 ? fullUnitCode.substring(0, 4) : fullUnitCode;
+
+    // Populate the UI textboxes
+    $('#CompanyUnitCode').val(fullUnitCode);         // Sets "123456"
+    $('#CompanyCode').val(baseCompanyCode);          // Sets "1234"
+           $('#CompanyName').val(selectRow.CompanyName);    // Sets the name from the SQL JOIN
+           $('#CompanyUnitName').val(selectRow.CompanyUnitName);    // Shows your newly joined Unit Name!
+
+    // Because RecipeBEL does not have a CompanyUnitName property, we clear it.
+    // If you need the unit name text to appear, you would need to make a quick AJAX call here
+    // using the fullUnitCode to fetch the unit name from COMPANY_UNIT_INFO.
+    $('#CompanyUnitName').val('');
+    // --- END OF FRONTEND FIX ---
+
+    SetMasterData(selectRow);
+
+    if (selectRow.MeetingType == "Local") {
+        document.getElementById("lgMeetingType").innerHTML = "Local :";
+        $("#divLocal").show();
+    }
+    else {
+        document.getElementById("lgMeetingType").innerHTML = "DCC :";
+        $("#divLocal").show();
+    }
+
+    if (selectRow.ManufacturerType == "Import") {
+        $("#divImportInfo").show();
+    }
+    else {
+        $("#divImportInfo").hide();
+    }
+    if (selectRow.ApprovalStatus == "Inspection") {
+        $("#divInspection").show();
+    }
+    else {
+        $("#divInspection").hide();
+    }
+    $('#btnFind').attr('disabled', 'disabled');
+    $('#btnFindProduct').attr('disabled', 'disabled');
+
+    $.ajax({
+        url: '@Url.Action("GetFileByRefId", "RecipeInfo")',
+        type: 'GET',
+        data: { refLevel1: selectRow.ID },
+        success: function (data) {
+            $("#FileGrid").data("kendoGrid").dataSource.data(data);
+        }
+    });
+});
 
         //Produc Name wise Filter table row
         $("#txtPopupInput").keyup(function () {
@@ -712,7 +753,7 @@
         }).data("kendoWindow").center();
 
 
-        $('#btnFind').click(function () {
+       @* $('#btnFind').click(function () {
             CompanyWindow.open();
             $.ajax({
                 url: '@Url.Action("GetAllCompany", "General")',
@@ -745,7 +786,80 @@
                     }
                 }
             });
-        });
+        });*@
+
+       $('#btnFind').click(function () {
+    CompanyWindow.open();
+    $.ajax({
+        url: '@Url.Action("GetAllCompany", "General")',
+        method: 'get',
+        data: 'json',
+        success: function (data) {
+
+            var flatData = [];
+
+            $.each(data, function (i, company) {
+
+                if (company.Units && company.Units.length > 0) {
+                    $.each(company.Units, function (j, unit) {
+                        flatData.push({
+                            CompanyCode: company.CompanyCode,
+                            CompanyName: company.CompanyName,
+                            LicenseNo: company.LicenseNo,
+                            CompanyUnitCode: unit.CompanyUnitCode,
+                            CompanyUnitName: unit.CompanyUnitName
+                        });
+                    });
+                } else {
+                    flatData.push({
+                        CompanyCode: company.CompanyCode,
+                        CompanyName: company.CompanyName,
+                        LicenseNo: company.LicenseNo,
+                        CompanyUnitCode: "",
+                        CompanyUnitName: ""
+                    });
+                }
+            });
+
+            $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(flatData);
+        }
+    });
+});
+$("#CompanyCode").on('keyup keypress keydown click dblclick', function (e) {
+    CompanyWindow.open();
+    $.ajax({
+        url: '@Url.Action("GetAllCompany", "General")',
+        method: 'get',
+        data: 'json',
+        success: function (data) {
+
+            var flatData = [];
+
+            $.each(data, function (i, company) {
+
+                if (company.Units && company.Units.length > 0) {
+                    $.each(company.Units, function (j, unit) {
+                        flatData.push({
+                            CompanyCode: company.CompanyCode,
+                            CompanyName: company.CompanyName,
+                            CompanyUnitCode: unit.CompanyUnitCode,
+                            CompanyUnitName: unit.CompanyUnitName
+                        });
+                    });
+                } else {
+                    flatData.push({
+                        CompanyCode: company.CompanyCode,
+                        CompanyName: company.CompanyName,
+                        CompanyUnitCode: "",
+                        CompanyUnitName: ""
+                    });
+                }
+            });
+
+            $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(flatData);
+        }
+    });
+});
         //Initializing Main page details Kendo Grid Colums
         var companyGrid = $('#CompanyWindowGrid').kendoGrid({
             dataSource: new kendo.data.DataSource({
@@ -755,6 +869,7 @@
                         id: "CompanyCode",
                         fields: {
                             CompanyCode: { type: "string" },
+                            Units: { defaultValue: [] }
                         }
                     }
                 },
@@ -770,7 +885,7 @@
             editable: false,
             selectable: "row",
             //selectable: "multiple",
-            toolbar: [{ template: "<input type='text' id='txtCompanyKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
+            toolbar: [{ template: "<input type='text' id='txtCompanyKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" },],
             navigatable: true,
             height: 430,
             // groupable: true,
@@ -779,10 +894,10 @@
             reorderable: true,
             resizable: true,
             columns: [
-                 { field: "CompanyCode", title: "CompanyCode", width: 80 },
-                 { field: "CompanyName", title: "CompanyName", width: 100 },
-                 { field: "Address", title: "CompanyAddress", width: 160 },
-                 { field: "LicenseNo", title: "LicenseType & No", width: 120 }
+                { field: "CompanyCode", title: "CompanyCode", width: 80 },
+                { field: "CompanyName", title: "CompanyName", width: 100, filterable: { multi: true } },
+                { field: "CompanyUnitCode", title: "CompanyUnitCode", width: 160 },
+                { field: "CompanyUnitName", title: "CompanyUnitName", width: 80 }
             ]
 
         }).data('kendoGrid');
@@ -792,8 +907,8 @@
             var selectRow = grid.dataItem(grid.select());
             $('#CompanyCode').val(selectRow.CompanyCode);
             $('#CompanyName').val(selectRow.CompanyName);
-            $('#LicenseNo').val(selectRow.LicenseNo);
-           // SetMasterData(selectRow);
+            $('#CompanyUnitCode').val(selectRow.CompanyUnitCode);
+            $('#CompanyUnitName').val(selectRow.CompanyUnitName);
             CompanyWindow.close();
             changeAny = 1;
 
@@ -824,12 +939,18 @@
         }).data("kendoWindow").center();
 
 
-        $('#btnFindProduct').click(function () {
+        $('#btnFindProduct').click(function () {d
+            // Validate company selected before opening product list
+            var selectedCompany = $('#CompanyUnitCode').val();
+            if (!selectedCompany || selectedCompany.trim() === "") {
+                toastr.warning('Please select a company first.');
+                return;
+            }
             ProductWindow.open();
             $.ajax({
                 url: '@Url.Action("GetAllActiveProduct", "General")',
                 type: 'GET',
-                data: { "companyCode": $('#CompanyCode').val() },
+                data: { "companyCode": selectedCompany },
                 success: function (data) {
                     if (data != "") {
                         $('#ProductWindowGrid').data('kendoGrid').dataSource.data(data);
@@ -842,11 +963,17 @@
             });
         });
         $("#ProductCode").on('keyup keypress keydown click dblclick', function (e) {
+            // Validate company selected before opening product list
+            var selectedCompany = $('#CompanyUnitCode').val();
+            if (!selectedCompany || selectedCompany.trim() === "") {
+                toastr.warning('Please select a company first.');
+                return;
+            }
             ProductWindow.open();
             $.ajax({
                 url: '@Url.Action("GetAllActiveProduct", "General")',
                 type: 'GET',
-                data: { "companyCode": $('#CompanyCode').val() },
+                data: { "companyCode": selectedCompany },
                 success: function (data) {
                     if (data != "") {
                         $('#ProductWindowGrid').data('kendoGrid').dataSource.data(data);
@@ -1036,7 +1163,7 @@
                     model.ID = $('#ID').val();
                     model.SlNo = $('#SlNo').val();
                     model.RevisionNo = $('#RevisionNo').val();
-                    model.CompanyCode = $('#CompanyCode').val();
+                    model.CompanyCode = $('#CompanyUnitCode').val();
                     model.ProductCode = $('#ProductCode').val();
                     model.MeetingType = $('#MeetingType').val();
                     model.ManufacturerType = $('#ManufacturerType').val();
