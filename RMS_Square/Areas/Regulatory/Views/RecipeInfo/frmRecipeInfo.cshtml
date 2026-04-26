@@ -73,16 +73,20 @@
             <legend class="panel-border">Product Information :</legend>
             <div class="form-group">
                 <div class="row">
-                    <div class="col-sm-2">Product Code<span style="color: red">*</span> : </div>
+                    <div class="col-sm-2">Serial No :<span style="color: red">*</span> : </div>
                     <div class="col-sm-2">
-                        <input type="text" id="ProductCode" name="ProductCode" class="form-control txtBox" placeholder="Press Any"  readonly />
+                        <input type="text" id="ProductCode" name="ProductCode" class="form-control txtBox" placeholder="Press Any" readonly />
                     </div>
                     <div class="col-sm-1">@*<button id="btnFindProduct" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>*@</div>
-                 
-                    <div class="col-sm-2">PackSize:</div>
-                    <div class="col-sm-5"><input type="text" id="PackSizeName" name="PackSizeName" class="form-control" readonly /></div>
-                </div>
+                    <div class="col-sm-2">
+                        Product Code :
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text" id="SAPProductCode" name="SAPProductCode" class="form-control txtBox" readonly />
+                    </div>
+                 </div>
             </div>
+
             <div class="form-group">
                 <div class="row">
                     <div class="col-sm-2">
@@ -91,33 +95,41 @@
                     <div class="col-sm-2">
                         <input type="text" id="ProductSpecification" name="ProductSpecification" class="form-control txtBox" readonly />
                     </div>
-                    <div class="col-sm-3">Introduced in Bangladesh : </div>
-                    <div class="col-sm-2">
-                        <input type="text" id="IntroducedInBD" name="IntroducedInBD" class="form-control txtBox" readonly />
+                    <div class="col-sm-1"></div>
+                        <div class="col-sm-2">Introduced in Bangladesh : </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="IntroducedInBD" name="IntroducedInBD" class="form-control txtBox" readonly />
+                        </div>
+                        @* <div class="col-sm-1">SAP Code</div>
+            <div class="col-sm-2"><input type="text" id="SAPProductCode" name="SAPProductCode" class="form-control" readonly /></div>
+                        *@
                     </div>
-                   @* <div class="col-sm-1">SAP Code</div>
-                    <div class="col-sm-2"><input type="text" id="SAPProductCode" name="SAPProductCode" class="form-control" readonly /></div>
-                *@</div>
+                </div>
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-2">PackSize:</div>
+                    <div class="col-sm-5"><input type="text" id="PackSizeName" name="PackSizeName" class="form-control" readonly /></div>
+                </div>
             </div>
             <!--<div class="form-group">
-                <div class="row">
-                    <div class="col-sm-2">Dosage Form :</div>
-                    <div class="col-sm-2"><input type="text" id="DosageFormName" name="DosageFormName" class="form-control" readonly /></div>
-                   
-
-                        <div class="col-sm-2">Generic Name & Strength : </div>
-                        <div class=" col-sm-3">
-                            <textarea class="form-control" id="GenAndStrength" name="GenAndStrength" placeholder="Generic Name and Strength" rows="4" readonly></textarea>
-                        </div>-->
-
-                        @*<div class="col-sm-3">Introduced in Bangladesh </div>
-            <div class="col-sm-1">
-                <input type="text" id="IntroducedInBD" name="IntroducedInBD" class="form-control txtBox" readonly />
-            </div>*@
+    <div class="row">
+        <div class="col-sm-2">Dosage Form :</div>
+        <div class="col-sm-2"><input type="text" id="DosageFormName" name="DosageFormName" class="form-control" readonly /></div>
 
 
-                    <!--</div>
-                </div>-->
+            <div class="col-sm-2">Generic Name & Strength : </div>
+            <div class=" col-sm-3">
+                <textarea class="form-control" id="GenAndStrength" name="GenAndStrength" placeholder="Generic Name and Strength" rows="4" readonly></textarea>
+            </div>-->
+            @*<div class="col-sm-3">Introduced in Bangladesh </div>
+        <div class="col-sm-1">
+            <input type="text" id="IntroducedInBD" name="IntroducedInBD" class="form-control txtBox" readonly />
+        </div>*@
+
+
+            <!--</div>
+    </div>-->
         </fieldset>
     </div>
     <div class="form-group">
@@ -625,9 +637,9 @@
                 { field: "CompanyUnitCode", title: "UnitCode", width: 120 },
                 // ADD THIS LINE so the column exists in the row data
                 { field: "CompanyUnitName", title: "UnitName", width: 140, filterable: { multi: true } },
-                 { field: "ProductCode", title: "ProductCode", width: 120 },
+                 { field: "ProductCode", title: "SerialNo", width: 120 },
                  { field: "RevisionNo", title: "RevisionNo", width: 120 },
-                 { field: "SAPProductCode", title: "SAPCode", width: 120 },
+                 { field: "SAPProductCode", title: "ProductCode", width: 120 },
                  { field: "BrandName", title: "BrandName", width: 120, filterable: { multi: true } },
                  /*{ field: "GenAndStrength", title: "GenericAndStrength", width: 360 },*/
                  { field: "ProductSpecification", title: "ProductSpec", width: 120 },
@@ -1019,11 +1031,11 @@ $("#CompanyCode").on('keyup keypress keydown click dblclick', function (e) {
             reorderable: true,
             resizable: true,
             columns: [
-                 { field: "ProductCode", title: "ProductCode", width: 120 },
-                 { field: "SAPProductCode", title: "SapProductCode", width: 120 },
+                 { field: "ProductCode", title: "SerialNo", width: 120 },
+                 { field: "SAPProductCode", title: "ProductCode", width: 120 },
                  { field: "PackSizeName", title: "PackSize", width: 80 },
                  { field: "BrandName", title: "BrandName", width: 100 },
-                 { field: "GenAndStrength", title: "GenericAndStrength", width: 350 },
+                 //{ field: "GenAndStrength", title: "GenericAndStrength", width: 350 },
                  { field: "ProductSpecification", title: "ProductSpec", width: 120 },
             ]
 

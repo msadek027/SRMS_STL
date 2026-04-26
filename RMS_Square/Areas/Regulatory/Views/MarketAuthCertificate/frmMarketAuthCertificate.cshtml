@@ -67,7 +67,7 @@
             <legend class="panel-border">Product Information :</legend>
             <div class="form-group">
                 <div class="row">
-                    <div class="col-lg-2">Product Code<span style="color: red">*</span></div>
+                    <div class="col-lg-2">Serial No<span style="color: red">*</span></div>
                     <div class="col-lg-2"><input type="text" maxlength="50" id="ProductCode" name="ProductCode" readonly="readonly" class="RequiredField form-control" /></div>
                     <div class="col-lg-1"><button id="btnFindProd" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button></div>
                     <div class="col-lg-2"></div>
@@ -80,7 +80,10 @@
                     <div class="col-lg-2">Pack Size</div>
                     <div class="col-lg-3"><input type="text" maxlength="50" id="PackSize" name="PackSize" readonly="readonly" class="RequiredField form-control" /></div>
                     <div class="col-lg-1"></div>
-                    </div>
+                    <div class="col-sm-2">Product Code :</div>
+                    <div class="col-sm-3"><input type="text" id="SapProductCode" name="SapProductCode" class="form-control" readonly /></div>
+
+                </div>
             </div>
 
             <div class="form-group">
@@ -345,12 +348,12 @@
                 { field: "CompanyName", locked: true, title: "CompanyName", width: 160 },
                 { field: "CompanyUnitCode", locked: true, title: "UnitCode", width: 160 },
                 { field: "CompanyUnitName", locked: true, title: "UnitName", width: 160 },
-                 { field: "Address", locked: true, title: "Address", width: 160 },
-                 { field: "ProductCode", locked: true, title: "ProductCode", width: 125 },
-                 { field: "SAPProductCode", locked: true, title: "SapCode", width: 120 },
+                 //{ field: "Address", locked: true, title: "Address", width: 160 },
+                 { field: "ProductCode", locked: true, title: "SerialNo", width: 125 },
+                 { field: "SAPProductCode", locked: true, title: "ProductCode", width: 120 },
                  { field: "RevisionNo", locked: true, title: "RevisionNo", width: 100 },
                  { field: "BrandName", title: "BrandName", width: 120 },
-                 { field: "GenericStrength", title: "GenericAndStrength", width: 450 },
+                 //{ field: "GenericStrength", title: "GenericAndStrength", width: 450 },
                  { field: "PackSize", title: "PackSize", width: 120 },
                  { field: "DosageForm", title: "DosageForm", width: 120 },
                  { field: "DarNo", title: "DARNo", width: 120 },
@@ -389,7 +392,7 @@
                 filters: [
                      { field: "ProductCode", operator: "contains", value: val },
                      { field: "SAPProductCode", operator: "contains", value: val },
-                     { field: "GenericStrength", operator: "contains", value: val },
+                     //{ field: "GenericStrength", operator: "contains", value: val },
                      { field: "BrandName", operator: "contains", value: val },
                      { field: "PackSize", operator: "contains", value: val },
                      { field: "DosageForm", operator: "contains", value: val },
@@ -510,7 +513,7 @@
                  { field: "CompanyName", title: "CompanyName", width: 100 },
                 { field: "CompanyUnitCode", title: "UnitCode", width: 100 },
                 { field: "CompanyUnitName", title: "UnitName", width: 100 },
-                 { field: "Address", title: "Address", width: 160 }
+                // { field: "Address", title: "Address", width: 160 }
             ]
 
         }).data('kendoGrid');
@@ -654,10 +657,10 @@
             resizable: true,
             columns: [
 
-                 { field: "ProductCode", locked: true, title: "ProductCode", width: 125 },
-                 { field: "SAPProductCode", locked: true, title: "SapCode", width: 120 },
+                 { field: "ProductCode", locked: true, title: "SerialNo", width: 125 },
+                { field: "SapProductCode", locked: true, title: "ProductCode", width: 120 },
                  { field: "BrandName", title: "BrandName", width: 100 },
-                 { field: "GenericStrength", title: "GenericStrength", width: 450 },
+                 //{ field: "GenericStrength", title: "GenericStrength", width: 450 },
                  { field: "PackSize", title: "PackSize", width: 80 },
                  { field: "DosageForm", title: "DosageForm", width: 100 },
                  { field: "DarNo", title: "DARNo", width: 100 },
@@ -683,7 +686,7 @@
 
                      { field: "ProductCode", operator: "contains", value: val },
                      { field: "SAPProductCode", operator: "contains", value: val },
-                     { field: "GenericStrength", operator: "contains", value: val },
+                     //{ field: "GenericStrength", operator: "contains", value: val },
                      { field: "BrandName", operator: "contains", value: val },
                      { field: "PackSize", operator: "contains", value: val },
                      { field: "DosageForm", operator: "contains", value: val },
