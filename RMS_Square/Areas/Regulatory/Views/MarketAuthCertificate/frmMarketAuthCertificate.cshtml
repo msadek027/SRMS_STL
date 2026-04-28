@@ -81,7 +81,7 @@
                     <div class="col-lg-3"><input type="text" maxlength="50" id="PackSize" name="PackSize" readonly="readonly" class="RequiredField form-control" /></div>
                     <div class="col-lg-1"></div>
                     <div class="col-sm-2">Product Code :</div>
-                    <div class="col-sm-3"><input type="text" id="SapProductCode" name="SapProductCode" class="form-control" readonly /></div>
+                    <div class="col-sm-3"><input type="text" id="SAPProductCode" name="SAPProductCode" class="form-control" readonly /></div>
 
                 </div>
             </div>
@@ -355,7 +355,7 @@
                  { field: "BrandName", title: "BrandName", width: 120 },
                  //{ field: "GenericStrength", title: "GenericAndStrength", width: 450 },
                  { field: "PackSize", title: "PackSize", width: 120 },
-                 { field: "DosageForm", title: "DosageForm", width: 120 },
+                 //{ field: "DosageForm", title: "DosageForm", width: 120 },
                  { field: "DarNo", title: "DARNo", width: 120 },
                  { field: "ReceiveDate", title: "ReceiveDate", width: 120 },
                  { field: "SubmissionDate", title: "SubmissionDate", width: 120 },
@@ -395,7 +395,7 @@
                      //{ field: "GenericStrength", operator: "contains", value: val },
                      { field: "BrandName", operator: "contains", value: val },
                      { field: "PackSize", operator: "contains", value: val },
-                     { field: "DosageForm", operator: "contains", value: val },
+                     //{ field: "DosageForm", operator: "contains", value: val },
                      { field: "DarNo", operator: "contains", value: val },
                 ]
             });
@@ -658,11 +658,11 @@
             columns: [
 
                  { field: "ProductCode", locked: true, title: "SerialNo", width: 125 },
-                { field: "SapProductCode", locked: true, title: "ProductCode", width: 120 },
+                { field: "SAPProductCode", locked: true, title: "ProductCode", width: 120 },
                  { field: "BrandName", title: "BrandName", width: 100 },
                  //{ field: "GenericStrength", title: "GenericStrength", width: 450 },
                  { field: "PackSize", title: "PackSize", width: 80 },
-                 { field: "DosageForm", title: "DosageForm", width: 100 },
+                 //{ field: "DosageForm", title: "DosageForm", width: 100 },
                  { field: "DarNo", title: "DARNo", width: 100 },
                  { field: "BrandName", title: "BrandName", width: 100 }
             ]
@@ -689,7 +689,7 @@
                      //{ field: "GenericStrength", operator: "contains", value: val },
                      { field: "BrandName", operator: "contains", value: val },
                      { field: "PackSize", operator: "contains", value: val },
-                     { field: "DosageForm", operator: "contains", value: val },
+                    // { field: "DosageForm", operator: "contains", value: val },
                      { field: "DarNo", operator: "contains", value: val },
                 ]
             });
