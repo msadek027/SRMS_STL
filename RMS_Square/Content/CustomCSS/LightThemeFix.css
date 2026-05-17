@@ -1,0 +1,351 @@
+﻿/* ============================================================
+   LIGHT THEME FIX — STL Regulatory (AdminLTE + Kendo UI)
+   Add this file as the LAST stylesheet in your _Layout.cshtml
+   <link href="~/Content/CustomCSS/LightThemeFix.css" rel="stylesheet" />
+   ============================================================ */
+
+/* ------ CSS Variables ------ */
+:root {
+    --bg-page: #f0f2f5;
+    --bg-card: #ffffff;
+    --bg-input: #ffffff;
+    --bg-input-auto: #f5f6fa;
+    --border-color: #d1d5db;
+    --text-primary: #1a1d23;
+    --text-secondary: #4b5563;
+    --text-muted: #9ca3af;
+    --text-placeholder: #a0aec0;
+    --accent: #3b5bdb;
+    --accent-hover: #2f4ac2;
+    --accent-light: #eef2ff;
+    --section-border: #c7d2fe;
+    --section-bg: #f8f9ff;
+    --sidebar-bg: #1e2233;
+    --sidebar-text: #cbd5e1;
+    --sidebar-hover: #2d3452;
+    --header-bg: #1e2233;
+    --header-text: #ffffff;
+    --footer-bg: #f8fafc;
+    --shadow-card: 0 1px 4px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+    --radius: 8px;
+    --radius-sm: 5px;
+}
+
+/* ------ Page & Wrapper ------ */
+body,
+.wrapper {
+    background-color: var(--bg-page) !important;
+    color: var(--text-primary) !important;
+}
+
+/* ------ Content Wrapper ------ */
+.content-wrapper {
+    background-color: var(--bg-page) !important;
+    color: var(--text-primary) !important;
+}
+
+/* ------ Header ------ */
+.main-header,
+.main-header .navbar,
+.main-header .logo {
+    background-color: var(--header-bg) !important;
+    border-bottom: 2px solid var(--accent) !important;
+    color: var(--header-text) !important;
+}
+
+    .main-header .navbar .nav > li > a,
+    .main-header .logo span {
+        color: var(--header-text) !important;
+    }
+
+/* ------ Sidebar ------ */
+.main-sidebar,
+.sidebar {
+    background-color: var(--sidebar-bg) !important;
+}
+
+.sidebar-menu > li > a,
+.sidebar-menu > li.treeview > a,
+.treeview-menu > li > a {
+    color: var(--sidebar-text) !important;
+    background-color: transparent !important;
+}
+
+    .sidebar-menu > li > a:hover,
+    .treeview-menu > li > a:hover,
+    .sidebar-menu > li.active > a {
+        background-color: var(--sidebar-hover) !important;
+        color: #ffffff !important;
+    }
+
+.sidebar-menu {
+    background-color: var(--sidebar-bg) !important;
+}
+
+/* ------ Breadcrumb ------ */
+.content-header h1 {
+    color: var(--text-primary) !important;
+}
+
+.breadcrumb {
+    background: transparent !important;
+}
+
+    .breadcrumb > li,
+    .breadcrumb > li a {
+        color: var(--text-secondary) !important;
+    }
+
+    .breadcrumb > .active {
+        color: var(--accent) !important;
+    }
+
+/* ------ Box / Card ------ */
+.box,
+.box.box-primary {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    border-top: 3px solid var(--accent) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow-card) !important;
+    color: var(--text-primary) !important;
+}
+
+.box-body {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+}
+
+/* ------ Form Labels ------ */
+label,
+.control-label,
+td,
+th,
+.form-group label {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+}
+
+/* ------ Inputs, Selects, Textareas ------ */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+input[type="date"],
+select,
+textarea,
+.form-control {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-sm) !important;
+    box-shadow: none !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus,
+    .form-control:focus {
+        border-color: var(--accent) !important;
+        box-shadow: 0 0 0 3px rgba(59,91,219,0.12) !important;
+        outline: none !important;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: var(--text-placeholder) !important;
+        opacity: 1 !important;
+    }
+
+    /* Read-only / Auto-filled inputs */
+    input[readonly],
+    input[disabled],
+    select[disabled],
+    .form-control[readonly] {
+        background-color: var(--bg-input-auto) !important;
+        color: var(--text-secondary) !important;
+        cursor: default !important;
+    }
+
+/* ------ Fieldset / Section panels (License/Renew Info, Upload Documents) ------ */
+fieldset,
+.panel,
+[class*="section"],
+div[style*="border"] {
+    background-color: var(--section-bg) !important;
+    border: 1px solid var(--section-border) !important;
+    border-radius: var(--radius) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Target the inner bordered divs used for "License/Renew Info" etc. */
+.box-body > div[style],
+.content > div[style] {
+    background-color: var(--section-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+/* ------ Buttons ------ */
+.btn-primary,
+button.btn-primary {
+    background-color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #fff !important;
+    border-radius: var(--radius-sm) !important;
+    font-weight: 600 !important;
+    transition: background 0.2s !important;
+}
+
+    .btn-primary:hover {
+        background-color: var(--accent-hover) !important;
+        border-color: var(--accent-hover) !important;
+    }
+
+.btn-default {
+    background-color: #fff !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-sm) !important;
+}
+
+    .btn-default:hover {
+        background-color: var(--accent-light) !important;
+        border-color: var(--accent) !important;
+        color: var(--accent) !important;
+    }
+
+/* Save / Search / Reset / Renew buttons (keep accent but ensure readable) */
+.btn-success {
+    background-color: #16a34a !important;
+    border-color: #16a34a !important;
+    color: #fff !important;
+}
+
+.btn-warning {
+    background-color: #d97706 !important;
+    border-color: #d97706 !important;
+    color: #fff !important;
+}
+
+.btn-danger {
+    background-color: #dc2626 !important;
+    border-color: #dc2626 !important;
+    color: #fff !important;
+}
+
+.btn-info {
+    background-color: #0284c7 !important;
+    border-color: #0284c7 !important;
+    color: #fff !important;
+}
+
+/* ------ Kendo Grid ------ */
+.k-grid,
+.k-grid-header,
+.k-grid-content,
+.k-grid td,
+.k-grid th {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+    .k-grid-header th.k-header {
+        background-color: #eef2ff !important;
+        color: var(--accent) !important;
+        font-weight: 700 !important;
+        border-bottom: 2px solid var(--section-border) !important;
+    }
+
+    .k-grid tr:hover td {
+        background-color: #f0f4ff !important;
+    }
+
+    .k-grid tr.k-alt td {
+        background-color: #f8f9ff !important;
+    }
+
+.k-pager-wrap,
+.k-grid-pager {
+    background-color: #f8f9ff !important;
+    color: var(--text-secondary) !important;
+    border-top: 1px solid var(--border-color) !important;
+}
+
+/* ------ Select2 ------ */
+.select2-container .select2-selection,
+.select2-container--default .select2-selection--single {
+    background-color: var(--bg-input) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-sm) !important;
+    height: 34px !important;
+}
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: var(--text-primary) !important;
+        line-height: 34px !important;
+    }
+
+.select2-dropdown {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.select2-results__option--highlighted {
+    background-color: var(--accent-light) !important;
+    color: var(--accent) !important;
+}
+
+/* ------ Date Picker ------ */
+.datepicker table tr td,
+.datepicker table tr th,
+.datepicker {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+}
+
+    .datepicker table tr td.active,
+    .datepicker table tr td.active:hover {
+        background-color: var(--accent) !important;
+        color: #fff !important;
+    }
+
+/* ------ Footer ------ */
+.main-footer {
+    background-color: var(--footer-bg) !important;
+    border-top: 1px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
+}
+
+/* ------ Section Headings (License/Renew Info, Upload Documents) ------ */
+legend,
+.section-title,
+h4, h5 {
+    color: var(--accent) !important;
+    font-weight: 700 !important;
+    border-bottom: 1px solid var(--section-border) !important;
+    padding-bottom: 4px !important;
+}
+
+/* ------ Table inside forms ------ */
+table {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+}
+
+    table thead tr th {
+        background-color: #eef2ff !important;
+        color: var(--accent) !important;
+    }
+
+    table tbody tr:hover {
+        background-color: #f0f4ff !important;
+    }
+
+/* ------ Toastr (notifications) keep readable ------ */
+#toast-container > div {
+    opacity: 0.97 !important;
+}

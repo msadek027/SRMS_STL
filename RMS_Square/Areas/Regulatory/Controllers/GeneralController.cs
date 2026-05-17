@@ -1,8 +1,10 @@
 ﻿using RMS_Square.Areas.Regulatory.Models.BEL;
 using RMS_Square.Areas.Regulatory.Models.DAO;
 using RMS_Square.DAL.Common;
+using RMS_Square.DAL.Gateway;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -35,6 +37,44 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             var data = new CompanyInfoDAO().GetCompanyList();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+        [AcceptVerbs(HttpVerbs.Get)]
+        public JsonResult GetCompanyUnitByCompany(string companyCode)
+        {
+            try
+            {
+                string sql = @"
+            SELECT 
+                CU.COMPANY_UNIT_CODE,
+                CU.COMPANY_UNIT_NAME,
+                CU.COMPANY_CODE
+            FROM STL_SRMS.COMPANY_UNIT_INFO CU
+            WHERE 1=1
+        ";
+
+                if (!string.IsNullOrEmpty(companyCode))
+                    sql += " AND CU.COMPANY_CODE = '" + companyCode + "'";
+
+                sql += " ORDER BY CU.COMPANY_UNIT_CODE";
+
+                var dbHelper = new DBHelper();
+                DataTable dt = dbHelper.GetDataTable(sql);
+
+                var list = (from DataRow row in dt.Rows
+                            select new
+                            {
+                                CompanyUnitCode = row["COMPANY_UNIT_CODE"].ToString(),
+                                CompanyUnitName = row["COMPANY_UNIT_NAME"].ToString(),
+                                CompanyCode = row["COMPANY_CODE"].ToString()
+                            }).ToList();
+
+                return Json(list, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult GetAllProduct(string companyCode)
         {

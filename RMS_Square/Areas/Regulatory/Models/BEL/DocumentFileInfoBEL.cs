@@ -18,5 +18,6 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string RefLevel2 { get; set; }
         public string SetBy { get; set; }
         public string SetOn { get; set; }
+        public string FilePath { get; set; }
     }
 }

@@ -1078,6 +1078,7 @@
     <Content Include="Content\CustomCSS\animate.css" />
     <Content Include="Content\CustomCSS\GroupPanel.css" />
     <Content Include="Content\CustomCSS\InputText.css" />
+    <Content Include="Content\CustomCSS\LightThemeFix.css" />
     <Content Include="Content\CustomCSS\toastr.css" />
     <Content Include="Content\Images\ajax-loader1.gif" />
     <Content Include="Content\Images\bg_img.jpg" />
@@ -1358,6 +1359,11 @@
     <Content Include="Areas\Regulatory\Views\SourceValidation\frmSourceValidationRpt.cshtml" />
     <Content Include="Areas\Regulatory\Views\NarcoticLicense\frmNarcoticLicenseRpt.cshtml" />
     <Content Include="Areas\Regulatory\Views\CompanyUnitInfo\frmCompanyUnitInfo.cshtml" />
+    <Content Include="Areas\Regulatory\Views\Reports\frmProductRpt.cshtml" />
+    <Content Include="Areas\Regulatory\Views\frmProductRpt.cshtml" />
+    <Content Include="Areas\Regulatory\Views\ProductRpt\frmProductRpt.cshtml" />
+    <Content Include="Areas\Regulatory\Views\ProductDocReport\frmDocumentReport.cshtml" />
+    <Content Include="Areas\Regulatory\Views\CompanyLicenseRpt\frmCompanyLicenseRpt.cshtml" />
     <None Include="Properties\PublishProfiles\RMS_Square.pubxml" />
     <Content Include="Reports\SourceValidationMainRpt.rpt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1448,6 +1454,7 @@
     <Compile Include="Areas\Regulatory\Controllers\BrandExportController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\CompanyInfoController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\CompanyLicenseController.cs" />
+    <Compile Include="Areas\Regulatory\Controllers\CompanyLicenseRptController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\CompanyUnitInfoController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\CountryInfoController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\CurrencyInfoController.cs" />
@@ -1467,6 +1474,7 @@
     <Compile Include="Areas\Regulatory\Controllers\NocInfoController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\PackSizeInfoController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\PriceFixComController.cs" />
+    <Compile Include="Areas\Regulatory\Controllers\ProductDocReportController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\ProductInfoController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\ProductPriceController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\ProductRegController.cs" />
@@ -1482,12 +1490,14 @@
     <Compile Include="Areas\Regulatory\Models\BEL\BlockListBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\BrandExportBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\CompanyLicenseBEL.cs" />
+    <Compile Include="Areas\Regulatory\Models\BEL\CompanyLicenseReportParams.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\CompanyUnitInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\CountryInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\CurrencyInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\DepartmentInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\DesignationInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\DocumentFileInfoBEL.cs" />
+    <Compile Include="Areas\Regulatory\Models\BEL\DocumentReportParams.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\DosageFormInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\EmployeeInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ExportDetailBEL.cs" />
@@ -1510,6 +1520,7 @@
     <Compile Include="Areas\Regulatory\Models\BEL\ProductPriceBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ProductPriceMasterBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ProductRegistrationBEL.cs" />
+    <Compile Include="Areas\Regulatory\Models\BEL\ProductReportParams.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ProductSummaryBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ProductTypeInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\PromotionInfoBEL.cs" />
@@ -1528,6 +1539,7 @@
     <Compile Include="Areas\Regulatory\Models\DAO\CurrencyInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\DepartmentInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\DesignationInfoDAO.cs" />
+    <Compile Include="Areas\Regulatory\Models\DAO\DocumentReportDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\DosageFormInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\EmployeeInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\ExportInfoDAO.cs" />

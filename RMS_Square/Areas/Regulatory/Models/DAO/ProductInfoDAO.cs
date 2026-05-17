@@ -4,6 +4,7 @@ using RMS_Square.Universal.Gateway;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.OracleClient;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -63,7 +64,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             string Qry = @"SELECT 
                     C.COMPANY_CODE, C.COMPANY_NAME, C.LICENSE_NO, 
                     U.COMPANY_UNIT_CODE, U.COMPANY_UNIT_NAME,
-                    P.PRODUCT_CODE, P.SAP_PRODUCT_CODE, P.GENERIC_CODE, P.STRENGTH_CODE, S.STRENGTH_NAME, 
+                    P.PRODUCT_CODE,P.PRODUCT_NAME, P.SAP_PRODUCT_CODE, P.GENERIC_CODE, P.STRENGTH_CODE, S.STRENGTH_NAME, 
                     P.DOSAGE_FORM_CODE, D.DOSAGE_FORM_NAME, P.PACK_SIZE_NAME, P.BRAND_NAME, 
                     P.PRODUCT_CATEGORY, P.THERAPEUTIC_CLASS_CODE, T.THERAPEUTIC_CLASS_NAME, 
                     P.PRODUCT_SPECIFICATION, P.INTRODUCED_BANGLADESH, P.MANUFACTURING_TYPE, 
@@ -88,6 +89,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
 
                             // Existing Fields
                             ProductCode = row["PRODUCT_CODE"].ToString(),
+                            ProductName = row["PRODUCT_NAME"].ToString(),
                             SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
                             GenericCode = row["GENERIC_CODE"].ToString(),
                             GenAndStrength = row["GENERIC_CODE"].ToString(),
@@ -114,55 +116,79 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                         }).ToList();
 
             return item;
-        }
+        }        
+
         public bool SaveUpdate(ProductInfoBEL master, string userId)
         {
             try
             {
                 string Qry = "";
                 string setOndate = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-                if (!string.IsNullOrEmpty(master.PackSizeName))
+
+                if (string.IsNullOrEmpty(master.ProductCode))
                 {
-                    master.PackSizeName = master.PackSizeName.Replace("'", "''").Trim();
+                    throw new Exception("Product Code is required");
                 }
-                if (master.ProductCode == null || master.ProductCode == "")
-                {//I for Insert  
-                    MaxID = idGenerated.getMAXID("PRODUCT_INFO", "PRODUCT_CODE", "fm0000");
+
+                // ProductCode trim kore nilam jate comparison thik thake
+                string pCode = master.ProductCode.Trim();
+                string pName = (master.ProductName ?? "").Replace("'", "''").Trim();
+
+                // Database-e check kora: GetDataTable use kore
+                string checkQry = "SELECT * FROM PRODUCT_INFO WHERE PRODUCT_CODE = '" + pCode + "'";
+
+                // Apnar dbHelper e hoyto GetDataTable ba ExecuteQuery namer function ache
+                var dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), checkQry);
+
+                // Jodi DataTable-e kono row na thake (Rows.Count == 0), tar mane eta notun data
+                if (dt.Rows.Count == 0)
+                {
+                    // INSERT Logic
                     IUMode = "I";
-                    Qry = "Insert into PRODUCT_INFO(PRODUCT_CODE,COMPANY_CODE,SAP_PRODUCT_CODE,BRAND_NAME,GENERIC_CODE,STRENGTH_CODE, DOSAGE_FORM_CODE,PACK_SIZE_NAME, " +
-                          " PRODUCT_CATEGORY,THERAPEUTIC_CLASS_CODE,PRODUCT_SPECIFICATION,INTRODUCED_BANGLADESH,MANUFACTURING_TYPE,PRODUCT_TYPE_CODE,STATUS,REMARKS, SET_BY,SET_ON)" +
-                          "values('" + MaxID + "', '" + master.CompanyCode + "', '" + master.SAPProductCode + "','" + master.BrandName + "','" + master.GenericCode + "','" + master.StrengthCode + "','" + master.DosageFormCode + "','" + master.PackSizeName + "'," +
+                    Qry = "INSERT INTO PRODUCT_INFO " +
+                          "(PRODUCT_CODE, PRODUCT_NAME, COMPANY_CODE, SAP_PRODUCT_CODE, BRAND_NAME, GENERIC_CODE, STRENGTH_CODE, DOSAGE_FORM_CODE, PACK_SIZE_NAME, " +
+                          "PRODUCT_CATEGORY, THERAPEUTIC_CLASS_CODE, PRODUCT_SPECIFICATION, INTRODUCED_BANGLADESH, MANUFACTURING_TYPE, PRODUCT_TYPE_CODE, STATUS, REMARKS, SET_BY, SET_ON) " +
+                          "VALUES('" + pCode + "','" + pName + "','" + master.CompanyCode + "','" + master.SAPProductCode + "','" + master.BrandName + "','" + master.GenericCode + "','" + master.StrengthCode + "','" + master.DosageFormCode + "','" + master.PackSizeName + "'," +
                           "'" + master.ProductCategory + "','" + master.TherapeuticClassCode + "','" + master.ProductSpecification + "','" + master.IntroducedInBD + "','" + master.ManufacturingType + "','" + master.ProductTypeCode + "','" + master.Status + "','" + master.Remarks + "','" + userId + "',TO_DATE('" + setOndate + "','dd/MM/yyyy HH24:mi:ss'))";
                 }
                 else
-                {//U for Insert
-                    MaxID = master.ProductCode;
+                {
+                    // UPDATE Logic
                     IUMode = "U";
-                    // Qry = "Update COMPANY_INFO set COMPANY_NAME='" + master.CompanyName + "',ADDRESS='" + master.Address + "',CONTACT_NO='" + master.ContactNo + "',EMAIL_ID='" + master.EmailId + "' ,FACILITY='" + master.Facility + "' Where COMPANY_CODE='" + master.CompanyCode + "'";
-                    Qry = "update PRODUCT_INFO set SAP_PRODUCT_CODE='" + master.SAPProductCode + "', COMPANY_CODE ='" + master.CompanyCode + "', BRAND_NAME ='" + master.BrandName + "', GENERIC_CODE='" + master.GenericCode + "',  STRENGTH_CODE ='" + master.StrengthCode + "', PACK_SIZE_NAME ='" + master.PackSizeName + "'," +
-                        "DOSAGE_FORM_CODE='" + master.DosageFormCode + "' ,PRODUCT_CATEGORY= '" + master.ProductCategory + "' , THERAPEUTIC_CLASS_CODE= '" + master.TherapeuticClassCode + "', PRODUCT_SPECIFICATION= '" + master.ProductSpecification + "'," +
-                        "INTRODUCED_BANGLADESH='" + master.IntroducedInBD + "', MANUFACTURING_TYPE='" + master.ManufacturingType + "',PRODUCT_TYPE_CODE='" + master.ProductTypeCode + "',STATUS='" + master.Status + "',REMARKS='" + master.Remarks + "', " +
-                        " UPDATE_BY ='" + userId + "', UPDATE_DATE=TO_DATE('" + setOndate + "','dd/MM/yyyy HH24:mi:ss') WHERE PRODUCT_CODE='" + MaxID + "'";
+                    Qry = "UPDATE PRODUCT_INFO SET " +
+                          "PRODUCT_NAME='" + pName + "', " +
+                          "SAP_PRODUCT_CODE='" + master.SAPProductCode + "', " +
+                          "COMPANY_CODE='" + master.CompanyCode + "', " +
+                          "BRAND_NAME='" + master.BrandName + "', " +
+                          "GENERIC_CODE='" + master.GenericCode + "', " +
+                          "STRENGTH_CODE='" + master.StrengthCode + "', " +
+                          "PACK_SIZE_NAME='" + master.PackSizeName + "', " +
+                          "DOSAGE_FORM_CODE='" + master.DosageFormCode + "', " +
+                          "PRODUCT_CATEGORY='" + master.ProductCategory + "', " +
+                          "THERAPEUTIC_CLASS_CODE='" + master.TherapeuticClassCode + "', " +
+                          "PRODUCT_SPECIFICATION='" + master.ProductSpecification + "', " +
+                          "INTRODUCED_BANGLADESH='" + master.IntroducedInBD + "', " +
+                          "MANUFACTURING_TYPE='" + master.ManufacturingType + "', " +
+                          "PRODUCT_TYPE_CODE='" + master.ProductTypeCode + "', " +
+                          "STATUS='" + master.Status + "', " +
+                          "REMARKS='" + master.Remarks + "', " +
+                          "UPDATE_BY='" + userId + "', " +
+                          "UPDATE_DATE=TO_DATE('" + setOndate + "','dd/MM/yyyy HH24:mi:ss') " +
+                          "WHERE PRODUCT_CODE='" + pCode + "'";
                 }
-                if (dbHelper.CmdExecute(dbConn.SAConnStrReader(), Qry))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+
+                return dbHelper.CmdExecute(dbConn.SAConnStrReader(), Qry);
             }
-            catch (Exception errorException)
+            catch (Exception ex)
             {
-                throw errorException;
+                throw ex;
             }
         }
         public List<ProductInfoBEL> GetAllActiveProduct(string companyCode)
         {
             var query = new System.Text.StringBuilder();
 
-            query.Append(" SELECT C.COMPANY_CODE,C.COMPANY_UNIT_CODE,C.COMPANY_UNIT_NAME,P.PRODUCT_CODE,P.SAP_PRODUCT_CODE,P.GENERIC_CODE, P.PACK_SIZE_NAME,");
+            query.Append(" SELECT C.COMPANY_CODE,C.COMPANY_UNIT_CODE,C.COMPANY_UNIT_NAME,P.PRODUCT_CODE,P.PRODUCT_NAME,P.SAP_PRODUCT_CODE,P.GENERIC_CODE, P.PACK_SIZE_NAME,");
             query.Append(" P.BRAND_NAME, P.PRODUCT_CATEGORY,P.PRODUCT_SPECIFICATION,P.INTRODUCED_BANGLADESH, ");
             query.Append(" P.MANUFACTURING_TYPE,P.PRODUCT_TYPE_CODE, FN_PRODUCT_TYPE_NAME(P.PRODUCT_TYPE_CODE) PRODUCT_TYPE_NAME,P.STATUS,  P.REMARKS ,TO_CHAR(p.SET_ON, 'YYYY')||TO_CHAR(p.SET_ON, 'MM') as YearMonth ");
             query.Append(" FROM PRODUCT_INFO p,COMPANY_UNIT_INFO C ");
@@ -180,6 +206,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                     select new ProductInfoBEL
                     {
                         ProductCode = row["PRODUCT_CODE"].ToString(),
+                        ProductName = row["PRODUCT_NAME"].ToString(),
                         SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
                         PackSizeName = row["PACK_SIZE_NAME"].ToString(),
                         BrandName = row["BRAND_NAME"].ToString(),

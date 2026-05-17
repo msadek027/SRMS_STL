@@ -39,6 +39,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             }
             return Redirect(string.Format("~/Home/frmHome"));
         }
+
         [HttpPost]
         public ActionResult frmProductReg(ProductRegistrationBEL model)
         {
@@ -46,7 +47,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             {
                 if (_dalObj.SaveUpdate(model, userId: Session["UserID"] as string))
                 {
-                    return Json(new { AnnexId = _dalObj.ReturnMaxID, AnnexureNo = _dalObj.MaxID, Mode = _dalObj.IUMode, Status = "Yes", AnnexRevisionNo = _dalObj.RefNo });
+                    return Json(new { AnnexId = _dalObj.ReturnMaxID,  Mode = _dalObj.IUMode, Status = "Yes" });
                 }
                 return View();
             }
@@ -62,71 +63,44 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                     return Json(new { Status = "! Error : Error Code:" + e.Message.Substring(0, 9) });//Other Wise Error Found
             }
         }
-        public ActionResult UploadFile(string refLevel1, string refLevel2, string fileSize, string refNo, string sStatus)
-        {
 
-            var obj = PutUploadFile(refLevel1, refLevel2, fileSize, _serverFilePath, (int)Enums.E_FormFileType.ProductRegistration, refNo);
+
+        public ActionResult UploadFile(string refLevel1, string refLevel2, string fileSize, string refNo)
+        {
+            var obj = PutUploadFile(refLevel1, refLevel2, fileSize, _serverFilePath,
+                                    (int)Enums.E_FormFileType.ProductRegistration, refNo);
+
             if (obj.Item1 == "S")
             {
-                _fileModel = new FileDetailModel();
-                _fileModel.FileName = obj.Item2.FileName;
-                _fileModel.FileCode = obj.Item2.FileCode;
-                _fileModel.FileSize = obj.Item2.FileSize;
-                _fileModel.FileType = obj.Item2.FileType;
-                _fileModel.RefNo = obj.Item2.RefNo;
-                _fileModel.RefLevel1 = obj.Item2.RefLevel1;
-                _fileModel.RefLevel2 = obj.Item2.RefLevel2;
-                _fileModel.Extention = obj.Item2.Extention;
+                _fileModel = new FileDetailModel
+                {
+                    FileName = obj.Item2.FileName,
+                    FileCode = obj.Item2.FileCode,
+                    FileSize = obj.Item2.FileSize,
+                    FileType = obj.Item2.FileType,
+                    RefNo = obj.Item2.RefNo,
+                    RefLevel1 = obj.Item2.RefLevel1,
+                    RefLevel2 = obj.Item2.RefLevel2,
+                    Extention = obj.Item2.Extention
+                };
 
                 bool isSave = SaveUploadFileInfo(_fileModel, Session["UserID"] as string);
                 var model = new ProductRegistrationBEL();
+
                 if (isSave)
                 {
-                    DataTable dt = _dalObj.GetFileRefno((int)Enums.E_FormFileType.ProductRegistration, refLevel1, sStatus);
-                    bool isAll = false;
-                    if (dt.Rows.Count > 0)
-                    {
-                        if (sStatus.Equals("New"))
-                        {
-                            if (Convert.ToInt32(dt.Rows[0]["PA"].ToString()) > 0 && Convert.ToInt32(dt.Rows[0]["PPM"].ToString()) > 0 && Convert.ToInt32(dt.Rows[0]["SD"].ToString()) > 0)
-                            {
-                                isAll = true;
-                            }
-                        }
-                        else if (sStatus.Equals("Renew"))
-                        {
-                            if (Convert.ToInt32(dt.Rows[0]["PA"].ToString()) > 0 && Convert.ToInt32(dt.Rows[0]["PPM"].ToString()) > 0)
-                            {
-                                isAll = true;
-                            }
-                        }
-                        else if (sStatus.Equals("Annexure Amendment"))
-                        {
-                            if (Convert.ToInt32(dt.Rows[0]["PA"].ToString()) > 0 && Convert.ToInt32(dt.Rows[0]["AJ"].ToString()) > 0 && Convert.ToInt32(dt.Rows[0]["SD"].ToString()) > 0)
-                            {
-                                isAll = true;
-                            }
-                        }
-                        else if (sStatus.Equals("Packaging Amendment"))
-                        {
-                            if (Convert.ToInt32(dt.Rows[0]["AJ"].ToString()) > 0 && Convert.ToInt32(dt.Rows[0]["PPM"].ToString()) > 0)
-                            {
-                                isAll = true;
-                            }
-                        }
-                       
-                    }
-                    if (isAll)//
-
-                    {
-                        model.AnnexId = Convert.ToInt64(refLevel1);
-                        model.ReceivedDate = DateTime.Now.Date.ToString("dd/MM/yyyy");
-                        _dalObj.UpdateFileRelatedInfo(model, userId: Session["UserID"] as string);
-                    }
+                    // ✅ Status check নেই — যেকোনো file upload হলেই ReceivedDate set হবে
+                    model.AnnexId = Convert.ToInt64(refLevel1);
+                    model.ReceivedDate = DateTime.Now.Date.ToString("dd/MM/yyyy");
+                    _dalObj.UpdateFileRelatedInfo(model, userId: Session["UserID"] as string);
                 }
 
-                return Json(new { msgType = "FUS", ReceiveDate = model.ReceivedDate, FileList = GetFileByParameters(_fileModel).OrderByDescending(o => o.FileID) }, JsonRequestBehavior.AllowGet);
-               
+                return Json(new
+                {
+                    msgType = "FUS",
+                    ReceiveDate = model.ReceivedDate,
+                    FileList = GetFileByParameters(_fileModel).OrderByDescending(o => o.FileID)
+                }, JsonRequestBehavior.AllowGet);
             }
             else if (obj.Item1 == "L")
             {

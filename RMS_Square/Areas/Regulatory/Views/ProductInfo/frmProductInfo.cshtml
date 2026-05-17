@@ -166,7 +166,7 @@
         });
 
 
-       
+
 
         /// for dosage form////
         /// Creating POP UP For the GetDosageForm Grid To Load
@@ -621,12 +621,14 @@
 
         $('#btnSave').click(function () {
             debugger
+            debugger
             var Input =  InputValidation('CompanyCode');
             if (Input == 0) {
                 master.CompanyCode = $('#CompanyUnitCode').val();
                 master.ProductCode = $('#ProductCode').val();
+                master.ProductName = $('#ProductName').val();
                 master.SAPProductCode = $('#SAPProductCode').val();
-                master.BrandName = $('#BrandName').val();               
+                master.BrandName = $('#BrandName').val();
                 master.PackSizeName = $('#PackSizeName').val();
                 master.DosageFormCode = $('#DosageFormCode').val();
                 master.DosageFormName = $('#DosageFormName').val();
@@ -666,242 +668,278 @@
             }
 
         });
-        var master = { "CompanyCode": "", "CompanyUnitCode": "", "ProductCode": "", "SAPProductCode": "", "BrandName": "", "GenericCode": "", "DosageFormCode": "", "DosageFormName": "", "PackSizeName": "", "ProductCategory": "", "TherapeuticClassCode": "", "TherapeuticClassName": "", "ProductSpecification": "", "IntroducedInBD": "", "ManufacturingType": "", "ProductTypeCode": "", "ProductTypeName": "", "Status": "", "Remarks": "" };
+        var master = { "CompanyCode": "", "CompanyUnitCode": "", "ProductCode": "", "ProductName": "", "SAPProductCode": "", "BrandName": "", "GenericCode": "", "DosageFormCode": "", "DosageFormName": "", "PackSizeName": "", "ProductCategory": "", "TherapeuticClassCode": "", "TherapeuticClassName": "", "ProductSpecification": "", "IntroducedInBD": "", "ManufacturingType": "", "ProductTypeCode": "", "ProductTypeName": "", "Status": "", "Remarks": "" };
     });
 </script>
 
 
-<div class="box-header with-border">
-    @*Form Title*@
-    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> <div id="MessageText"></div></div>
-    <div class="col-xs-0 col-sm-0 col-md-8 col-lg-8">
-        <div style="text-align:right;">
+<style>
+    /* ── Modern Form UI Redesign ── */
+    :root {
+        --primary: #4f46e5;
+        --info: #0ea5e9;
+        --bg-page: #f4f7fb;
+        --card-bg: #ffffff;
+        --text-main: #1e293b;
+        --text-muted: #475569;
+        --border-soft: #e2e8f0;
+    }
 
-            <button id="btnSave" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-save"></i>Save</button>
-            <button id="btnView" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>
-            <button id="btnReset" class="btn btn-primary btn-lg" type="button"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+    /* Action Bar */
+    .action-bar {
+        background: var(--card-bg);
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02), 0 4px 12px rgba(0, 0, 0, 0.04);
+        padding: 16px 24px;
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid var(--border-soft);
+    }
 
+    .action-bar .btn {
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 8px 20px;
+        transition: all 0.2s ease;
+        margin-left: 8px;
+        border: none;
+    }
+    .action-bar .btn i { margin-right: 6px; }
+
+    .btn-primary { background-color: var(--primary); box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); }
+    .btn-primary:hover { background-color: #4338ca; transform: translateY(-1px); }
+
+    .btn-info { background-color: var(--info); box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3); color: #fff; }
+    .btn-info:hover { background-color: #0284c7; transform: translateY(-1px); color: #fff; }
+
+    .btn-default { background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+    .btn-default:hover { background-color: #e2e8f0; color: #0f172a; }
+
+    /* Cards */
+    .gui-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02), 0 4px 12px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--border-soft);
+        padding: 30px 24px;
+        margin-bottom: 24px;
+    }
+    .gui-card.context-card {
+        background: #fcfdfd;
+        border-left: 4px solid var(--info);
+    }
+
+    .gui-section-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-top: 0;
+        margin-bottom: 25px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border-soft);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Form Elements - Horizontal Layout */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .modern-label {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-align: left; /* Changed from right to left */
+        padding-top: 8px;
+        letter-spacing: 0.3px;
+    }
+
+    .form-control {
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+        padding: 8px 14px;
+        height: auto;
+        font-size: 14px;
+        color: var(--text-main);
+        box-shadow: none !important;
+        transition: all 0.2s;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        background-color: #fff;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
+    }
+
+    .form-control[readonly] {
+        background-color: #f1f5f9;
+        color: #64748b;
+        cursor: not-allowed;
+        border-color: #e2e8f0;
+    }
+
+    .asterisk { color: #ef4444; font-weight: bold; margin-left: 2px; }
+
+    /* For smaller screens, override text alignment */
+    media (max-width: 768px) {
+        .modern-label { padding-top: 0; margin-bottom: 6px; }
+        .gap-col { display: none; }
+    }
+</style>
+
+<div class="container-fluid" style="padding: 20px 0;">
+
+    <!-- ── Action Bar ── -->
+    <div class="action-bar">
+        <div id="MessageText" style="font-weight: 600; color: #10b981;"></div>
+        <div>
+            <button id="btnSave" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-save"></i> Save Product</button>
+            <button id="btnView" class="btn btn-info" type="button"><i class="glyphicon glyphicon-search"></i> Search</button>
+            <button id="btnReset" class="btn btn-default" type="button"><i class="glyphicon glyphicon-refresh"></i> Reset</button>
         </div>
+    </div>
+
+    <!-- ── Main Form Body ── -->
+    <div class="box-body" style="padding: 0;">
+
+        <!-- Section 1: Company Context (Read Only) -->
+        <div class="gui-card context-card">
+            <h4 class="gui-section-title"><i class="glyphicon glyphicon-briefcase text-info"></i> Company Information</h4>
+
+            <div class="row form-group">
+                <label class="col-sm-2 modern-label">Company Code <span class="asterisk">*</span></label>
+                <div class="col-sm-3">
+                    <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" placeholder="Press Any" readonly />
+                </div>
+
+                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+
+                <label class="col-sm-2 modern-label">Company Name</label>
+                <div class="col-sm-4">
+                    <input type="text" id="CompanyName" name="CompanyName" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="row form-group" style="margin-bottom: 0;">
+                <label class="col-sm-2 modern-label">Unit Code</label>
+                <div class="col-sm-3">
+                    <input type="text" id="CompanyUnitCode" name="CompanyUnitCode" class="form-control" placeholder="Auto" readonly />
+                </div>
+
+                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+
+                <label class="col-sm-2 modern-label">Unit Name</label>
+                <div class="col-sm-4">
+                    <input type="text" id="CompanyUnitName" name="CompanyUnitName" class="form-control" placeholder="Auto" readonly />
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Product Core Details -->
+        <div class="gui-card">
+            <h4 class="gui-section-title"><i class="glyphicon glyphicon-tag text-primary"></i> Product Details</h4>
+
+            <div class="row form-group">
+                <label class="col-sm-2 modern-label">Product Code</label>
+                <div class="col-sm-3">
+                    <input type="text" maxlength="150" id="ProductCode" name="ProductCode" placeholder="Enter Product Code" class="form-control" />
+                </div>
+
+                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+
+                <label class="col-sm-2 modern-label">Product Name</label>
+                <div class="col-sm-4">
+                    <input type="text" maxlength="150" id="ProductName" name="ProductName" placeholder="Enter Product Name" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row form-group" style="margin-bottom: 0;">
+                <label class="col-sm-2 modern-label">Pack Size</label>
+                <div class="col-sm-3">
+                    <input type="text" id="PackSizeName" name="PackSizeName" maxlength="300" placeholder="e.g. 10x10" class="form-control" />
+                </div>
+
+                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+
+                <label class="col-sm-2 modern-label">Brand Name</label>
+                <div class="col-sm-4">
+                    <input type="text" id="BrandName" name="BrandName" placeholder="Enter Brand Name" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Classification & Status -->
+        <div class="gui-card">
+            <h4 class="gui-section-title"><i class="glyphicon glyphicon-cog text-primary"></i> Classification & Settings</h4>
+
+            <div class="row form-group">
+                <label class="col-sm-2 modern-label">Product Category</label>
+                <div class="col-sm-3">
+                    <select class="form-control text" id="ProductCategory">
+                        <option selected="selected" value="Biological">Biological</option>
+                        <option value="Non-Biological">Non-Biological</option>
+                    </select>
+                </div>
+
+                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+
+                <label class="col-sm-2 modern-label">Manufacturing Type</label>
+                <div class="col-sm-4">
+                    <select class="form-control text" id="ManufacturingType">
+                        <option selected="selected" value="Local">Local</option>
+                        <option value="Import">Import</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row form-group" style="margin-bottom: 0;">
+                <label class="col-sm-2 modern-label">Status</label>
+                <div class="col-sm-3">
+                    <select class="form-control text" id="Status">
+                        <option selected="selected" value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+
+                <label class="col-sm-2 modern-label">Remarks</label>
+                <div class="col-sm-4">
+                    <textarea class="form-control" id="Remarks" name="Remarks" placeholder="Enter any additional remarks here..." rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
-<div class="box-body">
-    <div class="form-group">
-        <div class="row">
-            <div class="col-sm-2">Company Code<span style="color: red">*</span> : </div>
-            <div class="col-sm-2">
-                <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" placeholder="Press Any" readonly />
-            </div>
-            <div class="col-sm-1">@*<button id="btnFind" class="btn btn-primary btn-md" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>*@</div>
-            <div class="col-sm-2">Company Name :</div>
-            <div class="col-sm-3"><input type="text" id="CompanyName" name="CompanyName" class="form-control" readonly /></div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-sm-2"> Unit Code:</div>
-            <div class="col-sm-2"><input type="text" id="CompanyUnitCode" name="CompanyUnitCode" readonly="readonly" class="form-control" placeholder="Auto" /></div>
+<div class="box-footer" style="background: transparent; border-top: none;"></div>
 
-            <div class="col-sm-1"></div>
-
-            <div class="col-sm-2"> Unit Name:</div>
-            <div class="col-sm-3">
-                <input type="text" id="CompanyUnitName" name="CompanyUnitName" readonly="readonly" class="form-control" placeholder="Auto" />
-            </div>
-
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-sm-2"> Serial No:</div>
-            <div class="col-sm-2"><input type="text" id="ProductCode" name="ProductCode" readonly="readonly" class="form-control" placeholder="Auto" /></div>
-
-            <div class="col-sm-1"></div>
-
-            <div class="col-sm-2"> Product Code:</div>
-            <div class="col-sm-3">
-                <input type="text" maxlength="150" id="SAPProductCode" name="SAPProductCode" placeholder=" Product Code" class="form-control" />
-            </div>
-
-        </div>
-    </div>
-
-    @*<div class="form-group">
-            <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2"> Generic & Strength<span style="color: red">*</span>:</div>
-                <div class="col-xs-0 col-sm-6 col-md-3 col-lg-9">
-                    <textarea class="form-control" id="GenericCode" name="GenericCode" maxlength="1000" placeholder="Generic & Strength" rows="3"></textarea>
-                </div>
-
-            </div>
-        </div>*@
-    <div class="form-group">
-        <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">Pack Size :</div>
-            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-3">
-                <input type="text" id="PackSizeName" name="PackSizeName" maxlength="300" placeholder="Pack Size" class="form-control" />
-            </div>
-            @*   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-1"></div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">Dosage Form :</div>
-                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                    <input type="hidden" id="DosageFormCode" name="DosageFormCode" class="form-control" />
-                    <input type="text" id="DosageFormName" name="DosageFormName" placeholder="Press Any" class="form-control" />
-                </div>
-
-                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-1">*@
-            @*<button id="btnDosageForm" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>*@
-        </div>
-
-    </div>
-</div>
-
-    <div class="form-group">
-        <div class="row">
-           @* <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2"> Introduced In Bangladesh:</div>
-            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-3">
-                <select class="form-control text" id="IntroducedInBD">
-                    <option selected="selected" value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-            </div>*@
-           @* <div class="col-xs-12 col-sm-6 col-md-3 col-lg-1"></div>*@
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">Brand Name :</div>
-            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-3">
-                <input type="text" id="BrandName" name="BrandName" placeholder="Brand Name" class="form-control" />
-            </div>
-
-
-            @*<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">Product Type :</div>
-                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                    <input type="hidden" id="ProductTypeCode" name="ProductTypeCode" class="form-control" />
-                    <input type="text" id="ProductTypeName" name="ProductTypeName" placeholder="Product Type" class="form-control" />
-                </div>
-
-                <div class="col-xs-0 col-sm-0 col-md-3 col-lg-1">
-                    <button id="btnProductType" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Find</button>
-                </div>*@
-
-        </div>
-    </div>
-
-
-    <div class="form-group">
-        <div class="row">
-
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">Product Specification :</div>
-            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                <select class="form-control text" id="ProductSpecification">
-                    <option value="INN">INN</option>
-                    <option selected="selected" value="Compendial">Compendial</option>
-                </select>
-
-            </div>
-            @*<div class="col-xs-12 col-sm-6 col-md-3 col-lg-1"></div>
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2"> Therapeutic Class :</div>
-            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-3">
-                <input type="hidden" id="TherapeuticClassCode" name="TherapeuticClassCode" class="form-control" />
-                <input type="text" id="TherapeuticClassName" name="TherapeuticClassName" placeholder="Press Any" class="form-control" />
-            </div>*@
-
-            <div class="col-xs-0 col-sm-0 col-md-3 col-lg-1">
-                @*<button id="btnTherapeuticClass" class="btn btn-primary btn-sm" type="button"><i class="glyphicon glyphicon-search"></i>Search</button>*@
-            </div>
-
-        </div>
-    </div>
-
-
-    <div class="form-group">
-        <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">Product Category :</div>
-            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-3">
-                <select class="form-control text" id="ProductCategory">
-                    <option selected="selected" value="Biological">Biological</option>
-                    <option value="Non-Biological">Non-Biological</option>
-                </select>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-1"></div>
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">Manufacturing Type :</div>
-            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-3">
-
-                <select class="form-control text" id="ManufacturingType">
-                    <option selected="selected" value="Local">Local</option>
-                    <option value="Import">Import</option>
-                </select>
-
-            </div>
-        </div>
-    </div>
-
-
-    <div class="form-group">
-        <div class="row">
-
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">Status : </div>
-            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-3">
-                <select class="form-control text" id="Status">
-                    <option selected="selected" value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
-
-                </select>
-
-
-            </div>
-
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">Remarks : </div>
-            <div class="col-xs-0 col-sm-6 col-md-3 col-lg-9">
-                <textarea class="form-control" id="Remarks" name="Remarks" placeholder="Remarks" rows="3"></textarea>
-            </div>
-
-        </div>
-    </div>
-
-
-
-</div>
-
-<div class="box-footer">@*Form Footer*@</div>
+<!-- ── Popup Windows (Hidden) ── -->
 <div class="row">
     <div id="ViewPopupWindow" class="PopupWindowLayout" style="display: none;">
         <div id="PopupWindowGrid" class="PopUpGrid"></div>
     </div>
-
-    @*<div id="PopupWindowStrength" class="PopupWindowLayout" style="display: none;">
-            <div id="PopupWindowGridStrength" class="PopUpGrid"></div>
-        </div>*@
-
-
-    @*<div id="PopupWindowGeneric" class="PopupWindowLayout" style="display: none;">
-            <div id="PopupWindowGridGeneric" class="PopUpGrid"></div>
-        </div>*@
-
     <div id="PopupWindowDosageForm" class="PopupWindowLayout" style="display: none;">
         <div id="PopupWindowGridDosageForm" class="PopUpGrid"></div>
     </div>
-
     <div id="PopupWindowPackSize" class="PopupWindowLayout" style="display: none;">
         <div id="PopupWindowGridPackSize" class="PopUpGrid"></div>
     </div>
-
     <div id="PopupWindowProductType" class="PopupWindowLayout" style="display: none;">
         <div id="PopupWindowGridProductType" class="PopUpGrid"></div>
     </div>
-
     <div id="PopupWindowTherapeuticClass" class="PopupWindowLayout" style="display: none;">
         <div id="PopupWindowGridTherapeuticClass" class="PopUpGrid"></div>
     </div>
     <div id="CompanyWindow" class="PopupWindowLayout" style="display: none;">
         <div id="CompanyWindowGrid" class="PopUpGrid"></div>
     </div>
-
 </div>
-
-
 
 
 

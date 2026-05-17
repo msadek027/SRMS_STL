@@ -1,11 +1,14 @@
 ﻿using RMS_Square.Areas.Regulatory.Models.BEL;
+using RMS_Square.DAL.Common;
 using RMS_Square.DAL.Gateway;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.OracleClient;
 using System.Linq;
-using System.Web;
 using System.Text;
+using System.Web;
+using Systems.Models;
 
 namespace RMS_Square.Areas.Regulatory.Models.DAO
 {
@@ -14,6 +17,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
         private DBConnection _dbConn = null;
         private DBHelper _dbHelper = null;
         private string qry = string.Empty;
+        private static string _serverFilePath = string.Empty;
         public ReportDAO()
         {
             _dbConn = new DBConnection();
@@ -268,6 +272,521 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                         }).ToList();
             return item;
             
+        }
+
+        // ── Helper: Query build করে ──────────────────────────────────────────────
+        /*private string BuildProductDocumentQuery(ProductReportParams param)
+        {
+            var query = new StringBuilder();
+
+            query.Append(" SELECT D.ANNEX_ID, D.ANNEXURE_NO, D.REVISION_NO, D.DAR_NO,");
+            query.Append(" D.AUTHORITY_TYPE, D.AUTHORITY_NAME, D.AUTHORITY_LICENSE_NO, D.AUTHORITY_LICENSE_NAME,");
+            query.Append(" D.STATE_STATUS, D.REMARKS,");
+            query.Append(" TO_CHAR(D.SUBMISSION_DATE, 'dd/mm/yyyy') SUBMISSION_DATE,");
+            query.Append(" TO_CHAR(D.RECEIVE_DATE,    'dd/mm/yyyy') RECEIVE_DATE,");
+            query.Append(" TO_CHAR(D.INCLUSION_DATE,  'dd/mm/yyyy') INCLUSION_DATE,");
+            query.Append(" TO_CHAR(D.RENEWAL_DATE,    'dd/mm/yyyy') RENEWAL_DATE,");
+            query.Append(" TO_CHAR(D.VALID_UPTO,      'dd/mm/yyyy') VALID_UPTO,");
+            query.Append(" D.COMPANY_CODE AS COMPANY_UNIT_CODE, CU.COMPANY_UNIT_NAME,");
+            query.Append(" C.COMPANY_CODE, C.COMPANY_NAME, C.LICENSE_NO,");
+            query.Append(" P.PRODUCT_CODE, P.PRODUCT_NAME, P.BRAND_NAME, P.PRODUCT_CATEGORY,");
+            query.Append(" P.PRODUCT_SPECIFICATION, P.GENERIC_CODE, P.PACK_SIZE_NAME,");
+
+            // ── File columns — actual table column নাম ──────────────────────────
+            query.Append(" F.FILEID, F.FILECODE, F.FILENAME, F.EXTENTION, F.FILEPATH, F.REFNO AS DOC_REF_NO,");
+
+            // Document Status
+            query.Append(" CASE");
+            query.Append("   WHEN F.FILEID IS NOT NULL THEN 'Uploaded'");
+            query.Append("   WHEN D.VALID_UPTO < SYSDATE THEN 'Expired'");
+            query.Append("   ELSE 'Pending'");
+            query.Append(" END AS DOCUMENT_STATUS");
+
+            query.Append(" FROM PRODUCT_REGISTRATION_INFO D");
+            query.Append(" LEFT JOIN COMPANY_UNIT_INFO  CU ON D.COMPANY_CODE = CU.COMPANY_UNIT_CODE");
+            query.Append(" LEFT JOIN COMPANY_INFO        C ON CU.COMPANY_CODE = C.COMPANY_CODE");
+            query.Append(" LEFT JOIN PRODUCT_INFO        P ON P.PRODUCT_CODE  = D.PRODUCT_CODE");
+
+            // ── DOCUMENTFILEINFO subquery — REFLEVEL1 is NUMBER, no IS_DELETE column ──
+            query.Append(" LEFT JOIN (");
+            query.Append("   SELECT FILEID, REFLEVEL1, FILECODE, FILENAME, EXTENTION, FILEPATH, REFNO,");
+            query.Append("          ROW_NUMBER() OVER (PARTITION BY REFLEVEL1 ORDER BY FILEID DESC) AS RN");
+            query.Append("   FROM DOCUMENTFILEINFO");
+            query.Append("   WHERE FILETYPE = " + (int)Enums.E_FormFileType.ProductRegistration);
+            query.Append(" ) F ON F.REFLEVEL1 = D.ANNEX_ID AND F.RN = 1");  // REFLEVEL1 NUMBER — no TO_CHAR needed
+
+            query.Append(" WHERE NVL(D.IS_DELETE,'N') = 'N'");
+
+            // ── Filters ──────────────────────────────────────────────────────────
+            if (!string.IsNullOrWhiteSpace(param.CompanyCode))
+                query.Append(" AND C.COMPANY_CODE = '" + param.CompanyCode.Replace("'", "''") + "'");
+
+            if (!string.IsNullOrWhiteSpace(param.CompanyUnitCode))
+                query.Append(" AND D.COMPANY_CODE = '" + param.CompanyUnitCode.Replace("'", "''") + "'");
+
+            if (!string.IsNullOrWhiteSpace(param.ProductCodeList))
+                query.Append(" AND D.PRODUCT_CODE IN (" + param.ProductCodeList + ")");
+
+            if (!string.IsNullOrWhiteSpace(param.AuthorityType))
+                query.Append(" AND D.AUTHORITY_TYPE = '" + param.AuthorityType.Replace("'", "''") + "'");
+
+            if (!string.IsNullOrWhiteSpace(param.DocumentType))
+                query.Append(" AND D.AUTHORITY_LICENSE_NAME = '" + param.DocumentType.Replace("'", "''") + "'");
+
+            if (!string.IsNullOrWhiteSpace(param.ValidFrom) && !string.IsNullOrWhiteSpace(param.ValidTo))
+            {
+                query.Append(" AND D.VALID_UPTO BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(param.ValidFrom) + "','yyyy/mm/dd')");
+                query.Append(" AND TO_DATE('" + General.SetDateStrYYYYMMDD(param.ValidTo) + "','yyyy/mm/dd')");
+            }
+
+            if (!string.IsNullOrWhiteSpace(param.SubFrom) && !string.IsNullOrWhiteSpace(param.SubTo))
+            {
+                query.Append(" AND D.SUBMISSION_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(param.SubFrom) + "','yyyy/mm/dd')");
+                query.Append(" AND TO_DATE('" + General.SetDateStrYYYYMMDD(param.SubTo) + "','yyyy/mm/dd')");
+            }
+
+            // DocStatus filter — CASE alias এর জন্য subquery wrap
+            string finalQuery;
+            if (!string.IsNullOrWhiteSpace(param.DocStatus))
+            {
+                finalQuery = "SELECT * FROM (" + query.ToString() + ") WHERE DOCUMENT_STATUS = '"
+                             + param.DocStatus.Replace("'", "''") + "'"
+                             + " ORDER BY ANNEX_ID DESC";
+            }
+            else
+            {
+                finalQuery = query.ToString() + " ORDER BY D.ANNEX_ID DESC";
+            }
+
+            return finalQuery;
+        }*/
+
+        private string BuildProductDocumentQuery(ProductReportParams param)
+        {
+            var query = new StringBuilder();
+
+            query.Append(" SELECT D.ANNEX_ID, D.ANNEXURE_NO, D.REVISION_NO, D.DAR_NO,");
+            query.Append(" D.AUTHORITY_TYPE, D.AUTHORITY_NAME, D.AUTHORITY_LICENSE_NO, D.AUTHORITY_LICENSE_NAME,");
+            query.Append(" D.STATE_STATUS, D.REMARKS,");
+            query.Append(" TO_CHAR(D.SUBMISSION_DATE, 'dd/mm/yyyy') SUBMISSION_DATE,");
+            query.Append(" TO_CHAR(D.RECEIVE_DATE,    'dd/mm/yyyy') RECEIVE_DATE,");
+            query.Append(" TO_CHAR(D.INCLUSION_DATE,  'dd/mm/yyyy') INCLUSION_DATE,");
+            query.Append(" TO_CHAR(D.RENEWAL_DATE,    'dd/mm/yyyy') RENEWAL_DATE,");
+            query.Append(" TO_CHAR(D.VALID_UPTO,      'dd/mm/yyyy') VALID_UPTO,");
+            query.Append(" ROUND((D.VALID_UPTO - SYSDATE), 0) AS DAYS_LEFT,");  // ← new
+
+            query.Append(" D.COMPANY_CODE AS COMPANY_UNIT_CODE, CU.COMPANY_UNIT_NAME,");
+            query.Append(" C.COMPANY_CODE, C.COMPANY_NAME, C.LICENSE_NO,");
+            query.Append(" P.PRODUCT_CODE, P.PRODUCT_NAME, P.BRAND_NAME, P.PRODUCT_CATEGORY,");
+            query.Append(" P.PRODUCT_SPECIFICATION, P.GENERIC_CODE, P.PACK_SIZE_NAME,");
+
+            query.Append(" F.FILEID, F.FILECODE, F.FILENAME, F.EXTENTION, F.FILEPATH, F.REFNO AS DOC_REF_NO,");
+
+            // ── Document Status — alarm days ব্যবহার করে ──────────────────
+            query.Append(" CASE");
+            query.Append("   WHEN D.VALID_UPTO < SYSDATE THEN 'Expired'");
+            query.Append("   WHEN F.FILEID IS NOT NULL");
+            query.Append("        AND ROUND((D.VALID_UPTO - SYSDATE), 0) > NVL(D.NOTIFICATION_DAYS, 0) THEN 'Uploaded'");
+            query.Append("   WHEN ROUND((D.VALID_UPTO - SYSDATE), 0) <= NVL(D.NOTIFICATION_DAYS, 0) THEN 'Expiring Soon'");
+            query.Append("   ELSE 'Pending'");
+            query.Append(" END AS DOCUMENT_STATUS");
+
+            query.Append(" FROM PRODUCT_REGISTRATION_INFO D");
+            query.Append(" LEFT JOIN COMPANY_UNIT_INFO  CU ON CU.COMPANY_UNIT_CODE = D.COMPANY_CODE");
+            query.Append(" LEFT JOIN COMPANY_INFO        C ON C.COMPANY_CODE = CU.COMPANY_CODE");
+            query.Append(" LEFT JOIN PRODUCT_INFO        P ON P.PRODUCT_CODE  = D.PRODUCT_CODE");
+
+            query.Append(" LEFT JOIN (");
+            query.Append("   SELECT FILEID, REFLEVEL1, FILECODE, FILENAME, EXTENTION, FILEPATH, REFNO,");
+            query.Append("          ROW_NUMBER() OVER (PARTITION BY REFLEVEL1 ORDER BY FILEID DESC) AS RN");
+            query.Append("   FROM DOCUMENTFILEINFO");
+            query.Append("   WHERE FILETYPE = " + (int)Enums.E_FormFileType.ProductRegistration);
+            query.Append(" ) F ON F.REFLEVEL1 = D.ANNEX_ID AND F.RN = 1");
+
+            query.Append(" WHERE NVL(D.IS_DELETE,'N') = 'N'");
+
+            // ── Filters ──────────────────────────────────────────────────────
+            if (!string.IsNullOrWhiteSpace(param.CompanyCode))
+                query.Append(" AND C.COMPANY_CODE = '" + param.CompanyCode.Replace("'", "''") + "'");
+
+            if (!string.IsNullOrWhiteSpace(param.CompanyUnitCode))  // ← new
+                query.Append(" AND D.COMPANY_CODE = '" + param.CompanyUnitCode.Replace("'", "''") + "'");
+
+            if (!string.IsNullOrWhiteSpace(param.ProductCodeList))
+                query.Append(" AND D.PRODUCT_CODE IN (" + param.ProductCodeList + ")");
+
+            if (!string.IsNullOrWhiteSpace(param.AuthorityType))
+                query.Append(" AND D.AUTHORITY_TYPE = '" + param.AuthorityType.Replace("'", "''") + "'");
+
+            if (!string.IsNullOrWhiteSpace(param.DocumentType))
+                query.Append(" AND D.AUTHORITY_LICENSE_NAME = '" + param.DocumentType.Replace("'", "''") + "'");
+
+            if (!string.IsNullOrWhiteSpace(param.ValidFrom) && !string.IsNullOrWhiteSpace(param.ValidTo))
+            {
+                query.Append(" AND D.VALID_UPTO BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(param.ValidFrom) + "','yyyy/mm/dd')");
+                query.Append(" AND TO_DATE('" + General.SetDateStrYYYYMMDD(param.ValidTo) + "','yyyy/mm/dd')");
+            }
+
+            if (!string.IsNullOrWhiteSpace(param.SubFrom) && !string.IsNullOrWhiteSpace(param.SubTo))
+            {
+                query.Append(" AND D.SUBMISSION_DATE BETWEEN TO_DATE('" + General.SetDateStrYYYYMMDD(param.SubFrom) + "','yyyy/mm/dd')");
+                query.Append(" AND TO_DATE('" + General.SetDateStrYYYYMMDD(param.SubTo) + "','yyyy/mm/dd')");
+            }
+
+            if (!string.IsNullOrWhiteSpace(param.AlarmDays))  // ← new
+                query.Append(" AND ROUND((D.VALID_UPTO - SYSDATE), 0) <= " + param.AlarmDays.Replace("'", "''"));
+
+            // DocStatus — subquery wrap
+            string finalQuery;
+            if (!string.IsNullOrWhiteSpace(param.DocStatus))
+            {
+                finalQuery = "SELECT * FROM (" + query.ToString() + ") WHERE DOCUMENT_STATUS = '"
+                             + param.DocStatus.Replace("'", "''") + "'"
+                             + " ORDER BY ANNEX_ID DESC";
+            }
+            else
+            {
+                finalQuery = query.ToString() + " ORDER BY D.ANNEX_ID DESC";
+            }
+
+            return finalQuery;
+        }
+
+
+        // ── Method 1: List<VM> — Grid (JSON) এর জন্য ────────────────────────────
+        public IList<ProductReportResultVM> GetProductDocumentReport(ProductReportParams param)
+        {
+            string sql = BuildProductDocumentQuery(param);
+            DataTable dt = _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), sql);
+
+            var list = (from DataRow row in dt.Rows
+                        select new ProductReportResultVM
+                        {
+                            AnnexId = Convert.ToInt64(row["ANNEX_ID"]),
+                            AnnexureNo = row["ANNEXURE_NO"].ToString(),
+                            DarNo = row["DAR_NO"].ToString(),
+                            CompanyCode = row["COMPANY_CODE"].ToString(),
+                            CompanyName = row["COMPANY_NAME"].ToString(),
+                            CompanyUnitCode = row["COMPANY_UNIT_CODE"].ToString(),
+                            CompanyUnitName = row["COMPANY_UNIT_NAME"] != DBNull.Value ? row["COMPANY_UNIT_NAME"].ToString() : "",
+                            LicenseNo = row["LICENSE_NO"].ToString(),
+                            ProductCode = row["PRODUCT_CODE"].ToString(),
+                            BrandName = row["BRAND_NAME"].ToString(),
+                            GenericStrength = row["GENERIC_CODE"].ToString(),
+                            PackSize = row["PACK_SIZE_NAME"].ToString(),
+                            ProductCategory = row["PRODUCT_CATEGORY"].ToString(),
+                            ProductSpec = row["PRODUCT_SPECIFICATION"].ToString(),
+                            AuthorityType = row["AUTHORITY_TYPE"].ToString(),
+                            AuthorityName = row["AUTHORITY_NAME"].ToString(),
+                            AuthorityLicenseNo = row["AUTHORITY_LICENSE_NO"].ToString(),
+                            AuthorityLicenseName = row["AUTHORITY_LICENSE_NAME"].ToString(),
+                            SubmissionDate = row["SUBMISSION_DATE"].ToString(),
+                            ReceiveDate = row["RECEIVE_DATE"].ToString(),
+                            ValidUptoDate = row["VALID_UPTO"].ToString(),
+                            RenewalDate = row["RENEWAL_DATE"].ToString(),
+                            Remarks = row["REMARKS"].ToString(),
+                            DocumentStatus = row["DOCUMENT_STATUS"].ToString(),
+                            DaysLeft = row["DAYS_LEFT"] != DBNull.Value ? Convert.ToDecimal(row["DAYS_LEFT"]) : 0,
+                            // ── File columns — DOCUMENTFILEINFO এর actual নাম ──
+                            FileID = row["FILEID"] != DBNull.Value ? Convert.ToInt64(row["FILEID"]) : 0,
+                            FileCode = row["FILECODE"] != DBNull.Value ? row["FILECODE"].ToString() : null,
+                            FileName = row["FILENAME"] != DBNull.Value ? row["FILENAME"].ToString() : null,
+                            FileExtension = row["EXTENTION"] != DBNull.Value ? row["EXTENTION"].ToString() : null,
+                            FilePath = row["FILEPATH"] != DBNull.Value ? row["FILEPATH"].ToString() : null,
+                            DocRefNo = row["DOC_REF_NO"] != DBNull.Value ? row["DOC_REF_NO"].ToString() : null,
+                        }).ToList();
+
+            return list;
+        }
+
+
+
+        // ── Method 2: DataTable — Crystal Reports (Export) এর জন্য ─────────────
+        public DataTable GetProductDocumentReportDT(ProductReportParams param)
+        {
+            string sql = BuildProductDocumentQuery(param);
+            return _dbHelper.GetDataTable(_dbConn.SAConnStrReader(), sql);
+        }
+
+        // ── Company License Report ─────────────────────────────────────────
+        public List<CompanyLicenseReportResult> GetCompanyLicenseReport(
+            CompanyLicenseReportParams p)
+        {
+            var list = new List<CompanyLicenseReportResult>();
+
+            string sql = @"
+        SELECT
+    CL.CLID,
+    CL.COMP_LICENSE_SLNO,
+    CL.COMPANY_CODE        AS COMPANY_UNIT_CODE,
+    CU.COMPANY_UNIT_NAME,
+    CM.COMPANY_CODE,
+    CM.COMPANY_NAME,
+    CL.LICENSE_NO,
+    CL.COMP_LICENSE_NAME,
+    CL.REVISION_NO,
+    CL.SUBMISSION_TYPE,
+    TO_CHAR(CL.SUBMISSION_DATE, 'DD/MM/YYYY') AS SUBMISSION_DATE,
+    TO_CHAR(CL.INSPECTION_DATE, 'DD/MM/YYYY') AS INSPECTION_DATE,
+    TO_CHAR(CL.APPROVAL_DATE,   'DD/MM/YYYY') AS APPROVAL_DATE,
+    TO_CHAR(CL.VALID_UPTO,      'DD/MM/YYYY') AS VALID_UPTO,
+    CL.DETAILS,
+    CL.RES_DEPT1,
+    CL.RES_DEPT2,
+    CL.NOTIFICATION_DAYS,
+    ROUND((CL.VALID_UPTO - SYSDATE), 0) AS DAYS_LEFT,
+    CASE
+        WHEN CL.VALID_UPTO < SYSDATE
+             THEN 'Expired'
+        WHEN DFI.FILEID IS NOT NULL
+             AND ROUND((CL.VALID_UPTO - SYSDATE), 0) > NVL(CL.NOTIFICATION_DAYS, 0)
+             THEN 'Uploaded'
+        WHEN ROUND((CL.VALID_UPTO - SYSDATE), 0) <= NVL(CL.NOTIFICATION_DAYS, 0)
+             THEN 'Expiring Soon'
+        ELSE 'Pending'
+    END AS DOCUMENT_STATUS,
+    DFI.FILEID,
+    DFI.FILECODE,
+    DFI.FILENAME,
+    DFI.EXTENTION AS FILE_EXTENSION
+FROM STL_SRMS.COMPANY_LICENSE CL
+LEFT JOIN STL_SRMS.COMPANY_UNIT_INFO CU
+       ON CU.COMPANY_UNIT_CODE = CL.COMPANY_CODE
+LEFT JOIN STL_SRMS.COMPANY_INFO CM
+       ON CM.COMPANY_CODE = CU.COMPANY_CODE
+LEFT JOIN (
+    SELECT REFLEVEL1, FILEID, FILECODE, FILENAME, EXTENTION,
+           ROW_NUMBER() OVER (PARTITION BY REFLEVEL1 ORDER BY FILEID DESC) RN
+    FROM STL_SRMS.DOCUMENTFILEINFO
+) DFI ON DFI.REFLEVEL1 = CL.CLID AND DFI.RN = 1
+WHERE 1=1
+    ";
+
+            var prms = new List<OracleParameter>();
+
+            // Company filter — CM.COMPANY_CODE দিয়ে
+            if (!string.IsNullOrEmpty(p.CompanyCode))
+            {
+                sql += " AND CM.COMPANY_CODE = :CompanyCode";
+                prms.Add(new OracleParameter("CompanyCode", p.CompanyCode));
+            }
+
+            // Unit filter — CL.COMPANY_CODE দিয়ে (এটাই COMPANY_UNIT_CODE)
+            if (!string.IsNullOrEmpty(p.CompanyUnitCode))
+            {
+                sql += " AND CL.COMPANY_CODE = :CompanyUnitCode";
+                prms.Add(new OracleParameter("CompanyUnitCode", p.CompanyUnitCode));
+            }
+            if (!string.IsNullOrEmpty(p.LicenseNo))
+            {
+                sql += " AND UPPER(CL.LICENSE_NO) LIKE UPPER(:LicenseNo)";
+                prms.Add(new OracleParameter("LicenseNo", "%" + p.LicenseNo + "%"));
+            }
+            if (!string.IsNullOrEmpty(p.SubmissionType))
+            {
+                sql += " AND CL.SUBMISSION_TYPE = :SubmissionType";
+                prms.Add(new OracleParameter("SubmissionType", p.SubmissionType));
+            }
+            if (!string.IsNullOrEmpty(p.ValidFrom))
+            {
+                sql += " AND CL.VALID_UPTO >= TO_DATE(:ValidFrom,'DD/MM/YYYY')";
+                prms.Add(new OracleParameter("ValidFrom", p.ValidFrom));
+            }
+            if (!string.IsNullOrEmpty(p.ValidTo))
+            {
+                sql += " AND CL.VALID_UPTO <= TO_DATE(:ValidTo,'DD/MM/YYYY')";
+                prms.Add(new OracleParameter("ValidTo", p.ValidTo));
+            }
+            if (!string.IsNullOrEmpty(p.CompanyUnitCode))
+            {
+                sql += " AND CL.COMPANY_CODE = :CompanyUnitCode";
+                prms.Add(new OracleParameter("CompanyUnitCode", p.CompanyUnitCode));
+            }
+
+            if (!string.IsNullOrEmpty(p.AlarmDays))
+            {
+                sql += " AND ROUND((CL.VALID_UPTO - SYSDATE), 0) <= :AlarmDays";
+                prms.Add(new OracleParameter("AlarmDays", Convert.ToInt32(p.AlarmDays)));
+            }
+            if (!string.IsNullOrEmpty(p.SubFrom))
+            {
+                sql += " AND CL.SUBMISSION_DATE >= TO_DATE(:SubFrom,'DD/MM/YYYY')";
+                prms.Add(new OracleParameter("SubFrom", p.SubFrom));
+            }
+            if (!string.IsNullOrEmpty(p.SubTo))
+            {
+                sql += " AND CL.SUBMISSION_DATE <= TO_DATE(:SubTo,'DD/MM/YYYY')";
+                prms.Add(new OracleParameter("SubTo", p.SubTo));
+            }
+
+            // DocStatus filter — CASE alias এর জন্য subquery wrap করতে হবে
+            if (!string.IsNullOrEmpty(p.DocStatus))
+            {
+                string statusCondition = "";
+                switch (p.DocStatus)
+                {
+                    case "Uploaded":
+                        statusCondition = " AND DOCUMENT_STATUS = 'Uploaded'"; break;
+                    case "Expired":
+                        statusCondition = " AND DOCUMENT_STATUS = 'Expired'"; break;
+                    case "Expiring Soon":
+                        statusCondition = " AND DOCUMENT_STATUS = 'Expiring Soon'"; break;
+                    case "Pending":
+                        statusCondition = " AND DOCUMENT_STATUS = 'Pending'"; break;
+                }
+                sql = "SELECT * FROM (" + sql + ") WHERE 1=1" + statusCondition;
+            }
+
+            sql += " ORDER BY COMPANY_CODE, CLID";
+
+            using (var con = new OracleConnection(_dbConn.SAConnStrReader()))
+            {
+                con.Open();
+                using (var cmd = new OracleCommand(sql, con))
+                {
+                    cmd.Parameters.AddRange(prms.ToArray());
+                    using (var rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            list.Add(new CompanyLicenseReportResult
+                            {
+                                CLID = rdr["CLID"] == DBNull.Value ? 0 : Convert.ToDecimal(rdr["CLID"]),
+                                CompLicenseSlNo = rdr["COMP_LICENSE_SLNO"] == DBNull.Value ? "" : rdr["COMP_LICENSE_SLNO"].ToString(),
+                                CompanyCode = rdr["COMPANY_CODE"] == DBNull.Value ? "" : rdr["COMPANY_CODE"].ToString(),
+                                CompanyName = rdr["COMPANY_NAME"] == DBNull.Value ? "" : rdr["COMPANY_NAME"].ToString(),
+                                CompanyUnitCode = rdr["COMPANY_UNIT_CODE"] == DBNull.Value ? "" : rdr["COMPANY_UNIT_CODE"].ToString(),
+                                CompanyUnitName = rdr["COMPANY_UNIT_NAME"] == DBNull.Value ? "" : rdr["COMPANY_UNIT_NAME"].ToString(),
+                                LicenseNo = rdr["LICENSE_NO"] == DBNull.Value ? "" : rdr["LICENSE_NO"].ToString(),
+                                CompLicenseName = rdr["COMP_LICENSE_NAME"] == DBNull.Value ? "" : rdr["COMP_LICENSE_NAME"].ToString(),
+                                RevisionNo = rdr["REVISION_NO"] == DBNull.Value ? "" : rdr["REVISION_NO"].ToString(),
+                                SubmissionType = rdr["SUBMISSION_TYPE"] == DBNull.Value ? "" : rdr["SUBMISSION_TYPE"].ToString(),
+                                SubmissionDate = rdr["SUBMISSION_DATE"] == DBNull.Value ? "" : rdr["SUBMISSION_DATE"].ToString(),
+                                InspectionDate = rdr["INSPECTION_DATE"] == DBNull.Value ? "" : rdr["INSPECTION_DATE"].ToString(),
+                                ApprovalDate = rdr["APPROVAL_DATE"] == DBNull.Value ? "" : rdr["APPROVAL_DATE"].ToString(),
+                                ValidUpto = rdr["VALID_UPTO"] == DBNull.Value ? "" : rdr["VALID_UPTO"].ToString(),
+                                Details = rdr["DETAILS"] == DBNull.Value ? "" : rdr["DETAILS"].ToString(),
+                                ResDept1 = rdr["RES_DEPT1"] == DBNull.Value ? "" : rdr["RES_DEPT1"].ToString(),
+                                ResDept2 = rdr["RES_DEPT2"] == DBNull.Value ? "" : rdr["RES_DEPT2"].ToString(),
+                                DocumentStatus = rdr["DOCUMENT_STATUS"] == DBNull.Value ? "" : rdr["DOCUMENT_STATUS"].ToString(),
+                                FileID = rdr["FILEID"] == DBNull.Value ? 0 : Convert.ToInt64(rdr["FILEID"]),
+                                FileCode = rdr["FILECODE"] == DBNull.Value ? "" : rdr["FILECODE"].ToString(),
+                                FileName = rdr["FILENAME"] == DBNull.Value ? "" : rdr["FILENAME"].ToString(),
+                                DaysLeft = rdr["DAYS_LEFT"] == DBNull.Value ? 0 : Convert.ToDecimal(rdr["DAYS_LEFT"]),
+                                FileExtension = rdr["FILE_EXTENSION"] == DBNull.Value ? "" : rdr["FILE_EXTENSION"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
+        public DataTable GetCompanyLicenseReportDT(
+            CompanyLicenseReportParams p)
+        {
+            var dt = new DataTable();
+
+            string sql = @"
+        SELECT
+            CL.COMPANY_CODE,
+            CM.COMPANY_NAME,
+            CL.COMP_LICENSE_NAME,
+            CL.LICENSE_NO,
+            CL.REVISION_NO,
+            CL.SUBMISSION_TYPE,
+            TO_CHAR(CL.SUBMISSION_DATE, 'DD/MM/YYYY') AS SUBMISSION_DATE,
+            TO_CHAR(CL.INSPECTION_DATE, 'DD/MM/YYYY') AS INSPECTION_DATE,
+            TO_CHAR(CL.APPROVAL_DATE,   'DD/MM/YYYY') AS APPROVAL_DATE,
+            TO_CHAR(CL.VALID_UPTO,      'DD/MM/YYYY') AS VALID_UPTO,
+            CL.DETAILS,
+            CL.NOTIFICATION_DAYS,
+            ROUND((CL.VALID_UPTO - SYSDATE), 0) AS DAYS_LEFT,
+            CASE
+                WHEN CL.VALID_UPTO < SYSDATE
+                     THEN 'Expired'
+                WHEN DFI.FILEID IS NOT NULL
+                     AND ROUND((CL.VALID_UPTO - SYSDATE), 0) > NVL(CL.NOTIFICATION_DAYS, 0)
+                     THEN 'Uploaded'
+                WHEN ROUND((CL.VALID_UPTO - SYSDATE), 0) <= NVL(CL.NOTIFICATION_DAYS, 0)
+                     THEN 'Expiring Soon'
+                ELSE 'Pending'
+            END AS DOCUMENT_STATUS
+        FROM STL_SRMS.COMPANY_LICENSE CL
+        LEFT JOIN STL_SRMS.COMPANY_INFO CM
+               ON CM.COMPANY_CODE = CL.COMPANY_CODE
+        LEFT JOIN (
+            SELECT REFLEVEL1, FILEID,
+                   ROW_NUMBER() OVER (PARTITION BY REFLEVEL1 ORDER BY FILEID DESC) RN
+            FROM STL_SRMS.DOCUMENTFILEINFO
+        ) DFI ON DFI.REFLEVEL1 = CL.CLID AND DFI.RN = 1
+        WHERE 1=1
+    ";
+
+            var prms = new List<OracleParameter>();
+
+            if (!string.IsNullOrEmpty(p.CompanyCode))
+            {
+                sql += " AND CL.COMPANY_CODE = :CompanyCode";
+                prms.Add(new OracleParameter("CompanyCode", p.CompanyCode));
+            }
+            if (!string.IsNullOrEmpty(p.LicenseNo))
+            {
+                sql += " AND UPPER(CL.LICENSE_NO) LIKE UPPER(:LicenseNo)";
+                prms.Add(new OracleParameter("LicenseNo", "%" + p.LicenseNo + "%"));
+            }
+            if (!string.IsNullOrEmpty(p.SubmissionType))
+            {
+                sql += " AND CL.SUBMISSION_TYPE = :SubmissionType";
+                prms.Add(new OracleParameter("SubmissionType", p.SubmissionType));
+            }
+            if (!string.IsNullOrEmpty(p.ValidFrom))
+            {
+                sql += " AND CL.VALID_UPTO >= TO_DATE(:ValidFrom,'DD/MM/YYYY')";
+                prms.Add(new OracleParameter("ValidFrom", p.ValidFrom));
+            }
+            if (!string.IsNullOrEmpty(p.ValidTo))
+            {
+                sql += " AND CL.VALID_UPTO <= TO_DATE(:ValidTo,'DD/MM/YYYY')";
+                prms.Add(new OracleParameter("ValidTo", p.ValidTo));
+            }
+            if (!string.IsNullOrEmpty(p.SubFrom))
+            {
+                sql += " AND CL.SUBMISSION_DATE >= TO_DATE(:SubFrom,'DD/MM/YYYY')";
+                prms.Add(new OracleParameter("SubFrom", p.SubFrom));
+            }
+            if (!string.IsNullOrEmpty(p.SubTo))
+            {
+                sql += " AND CL.SUBMISSION_DATE <= TO_DATE(:SubTo,'DD/MM/YYYY')";
+                prms.Add(new OracleParameter("SubTo", p.SubTo));
+            }
+
+            if (!string.IsNullOrEmpty(p.DocStatus))
+            {
+                string statusCondition = "";
+                switch (p.DocStatus)
+                {
+                    case "Uploaded": statusCondition = " AND DOCUMENT_STATUS = 'Uploaded'"; break;
+                    case "Expired": statusCondition = " AND DOCUMENT_STATUS = 'Expired'"; break;
+                    case "Expiring Soon": statusCondition = " AND DOCUMENT_STATUS = 'Expiring Soon'"; break;
+                    case "Pending": statusCondition = " AND DOCUMENT_STATUS = 'Pending'"; break;
+                }
+                sql = "SELECT * FROM (" + sql + ") WHERE 1=1" + statusCondition;
+            }
+
+            sql += " ORDER BY COMPANY_CODE, CLID";
+
+            using (var con = new OracleConnection(_dbConn.SAConnStrReader()))
+            {
+                con.Open();
+                using (var cmd = new OracleCommand(sql, con))
+                using (var adpt = new OracleDataAdapter(cmd))
+                {
+                    cmd.Parameters.AddRange(prms.ToArray());
+                    adpt.Fill(dt);
+                }
+            }
+            return dt;
         }
     }
 }

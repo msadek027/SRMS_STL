@@ -8,6 +8,7 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
     public class ProductInfoBEL
     {
         public string ProductCode { get; set; }
+        public string ProductName { get; set; }
         public string SAPProductCode { get; set; }
         public string GenericCode { get; set; }
         public string GenAndStrength { get; set; }

@@ -20,6 +20,7 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string LicenseNo { get; set; }
         public string StateStatus { get; set; }
         public string ProductCode { get; set; }
+        public string ProductName { get; set; }
         public string SAPProductCode { get; set; }
         public string GenAndStrength { get; set; }
         public string DosageFormName { get; set; }
@@ -41,6 +42,10 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string InclusionDate { get; set; }
         public string RenewalDate { get; set; }
         public string ValidUptoDate { get; set; }
+        public string AuthorityType { get; set; }
+        public string AuthorityName { get; set; }
+        public string AuthorityLicenseNo { get; set; }
+        public string AuthorityLicenseName { get; set; }
         
         public string Remarks { get; set; }
         public string AlarmDays { get; set; }

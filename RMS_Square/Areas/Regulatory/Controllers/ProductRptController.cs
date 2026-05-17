@@ -1,146 +1,223 @@
-﻿using CrystalDecisions.CrystalReports.Engine;
-using CrystalDecisions.Shared;
-using RMS_Square.Areas.Regulatory.Models.BEL;
+﻿using RMS_Square.Areas.Regulatory.Models.BEL;
 using RMS_Square.Areas.Regulatory.Models.DAO;
+using RMS_Square.DAL.Gateway;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
+using System.Data.OracleClient;
+using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Systems.ActionFilter;
 using Systems.Controllers;
+using Systems.Models;
 
 namespace RMS_Square.Areas.Regulatory.Controllers
 {
     public class ProductRptController : ControllerController
     {
         private ReportDAO _dalReportObj = null;
+        private static string _serverFilePath = string.Empty;
         public ProductRptController()
         {
             _dalReportObj = new ReportDAO();
         }
-        [ActionAuth]
+
+        // GET: /Regulatory/ProductRpt/frmProductRpt
+       // [ActionAuth]
         public ActionResult frmProductRptPdf()
         {
-            if (Session["UserId"] != null)
-            {
-                ViewBag.formTitle = "Product Life Cycle Information Report";
+            if (Session["UserID"] != null)
                 return View();
-            }
-            return Redirect(string.Format("~/Home/frmHome"));
+
+            return Redirect("~/Home/frmHome");
         }
+
+        // ── Search: Grid  ───────────────────────────────────────
         [HttpPost]
-        public ActionResult frmProductRptPdf(ReportModel model)
+        public JsonResult GetProductReportData(ProductReportParams param)
         {
-            if (Session["UserId"] != null)
+            try
             {
-                var reportDocument = new ReportDocument();
-                var rptPath = Server.MapPath("~/Reports");
-                DataTable dt = new DataTable();
+                var data = _dalReportObj.GetProductDocumentReport(param);
 
-                string downFileName = string.Empty;
-                string fromTodate = (model.ReportName).Replace(" ", "_") + "_From_" + model.FromDate + "_To_" + model.ToDate + "_";
-                dt = _dalReportObj.GetProductLcInfo(model);
-
-                switch (model.ReportName)
+                string downloadBase = Url.Action("Download", "General");
+                foreach (var r in data.Where(x => x.FileID > 0))
                 {
-                    case "MasterProductInfo":
-                        rptPath = rptPath + "/MasterProductInfo.rpt";
-                        model.ReportName = "MasterProductInfo_" + fromTodate;
-                        reportDocument.Load(rptPath);
-                        reportDocument.SetDataSource(dt);
+                    // handleDownload এর exact pattern
+                    r.FileUrl = downloadBase
+                                + "?path=" + r.FileCode + r.FileExtension
+                                + "&fileName=" + r.FileName
+                                + "&fileId=" + r.FileID;
 
-                        reportDocument.Refresh();
-                        reportDocument.SetParameterValue("CompanyName", Session["COMPANY_NAME"]);
-                        reportDocument.SetParameterValue("DevBy", Session["DEV_BY"]);
-                        reportDocument.SetParameterValue("ProjectName", Session["ProjectName"]);
-                        reportDocument.SetParameterValue("FromDate", model.FromDate == null ? "" : model.FromDate);
-                        reportDocument.SetParameterValue("ToDate", model.ToDate == null ? "" : model.ToDate);
-                        reportDocument.SetParameterValue("P_ProductCode", model.ProductCode ?? "ALL Product");
-                        downFileName = model.ReportName + DateTime.Now.ToString("yyyyMMdd'_'HHmmss");
-                       
-                        reportDocument.ExportToHttpResponse(model.ReportType == "PDF" ? ExportFormatType.PortableDocFormat : ExportFormatType.ExcelRecord, System.Web.HttpContext.Current.Response, false, downFileName);
-                        reportDocument.Close();
-                        reportDocument.Dispose();
-                        break;
-                    case "ProductLifeCycleInfoSinglePage":
-                        rptPath = rptPath + "/ProductLifeCycleInfoSingle.rpt";
-                        model.ReportName = "ProductLifeCycleInfoSingle_" + fromTodate;
-                        reportDocument.Load(rptPath);
-                        reportDocument.SetDataSource(dt);
-                        downFileName = BindParameter(model, reportDocument, downFileName);// +" From:" + model.FromDate + "To:" + model.ToDate;
-                        //reportDocument.ExportToHttpResponse(ExportFormatType.PortableDocFormat, System.Web.HttpContext.Current.Response, false, downFileName);
-                        reportDocument.ExportToHttpResponse(model.ReportType == "PDF" ? ExportFormatType.PortableDocFormat : ExportFormatType.ExcelRecord, System.Web.HttpContext.Current.Response, false, downFileName);
-                        reportDocument.Close();
-                        reportDocument.Dispose();
-                        break;
-                    case "ProductLifeCycleInfo":
-                        rptPath = rptPath + "/ProductLifeCycleInfo.rpt";
-                        model.ReportName = "ProductLifeCycleInfo_" + fromTodate;
-                        reportDocument.Load(rptPath);
-                        reportDocument.SetDataSource(dt);
-                        downFileName = BindParameter(model, reportDocument, downFileName);// +" From:" + model.FromDate + "To:" + model.ToDate;
-                        reportDocument.ExportToHttpResponse(model.ReportType == "PDF" ? ExportFormatType.PortableDocFormat : ExportFormatType.ExcelRecord, System.Web.HttpContext.Current.Response, false, downFileName);
-                        reportDocument.Close();
-                        reportDocument.Dispose();
-                        //if (model.ReportType == "PDF")
-                        //{
-                        //    rptPath = rptPath + "/ProductLifeCycleInfo.rpt";
-                        //    model.ReportName = "ProductLifeCycleInfo_" + fromTodate;
-                        //    reportDocument.Load(rptPath);
-                        //    reportDocument.SetDataSource(dt);
-                        //    downFileName = BindParameter(model, reportDocument, downFileName);// +" From:" + model.FromDate + "To:" + model.ToDate;
-                        //    reportDocument.ExportToHttpResponse(ExportFormatType.PortableDocFormat, System.Web.HttpContext.Current.Response, false, downFileName);
-                        //    reportDocument.Close();
-                        //    reportDocument.Dispose();
-                        //}
-                        //else
-                        //{
-                        //    downFileName = "ProductLifeCycleInfo_" + model.ProductCode + "_";
-                        //    //It represent name of column for which you want to select records
-                        //    //  string[] selectedColumns = new[] {"COMPANY_CODE","COMPANY_NAME","PRODUCT_CODE", "SAP_PRODUCT_CODE", "BRAND_NAME", "GENERIC_STRENGTH", "DOSAGE_FORM_NAME", "PACK_SIZE_NAME", "PRODUCT_CATEGORY", "RECIPE_SUBMISSION_TYPE", "RECIPE_RECEIVE_DATE", "RECIPE_PROPOSAL_DATE","RECIPE_MEETING_DATE","RECIPE_APPROVAL_DATE","RECIPE_VALID_UPTO",
-                        //    //"PRODUCT_SPECIFICATION","DTL_SUBMISSION_DATE","DTL_APPROVAL_DATE","DAR_NO","ANNAX_RECEIVE_DATE","ANNEX_SUBMISSION_DATE","ANNEX_VALID_UPTO","PRICE_RECEIVED_DATE","PRICE_SUBMISSION_DATE","PRICE_APPROVAL_DATE","PRICE_PER_UNIT","PRICE_CHANGE_STATUS","MA_SUBMISSION_DATE","MA_RECEIVE_DATE","MA_APPROVAL_DATE","MA_VALID_UPTO"  };
-                        //    string[] selectedColumns = new[] { "COMPANY_NAME", "PRODUCT_CODE", "SAP_PRODUCT_CODE", "BRAND_NAME", "GENERIC_STRENGTH", "DOSAGE_FORM_NAME", "PACK_SIZE_NAME", "PRODUCT_CATEGORY", "PRODUCT_SPECIFICATION", "DAR_NO" };
-
-                        //    MadeDataForExcel(dt, downFileName, selectedColumns, "COMPANY_NAME,PRODUCT_CODE");
-                        //}
-                        break;
+                    r.CanPreview = r.FileExtension == ".pdf"
+                                || r.FileExtension == ".png"
+                                || r.FileExtension == ".jpg"
+                                || r.FileExtension == ".jpeg";
                 }
-                return View();
+
+                return Json(data, JsonRequestBehavior.AllowGet);
             }
-            return Redirect(string.Format("~/Home/frmHome"));
-        }
-
-        private string BindParameter(ReportModel model, ReportDocument reportDocument, string downFileName)
-        {
-            reportDocument.Refresh();
-            //reportDocument.SetParameterValue("CompanyName", Session["COMPANY_NAME"]);
-            //reportDocument.SetParameterValue("DevBy", Session["DEV_BY"]);
-            //reportDocument.SetParameterValue("ProjectName", Session["ProjectName"]);
-            //reportDocument.SetParameterValue("FromDate", model.FromDate == null ? "" : model.FromDate);
-            //reportDocument.SetParameterValue("ToDate", model.ToDate == null ? "" : model.ToDate);
-            reportDocument.SetParameterValue("P_ProductCode", model.ProductCode ?? "ALL Product");
-
-            downFileName = model.ReportName + DateTime.Now.ToString("yyyyMMdd'_'HHmmss");
-            return downFileName;
-        }
-
-        [ActionAuth]
-        public ActionResult frmProductRptView()
-        {
-            if (Session["UserId"] != null)
+            catch (Exception ex)
             {
-                return View();
+                return Json(new { error = ex.Message });
             }
-            return Redirect(string.Format("~/Home/frmHome"));
+        }
+        [HttpGet]
+        public JsonResult GetFilesByAnnexId(string annexId)
+        {
+            try
+            {
+                var fileModel = new FileDetailModel
+                {
+                    FileType = (int)Enums.E_FormFileType.ProductRegistration,
+                    RefLevel1 = annexId,
+                    RefLevel2 = ""
+                };
+
+                string downloadBase = Url.Action("Download", "General");
+
+                var files = GetFileByParameters(fileModel)
+                                .OrderBy(o => o.FileID)
+                                .Select(f => new
+                                {
+                                    f.FileID,
+                                    f.FileCode,
+                                    f.FileName,
+                                    f.Extention,
+                                    f.FileSize,
+                                    f.RefNo,
+                                    // handleDownload এর exact same pattern
+                                    DownloadUrl = downloadBase
+                                                  + "?path=" + f.FileCode + f.Extention
+                                                  + "&fileName=" + f.FileName
+                                                  + "&fileId=" + f.FileID,
+                                    CanPreview = f.Extention == ".pdf"
+                                               || f.Extention == ".png"
+                                               || f.Extention == ".jpg"
+                                               || f.Extention == ".jpeg"
+                                })
+                                .ToList();
+
+                return Json(files, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
         }
 
+        // ── Export: Crystal Reports দিয়ে PDF/Excel ──────────────────────────
         [HttpPost]
-        public ActionResult GetInfoByParams(ReportModel model)
+        public ActionResult ExportProductReport(ProductReportParams param)
         {
-            var dMaster = _dalReportObj.GetAllProductLifeCycle(model);
-            return Json(new { dataMaster = dMaster }, JsonRequestBehavior.AllowGet);
+            try
+            {
+                if (Session["UserID"] == null)
+                    return Redirect("~/Home/frmHome");
+
+                // DB থেকে DataTable আনো
+                var dt = _dalReportObj.GetProductDocumentReportDT(param);
+
+                string fromTo = "_" + (param.SubFrom ?? "") + "_To_" + (param.SubTo ?? "") + "_";
+                string rptBasePath = Server.MapPath("~/Reports");
+
+                using (var reportDocument = new CrystalDecisions.CrystalReports.Engine.ReportDocument())
+                {
+                    reportDocument.Load(rptBasePath + "/ProductDocumentRpt.rpt");
+                    reportDocument.SetDataSource(dt);
+                    reportDocument.Refresh();
+
+                    // Session parameters — existing pattern এর মতো
+                    reportDocument.SetParameterValue("CompanyName", Session["COMPANY_NAME"]);
+                    reportDocument.SetParameterValue("DevBy", Session["DEV_BY"]);
+                    reportDocument.SetParameterValue("ProjectName", Session["ProjectName"]);
+                    reportDocument.SetParameterValue("FilterCompany", param.CompanyCode ?? "All");
+                    reportDocument.SetParameterValue("FilterStatus", param.DocStatus ?? "All");
+                    reportDocument.SetParameterValue("FromDate", param.SubFrom ?? "");
+                    reportDocument.SetParameterValue("ToDate", param.SubTo ?? "");
+
+                    string fileName = "ProductDocumentRpt" + fromTo + DateTime.Now.ToString("yyyyMMdd_HHmmss");
+
+                    var exportFormat = param.ReportType == "PDF"
+                        ? CrystalDecisions.Shared.ExportFormatType.PortableDocFormat
+                        : CrystalDecisions.Shared.ExportFormatType.ExcelRecord;
+
+                    reportDocument.ExportToHttpResponse(
+                        exportFormat,
+                        System.Web.HttpContext.Current.Response,
+                        false,
+                        fileName);
+                }
+
+                return View("frmProductRpt");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = "Export Error: " + ex.Message;
+                return View("frmProductRpt");
+            }
         }
+
+        public ActionResult PreviewFile(string fileUrl)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(fileUrl))
+                    return HttpNotFound();
+
+                // fileUrl থেকে সব parameter parse করুন
+                var uri = new Uri("http://localhost" + fileUrl);
+                var qs = System.Web.HttpUtility.ParseQueryString(uri.Query);
+                string fileId = qs["fileId"];   // 9041
+                string guidName = qs["path"];     // 968ce0d8-6d84-4264-a161-d521f4d45ae4.pdf  ← disk এ এই নামে আছে
+                string fileName = qs["fileName"]; // 1 - Top500... ← display name শুধু
+
+                if (string.IsNullOrEmpty(fileId))
+                    return HttpNotFound("fileId missing.");
+
+                DBHelper db = new DBHelper();
+                var fileInfo = db.GetDocumentFileInfoById(fileId);
+
+                if (fileInfo == null || string.IsNullOrEmpty(fileInfo.FilePath))
+                    return HttpNotFound("File record not found. FileId: " + fileId);
+
+                string relativePath = fileInfo.FilePath.TrimEnd('/') + "/" + guidName;
+                // result: ~/App_Data/Upload/20260510/968ce0d8-6d84-4264-a161-d521f4d45ae4.pdf
+
+                string filePath = Server.MapPath(relativePath);
+
+                if (!System.IO.File.Exists(filePath))
+                    return Content("File not found on disk: " + filePath);
+
+                // Extension 
+                string ext = Path.GetExtension(guidName).ToLower();
+
+                string contentType;
+                switch (ext)
+                {
+                    case ".pdf": contentType = "application/pdf"; break;
+                    case ".jpg":
+                    case ".jpeg": contentType = "image/jpeg"; break;
+                    case ".png": contentType = "image/png"; break;
+                    case ".gif": contentType = "image/gif"; break;
+                    default: contentType = "application/octet-stream"; break;
+                }
+
+                // Display name হিসেবে original fileName দেখাবে
+                string displayName = !string.IsNullOrEmpty(fileName) ? fileName : guidName;
+                Response.Headers["Content-Disposition"] =
+                    "inline; filename=\"" + displayName + "\"";
+
+                return File(filePath, contentType);
+            }
+            catch (Exception ex)
+            {
+                return Content("Error: " + ex.Message);
+            }
+        }
+
+
     }
 }

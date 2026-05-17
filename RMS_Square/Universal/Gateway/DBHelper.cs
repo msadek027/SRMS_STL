@@ -1,11 +1,12 @@
-﻿using System;
+﻿using RMS_Square.Areas.Regulatory.Models.BEL;
+using RMS_Square.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OracleClient;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
-using RMS_Square.Models;
 using Systems.Universal;
 
 
@@ -94,7 +95,36 @@ namespace RMS_Square.DAL.Gateway
             return dt;
         }
 
+        // ── DB Helper ─────────────────────────────────────────────────────
+        public DocumentFileInfoBEL GetDocumentFileInfoById(string fileId)
+        {
+            DocumentFileInfoBEL obj = null;
+            try
+            {
+                string qry = @"SELECT FILEID, FILENAME, EXTENTION, FILEPATH 
+                       FROM STL_SRMS.DOCUMENTFILEINFO 
+                       WHERE FILEID = " + fileId;
 
+                DataTable dt = GetDataTable(qry);
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.Rows[0];
+                    obj = new DocumentFileInfoBEL
+                    {
+                        FileId = dr["FILEID"].ToString(),
+                        FileName = dr["FILENAME"].ToString(),
+                        Extention = dr["EXTENTION"].ToString(),
+                        FilePath = dr["FILEPATH"].ToString()
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // your existing error handling
+            }
+            return obj;
+        }
 
 
 
