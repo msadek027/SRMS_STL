@@ -789,8 +789,8 @@
                     <th>Authority Type</th>
                     <th>Authority Name</th>
                     <th>License No</th>
-                    <th>Doc Type</th>
-                    <th>Doc No</th>
+                   @* <th>Doc Type</th>
+                    <th>Doc No</th>*@
                     <th>Valid Up To</th>
                     <th>Submit Date</th>
                     <th>Status</th>
@@ -930,8 +930,8 @@ $(document).ready(function () {
                 '<td>' + (r.AuthorityType||'') + '</td>' +
                 '<td>' + (r.AuthorityName||'') + '</td>' +
                 '<td class="muted">' + (r.LicenseNo||r.AuthorityLicenseNo||'') + '</td>' +
-                '<td class="muted">' + (r.DocumentType||'') + '</td>' +
-                '<td class="muted">' + (r.DocNo||r.DocumentNo||'') + '</td>' +
+               /* '<td class="muted">' + (r.DocumentType||'') + '</td>' +
+                '<td class="muted">' + (r.DocNo||r.DocumentNo||'') + '</td>' +*/
                 '<td>' + (r.ValidUptoDate||'') + '</td>' +
                 '<td class="muted">' + (r.SubmissionDate||'') + '</td>' +
                 '<td><span class="badge-status ' + badgeCls + '"><span class="badge-dot"></span>' + status + '</span></td>' +

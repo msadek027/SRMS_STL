@@ -167,6 +167,7 @@
     <Content Include="AdminLTE\dist\img\credit\mestro.png" />
     <Content Include="AdminLTE\dist\img\credit\paypal.png" />
     <Content Include="AdminLTE\dist\img\credit\paypal2.png" />
+    <Content Include="AdminLTE\dist\img\credit\stl.jpg" />
     <Content Include="AdminLTE\dist\img\credit\visa.png" />
     <Content Include="AdminLTE\dist\img\default-50x50.gif" />
     <Content Include="AdminLTE\dist\img\icons.png" />
@@ -175,7 +176,6 @@
     <Content Include="AdminLTE\dist\img\photo3.jpg" />
     <Content Include="AdminLTE\dist\img\photo4.jpg" />
     <Content Include="AdminLTE\dist\img\sil_logo.png" />
-    <Content Include="AdminLTE\dist\img\spl_logo.jpg" />
     <Content Include="AdminLTE\dist\img\user1-128x128.jpg" />
     <Content Include="AdminLTE\dist\img\user2-160x160.jpg" />
     <Content Include="AdminLTE\dist\img\user3-128x128.jpg" />

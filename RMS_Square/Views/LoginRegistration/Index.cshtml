@@ -4,77 +4,185 @@
 }
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Regulatory Management System</title>
+    <title>Regulatory Management System | Square</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="@Url.Content("~/Content/Login/css/style.css" )" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     <style>
-        .main-footer {
-            margin-top: 40px;
-            color: #444;
-            border-top: 2px solid #d2d6de;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
         }
 
-        a {
-            color: #18392b;
-            font-size: 20px;
-            text-decoration: none;
+        body {
+            /* আপনি চাইলে আপনার ব্যাকগ্রাউন্ড ইমেজের লিংক এখানে দিতে পারেন */
+            background: url('../Content/Images/bg_img.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f7f6; /* Fallback color */
         }
 
-        .main-footer {
-            color: #000;
+        /* Overlay for better readability if background image is too bright */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(238, 243, 226, 0.4);
+            backdrop-filter: blur(3px); /* Subtle blur effect */
+            z-index: 1;
         }
+
+        .login-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .logo {
+            max-width: 180px;
+            margin-bottom: 20px;
+        }
+
+        .login-card h1 {
+            font-size: 22px;
+            color: #0056b3; /* Square Blue */
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .login-card p.subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .error-msg {
+            color: #d9534f;
+            background: #fdf7f7;
+            border: 1px solid #d9534f;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+            .form-group input {
+                width: 100%;
+                padding: 12px 15px;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                font-size: 15px;
+                color: #333;
+                transition: all 0.3s ease;
+            }
+
+                .form-group input:focus {
+                    outline: none;
+                    border-color: #0056b3;
+                    box-shadow: 0 0 5px rgba(0, 86, 179, 0.2);
+                }
+
+        .btn-login {
+            width: 100%;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+            .btn-login:hover {
+                background-color: #004494;
+            }
+
+        .main-footer {
+            margin-top: 30px;
+            font-size: 13px;
+            color: #777;
+            text-align: center;
+        }
+
+            .main-footer a {
+                color: #0056b3;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+                .main-footer a:hover {
+                    text-decoration: underline;
+                }
     </style>
-    
-   
 </head>
 
-<body style="background: url('../Content/Images/bg_img.jpg');">
+<body>
     <script src="@Url.Content("~/Scripts/LogIn/js/index.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/LogIn/js/effect.js")" type="text/javascript"></script>
 
-   
-    <div class="wrapper">
-        <div class="container">
-            <h1>Welcome to Square Regulatory Management System</h1>
+    <div class="overlay"></div>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <img src="@Url.Content("~/Content/Images/square_logo.png")" alt="Square Logo" class="logo" />
+
+            <h1>Regulatory Management</h1>
+            <p class="subtitle">Please enter your credentials to login</p>
+
             @using (Html.BeginForm("CheckUser", "LoginRegistration"))
             {
                 @Html.ValidationSummary(true)
+
                 if (!string.IsNullOrEmpty(ViewBag.msg))
                 {
-                    <p style="color:red; text-shadow:1px 0px 0px green;">
+                    <div class="error-msg">
                         @ViewBag.msg
-                    </p>
+                    </div>
                 }
-                <form class="form">
-                    <input id="UserID" name="UserID" type="text" placeholder="Enter Username" required>
-                    <input id="Password" name="Password" type="password" placeholder="Enter Password" required>
-                    <button type="submit" id="btnLogin">Login</button>
-                </form>
-            }
 
-            <footer class="main-footer">
-                <strong>Copyright &copy;@DateTime.Now.Year <a href="http://www.e-home2u.com/">SQUARE InformatiX Limited</a>.</strong> All rights
-                reserved.
-            </footer>
+                <div class="form-group">
+                    <input id="UserID" name="UserID" type="text" placeholder="Enter Username" required autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <input id="Password" name="Password" type="password" placeholder="Enter Password" required>
+                </div>
+
+                <button type="submit" id="btnLogin" class="btn-login">Login</button>
+            }
         </div>
-        <ul class="bg-bubbles">
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
+
+        <footer class="main-footer">
+            <strong>Copyright &copy; @DateTime.Now.Year <br /> <a href="http://www.e-home2u.com/" target="_blank">SQUARE InformatiX Limited</a>.</strong> All rights reserved.
+        </footer>
     </div>
 </body>
-
 </html>
-
-
-
-  
