@@ -7,7 +7,7 @@
       "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|d:\\office project\\srms_stl\\srms_stl\\rms_square\\adminlte\\dist\\img\\credit\\stl.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}",
+      "AbsoluteMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|D:\\Office Project\\SRMS_STL\\SRMS_STL\\rms_square\\adminlte\\dist\\img\\credit\\stl.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}",
       "RelativeMoniker": "D:0:0:{FFE1395A-0458-4B0F-BC44-C32B056B62C6}|RMS_Square\\RMS_Square.csproj|solutionrelative:rms_square\\adminlte\\dist\\img\\credit\\stl.jpg||{58961B49-13E0-48C0-9258-13CBC4D40279}"
     }
   ],
@@ -33,16 +33,8 @@
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "stl.jpg",
-              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\AdminLTE\\dist\\img\\credit\\stl.jpg",
-              "RelativeDocumentMoniker": "RMS_Square\\AdminLTE\\dist\\img\\credit\\stl.jpg",
-              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\AdminLTE\\dist\\img\\credit\\stl.jpg",
-              "RelativeToolTip": "RMS_Square\\AdminLTE\\dist\\img\\credit\\stl.jpg",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
-              "WhenOpened": "2026-05-20T03:49:03.544Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
             },
             {
               "$type": "Document",
@@ -56,6 +48,17 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-05-20T03:28:10.994Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "stl.jpg",
+              "DocumentMoniker": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\AdminLTE\\dist\\img\\credit\\stl.jpg",
+              "RelativeDocumentMoniker": "RMS_Square\\AdminLTE\\dist\\img\\credit\\stl.jpg",
+              "ToolTip": "D:\\Office Project\\SRMS_STL\\SRMS_STL\\RMS_Square\\AdminLTE\\dist\\img\\credit\\stl.jpg",
+              "RelativeToolTip": "RMS_Square\\AdminLTE\\dist\\img\\credit\\stl.jpg",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2026-05-20T03:49:03.544Z"
             }
           ]
         },
