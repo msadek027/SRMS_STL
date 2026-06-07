@@ -12,6 +12,7 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string SAPProductCode { get; set; }
         public string GenericCode { get; set; }
         public string GenAndStrength { get; set; }
+        public string ProductVariant { get; set; }
         public string CompanyUnitCode { get; set; }
         public string CompanyUnitName { get; set; }
         public string GenericName { get; set; }

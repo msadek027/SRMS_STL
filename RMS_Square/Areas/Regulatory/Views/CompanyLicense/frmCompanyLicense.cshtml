@@ -163,38 +163,32 @@
         <div class="gui-card context-card">
             <h4 class="gui-section-title"><i class="glyphicon glyphicon-briefcase text-info"></i> Company Information</h4>
 
+            <!-- Hidden fields -->
+            <input type="hidden" id="CompanyCode" name="CompanyCode" />
+            <input type="hidden" id="CompanyUnitCode" name="CompanyUnitCode" />
+
+            <!-- Row 1: Company Name | Unit Name -->
             <div class="row form-group">
-                <label class="col-sm-2 modern-label">Company Code <span class="asterisk">*</span></label>
-                <div class="col-sm-3">
-                    <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" placeholder="Press Any" readonly />
-                </div>
-                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
                 <label class="col-sm-2 modern-label">Company Name</label>
                 <div class="col-sm-4">
                     <input type="text" id="CompanyName" name="CompanyName" class="form-control" readonly />
                 </div>
-            </div>
-
-            <div class="row form-group">
-                <label class="col-sm-2 modern-label">Unit Code</label>
-                <div class="col-sm-3">
-                    <input type="text" id="CompanyUnitCode" name="CompanyUnitCode" readonly class="form-control" placeholder="Auto" />
-                </div>
-                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+                <div class="col-sm-1 gap-col"></div>
                 <label class="col-sm-2 modern-label">Unit Name</label>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <input type="text" id="CompanyUnitName" name="CompanyUnitName" readonly class="form-control" placeholder="Auto" />
                 </div>
             </div>
 
+            <!-- Row 2: Address | Revision No -->
             <div class="row form-group" style="margin-bottom: 0;">
                 <label class="col-sm-2 modern-label">Company Address</label>
-                <div class="col-sm-3">
+                <div class="col-sm-4">
                     <textarea class="form-control" id="Address" name="Address" placeholder="Company Address" rows="2" readonly style="padding: 6px 14px;"></textarea>
                 </div>
-                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+                <div class="col-sm-1 gap-col"></div>
                 <label class="col-sm-2 modern-label">Revision No</label>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <input type="text" id="RevisionNo" name="RevisionNo" placeholder="Auto" class="form-control" readonly />
                 </div>
             </div>
@@ -233,7 +227,7 @@
                     </div>
                 </div>
 
-                <div class="row form-group">
+                <!--<div class="row form-group">
                     <label class="col-sm-2 modern-label">Submission Date</label>
                     <div class="col-sm-3">
                         <div class="input-group date">
@@ -241,15 +235,15 @@
                             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                         </div>
                     </div>
-                    <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
-                    <label class="col-sm-2 modern-label">Inspection Date</label>
+                    <div class="col-sm-1 gap-col"></div>--> <!-- Middle Gap -->
+                    <!--<label class="col-sm-2 modern-label">Inspection Date</label>
                     <div class="col-sm-4">
                         <div class="input-group date">
                             <input type="text" class="form-control" id="InspectionDate" name="InspectionDate" placeholder="dd/mm/yyyy">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 <div class="row form-group">
                     <label class="col-sm-2 modern-label">Approval Date</label>
@@ -628,9 +622,9 @@ $(document).ready(function () {
         columnMenu: true, reorderable: true, resizable: true,
         columns: [
             { field: "CLID",            hidden: true },
-            { field: "CompanyCode",     locked: true, title: "Code",            width: 90  },
+           // { field: "CompanyCode",     locked: true, title: "Code",            width: 90  },
             { field: "CompanyName",     locked: true, title: "Company Name",    width: 140 },
-            { field: "CompanyUnitCode", locked: true, title: "Unit Code",       width: 90  },
+          //  { field: "CompanyUnitCode", locked: true, title: "Unit Code",       width: 90  },
             { field: "CompanyUnitName", locked: true, title: "Unit Name",       width: 140 },
             { field: "CompLicenseName",               title: "License Name",    width: 130 },
             { field: "LicenseNo",                     title: "License No",      width: 110 },
@@ -707,9 +701,9 @@ $(document).ready(function () {
         toolbar: [{ template: "<input type='text' id='txtCompanyKeyword' style='float:right' placeholder='Search...' class='k-textbox'>" }],
         height: 430, columnMenu: true, reorderable: true, resizable: true,
         columns: [
-            { field: "CompanyCode",     title: "CompanyCode", width: 100 },
+           // { field: "CompanyCode",     title: "CompanyCode", width: 100 },
             { field: "CompanyName",     title: "CompanyName", width: 140 },
-            { field: "CompanyUnitCode", title: "UnitCode",    width: 100 },
+           // { field: "CompanyUnitCode", title: "UnitCode",    width: 100 },
             { field: "CompanyUnitName", title: "UnitName",    width: 140 }
         ]
     }).data('kendoGrid');
@@ -751,8 +745,11 @@ $(document).ready(function () {
         });
     }
 
+    /*$('#btnFind').click(function () { CompanyWindow.open(); loadCompanyGrid(); });
+    $("#CompanyCode").on('click dblclick keyup keypress keydown', function () { CompanyWindow.open(); loadCompanyGrid(); });*/
+    // পরে
     $('#btnFind').click(function () { CompanyWindow.open(); loadCompanyGrid(); });
-    $("#CompanyCode").on('click dblclick keyup keypress keydown', function () { CompanyWindow.open(); loadCompanyGrid(); });
+    $("#CompanyName").on('click dblclick', function () { CompanyWindow.open(); loadCompanyGrid(); });
 
     $('#CompanyWindowGrid').dblclick(function () {
         var grid = $(this).data('kendoGrid');
