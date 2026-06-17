@@ -114,25 +114,25 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         }
 
         // ── File Preview (same pattern as ProductRpt) ────────────────────
-        public ActionResult PreviewFile(string fileUrl)
+    
+
+        public ActionResult PreviewFile(string fileUrl, string fileId, string fileName)
         {
             try
             {
-                if (string.IsNullOrEmpty(fileUrl)) return HttpNotFound();
+                if (string.IsNullOrEmpty(fileId) || fileId == "undefined")
+                    return HttpNotFound("fileId missing.");
 
-                var uri = new Uri("http://localhost" + fileUrl);
-                var qs = System.Web.HttpUtility.ParseQueryString(uri.Query);
-                string fileId = qs["fileId"];
-                string guidName = qs["path"];
-                string fileName = qs["fileName"];
-
-                if (string.IsNullOrEmpty(fileId)) return HttpNotFound("fileId missing.");
+                if (string.IsNullOrEmpty(fileUrl))
+                    return HttpNotFound("fileUrl missing.");
 
                 DBHelper db = new DBHelper();
                 var fileInfo = db.GetDocumentFileInfoById(fileId);
 
                 if (fileInfo == null || string.IsNullOrEmpty(fileInfo.FilePath))
                     return HttpNotFound("File record not found. FileId: " + fileId);
+
+                string guidName = fileUrl;
 
                 string filePath = Server.MapPath(
                     fileInfo.FilePath.TrimEnd('/') + "/" + guidName);
@@ -163,7 +163,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                 return Content("Error: " + ex.Message);
             }
         }
-    
+
 
 
         // ── Search: Grid  ───────────────────────────────────────
@@ -292,63 +292,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             }
         }
 
-       /* public ActionResult PreviewFile(string fileUrl)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(fileUrl))
-                    return HttpNotFound();
-
-                // fileUrl থেকে সব parameter parse করুন
-                var uri = new Uri("http://localhost" + fileUrl);
-                var qs = System.Web.HttpUtility.ParseQueryString(uri.Query);
-                string fileId = qs["fileId"];   // 9041
-                string guidName = qs["path"];     // 968ce0d8-6d84-4264-a161-d521f4d45ae4.pdf  ← disk এ এই নামে আছে
-                string fileName = qs["fileName"]; // 1 - Top500... ← display name শুধু
-
-                if (string.IsNullOrEmpty(fileId))
-                    return HttpNotFound("fileId missing.");
-
-                DBHelper db = new DBHelper();
-                var fileInfo = db.GetDocumentFileInfoById(fileId);
-
-                if (fileInfo == null || string.IsNullOrEmpty(fileInfo.FilePath))
-                    return HttpNotFound("File record not found. FileId: " + fileId);
-
-                string relativePath = fileInfo.FilePath.TrimEnd('/') + "/" + guidName;
-                // result: ~/App_Data/Upload/20260510/968ce0d8-6d84-4264-a161-d521f4d45ae4.pdf
-
-                string filePath = Server.MapPath(relativePath);
-
-                if (!System.IO.File.Exists(filePath))
-                    return Content("File not found on disk: " + filePath);
-
-                // Extension 
-                string ext = Path.GetExtension(guidName).ToLower();
-
-                string contentType;
-                switch (ext)
-                {
-                    case ".pdf": contentType = "application/pdf"; break;
-                    case ".jpg":
-                    case ".jpeg": contentType = "image/jpeg"; break;
-                    case ".png": contentType = "image/png"; break;
-                    case ".gif": contentType = "image/gif"; break;
-                    default: contentType = "application/octet-stream"; break;
-                }
-
-                // Display name হিসেবে original fileName দেখাবে
-                string displayName = !string.IsNullOrEmpty(fileName) ? fileName : guidName;
-                Response.Headers["Content-Disposition"] =
-                    "inline; filename=\"" + displayName + "\"";
-
-                return File(filePath, contentType);
-            }
-            catch (Exception ex)
-            {
-                return Content("Error: " + ex.Message);
-            }
-        }*/
+      
 
 
     }

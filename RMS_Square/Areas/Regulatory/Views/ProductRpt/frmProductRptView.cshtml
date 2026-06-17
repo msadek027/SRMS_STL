@@ -486,9 +486,9 @@
         <button id="btnSearch" class="btn-rpt btn-primary-rpt">
             <i class="glyphicon glyphicon-search"></i> Search
         </button>
-        <button id="btnExport" class="btn-rpt btn-success-rpt">
+   @*     <button id="btnExport" class="btn-rpt btn-success-rpt">
             <i class="glyphicon glyphicon-download-alt"></i> Export Excel
-        </button>
+        </button>*@
         <button id="btnReset" class="btn-rpt btn-default-rpt">
             <i class="glyphicon glyphicon-refresh"></i> Reset
         </button>
@@ -532,13 +532,51 @@
                     </button>
                 </div>
             </div>
-            <div class="fg" style="flex:1;min-width:180px;">
-                <label>License No</label>
-                <input type="text" id="fLicenseNo" class="form-control"
-                       style="width:100%;" placeholder="Search by License No..." />
+            <div class="fg" style="flex:1;min-width:220px;">
+                <label>License Name</label>
+                <select id="fCompLicenseName" class="form-control" style="width:100%;">
+                    <option value="">-- All --</option>
+                    <option value="Land Use Clearance / Land Conversion">Land Use Clearance / Land Conversion</option>
+                    <option value="Land Development Tax">Land Development Tax</option>
+                    <option value="Building Layout plan approval">Building Layout plan approval</option>
+                    <option value="Factory Masterplan Approval">Factory Masterplan Approval</option>
+                    <option value="Occupancy Certificate">Occupancy Certificate</option>
+                    <option value="NOC from Local Authority">NOC from Local Authority</option>
+                    <option value="Holding Tax">Holding Tax</option>
+                    <option value="Trade License">Trade License</option>
+                    <option value="Site Clearance for Environment (NOC)">Site Clearance for Environment (NOC)</option>
+                    <option value="Environment Clearance Certificate (ECC)">Environment Clearance Certificate (ECC)</option>
+                    <option value="Environment Clearance for Generator">Environment Clearance for Generator</option>
+                    <option value="ETP Approval">ETP Approval</option>
+                    <option value="Industrial Project Registration">Industrial Project Registration</option>
+                    <option value="Approach Road Permission">Approach Road Permission</option>
+                    <option value="Fire Safety Plan Approval (NOC)">Fire Safety Plan Approval (NOC)</option>
+                    <option value="Fire License">Fire License</option>
+                    <option value="Fire Effectiveness Certificate">Fire Effectiveness Certificate</option>
+                    <option value="Factory/Commercial License">Factory/Commercial License</option>
+                    <option value="Factory Layout Plan Approval (DIFE)">Factory Layout Plan Approval (DIFE)</option>
+                    <option value="Premises License">Premises License</option>
+                    <option value="Food Grain Storage">Food Grain Storage</option>
+                    <option value="Food Milling">Food Milling</option>
+                    <option value="Agriculture Marketing License (Miller)">Agriculture Marketing License (Miller)</option>
+                    <option value="Agriculture Marketing License (Warehouse)">Agriculture Marketing License (Warehouse)</option>
+                    <option value="Boiler Registration">Boiler Registration</option>
+                    <option value="Boiler License (Fitness Certificate)">Boiler License (Fitness Certificate)</option>
+                    <option value="Diesel Storage tank construction">Diesel Storage tank construction</option>
+                    <option value="Membership (Chambers)">Membership (Chambers)</option>
+                    <option value="Explosive License">Explosive License</option>
+                    <option value="NOC from WARPO">NOC from WARPO</option>
+                    <option value="Certificate of Incorporation">Certificate of Incorporation</option>
+                    <option value="Import Registration Certificate (IRC)">Import Registration Certificate (IRC)</option>
+                    <option value="Export Registration Certificate (ERC)">Export Registration Certificate (ERC)</option>
+                    <option value="Membership (BEF)">Membership (BEF)</option>
+                    <option value="Membership (BCPA)">Membership (BCPA)</option>
+                    <option value="VAT Registration (BIN)">VAT Registration (BIN)</option>
+                    <option value="Income Tax Registration (TIN)">Income Tax Registration (TIN)</option>
+                    <option value="Narcotics License">Narcotics License</option>
+                </select>
             </div>
-
-            <div class="fg" style="flex:0 0 160px;">
+          @*  <div class="fg" style="flex:0 0 160px;">
                 <label>Submission Type</label>
                 <select id="fSubType" class="form-control" style="width:100%;">
                     <option value="">All</option>
@@ -557,11 +595,11 @@
                     <option value="Expiring Soon">Expiring Soon</option>
                     <option value="Expired">Expired</option>
                 </select>
-            </div>
+            </div>*@
         </div>
 
         <!-- Row 2 -->
-        <div class="frow">
+       @* <div class="frow">
             <div class="fg" style="flex:0 0 180px;">
                 <label>Valid From Date</label>
                 <div class="input-group-date">
@@ -585,7 +623,7 @@
                 <input type="number" id="fAlarmDays" class="form-control"
                        placeholder="e.g. 30" min="0" style="width:100%;" />
             </div>
-        </div>
+        </div>*@
 
     </div>
 </div>
@@ -635,16 +673,16 @@
                     <th>Company</th>
                     <th>Unit</th>
                     <th>License Name</th>
-                    <th>License No</th>
+                    <!--<th>License No</th>-->
                     @*<th>Revision</th>
                         <th>Sub. Type</th>*@
-                    <th>Submit Date</th>
-                    <th>Days Left</th>
-                    <th>Inspection Date</th>
+                    <!--<th>Submit Date</th>
+                    <th>Days Left</th>-->
+                    @*<th>Inspection Date</th>*@
                     <th>Approval Date</th>
                     <th>Valid Upto</th>
-                    <th>Details</th>
-                    <th>Status</th>
+                   @* <th>Details</th>
+                    <th>Status</th>*@
                     <th style="width:80px;text-align:center;">Actions</th>
                 </tr>
             </thead>
@@ -667,6 +705,36 @@
     </div>
 </div>
 
+
+<div id="docListModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+     background:rgba(0,0,0,.6);z-index:29998;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:10px;width:70%;max-width:800px;
+                max-height:80vh;display:flex;flex-direction:column;overflow:hidden;
+                box-shadow:0 20px 60px rgba(0,0,0,.3);">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--border);
+                    display:flex;align-items:center;justify-content:space-between;background:var(--surface2);">
+            <strong style="font-size:15px;color:var(--accent-dark);"><i class="glyphicon glyphicon-folder-open"></i> Documents: <span id="docListTitle"></span></strong>
+            <button onclick="closeDocList()" class="btn-icon" style="width:32px;height:32px;font-size:15px;background:transparent;border:none;cursor:pointer;">
+                <i class="glyphicon glyphicon-remove"></i>
+            </button>
+        </div>
+        <div style="flex:1;overflow:auto;padding:20px;">
+            <table class="doc-table">
+                <thead>
+                    <tr>
+                        <th style="width:50px;">#</th>
+                        <th>Document Name / Type</th>
+                        <th>File Name</th>
+                        <th style="width:80px;">Size</th>
+                        <th style="width:140px;text-align:center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="docListBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 <!-- ══ Preview Modal ════════════════════════════════════════════════ -->
 <div id="previewModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
      background:rgba(0,0,0,.6);z-index:29999;align-items:center;justify-content:center;">
@@ -701,7 +769,17 @@
 var _companyCode     = '';
 var _companyUnitCode = '';
 
-$(document).ready(function () {
+    $(document).ready(function () {
+
+        $('#fCompLicenseName').select2({
+            width: '100%',
+            placeholder: "--Select Any--",
+            allowClear: true
+        });
+        $('#fCompLicenseName').on('change', function () {
+            changeAny = 1;
+        });
+
 
     $('.input-group-date input[type="text"]').datepicker({
         format: "dd/mm/yyyy", autoclose: true, todayHighlight: true
@@ -710,10 +788,12 @@ $(document).ready(function () {
     var _allData = [];
 
     function collectParams() {
+        debugger
         return {
             CompanyCode:    _companyCode,
             CompanyUnitCode: _companyUnitCode,
-            LicenseNo:      $('#fLicenseNo').val(),
+            LicenseNo: $('#fLicenseNo').val(),
+            CompLicenseName: $('#fCompLicenseName').val(),
             SubmissionType: $('#fSubType').val(),
             ValidFrom:      $('#ValidFrom').val(),
             ValidTo:        $('#ValidTo').val(),
@@ -743,7 +823,7 @@ $(document).ready(function () {
         $('#statExpired').text(expired);
         $('#statsBar').show();
 
-        $.each(data, function(i, r) {
+     /*   $.each(data, function(i, r) {
             var badgeCls = r.DocumentStatus === 'Uploaded' ? 'badge-uploaded'
                          : r.DocumentStatus === 'Expired'  ? 'badge-expired'
                          : 'badge-pending';
@@ -770,6 +850,42 @@ $(document).ready(function () {
                 '<td>' + (r.ValidUpto || '') + '</td>' +
                 '<td class="muted" style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="' + (r.Details || '') + '">' + (r.Details || '') + '</td>' +
                 '<td><span class="badge-status ' + badgeCls + '"><span class="badge-dot"></span>' + status + '</span></td>' +
+                '<td><div class="tbl-actions" style="justify-content:center;">' + actions + '</div></td>' +
+                '</tr>'
+            );
+        });*/
+        $.each(data, function (i, r) {
+            var badgeCls = r.DocumentStatus === 'Uploaded' ? 'badge-uploaded'
+                : r.DocumentStatus === 'Expired' ? 'badge-expired'
+                    : 'badge-pending';
+            var status = r.DocumentStatus || 'Pending';
+
+            // ── Actions Button Logic ──
+            var actions = '';
+            if (r.FileCount > 0 || r.FileUrl || r.FileID) {
+                // r.CLID হলো Company License ID (আপনার মডেলে যে আইডি দিয়ে ফাইল আনবেন সেটি দিন)
+                actions += '<button class="btn-rpt btn-primary-rpt" style="height:28px;padding:0 12px;font-size:12px;" onclick="openDocList(\'' + (r.CLID || r.ID) + '\', \'' + (r.CompLicenseName || 'License').replace(/'/g, "\\'") + '\')">';
+                actions += '<i class="glyphicon glyphicon-folder-open"></i> View Files</button>';
+            } else {
+                actions += '<span style="font-size:11px;color:#aaa;">No file</span>';
+            }
+
+            var searchStr = [r.CompanyCode, r.CompanyName, r.CompanyUnitCode, r.CompanyUnitName, r.LicenseNo, r.CompLicenseName, r.RevisionNo, r.SubmissionType].join(' ').toLowerCase();
+
+            tbody.append(
+                '<tr data-search="' + searchStr + '">' +
+                '<td class="muted">' + (i + 1) + '</td>' +
+                '<td><span style="font-weight:600;">' + (r.CompanyName || '') + /*'</span><br><small class="muted">' + (r.CompanyCode || '') + '</small></td>' +*/
+                '<td><span style="font-weight:600;">' + (r.CompanyUnitName || '') + /*'</span><br><small class="muted">' + (r.CompanyUnitCode || '') + '</small></td>' +*/
+                '<td>' + (r.CompLicenseName || '') + '</td>' +
+               /* '<td class="muted">' + (r.LicenseNo || '') + '</td>' +*/
+               /* '<td class="muted">' + (r.SubmissionDate || '') + '</td>' +*/
+                /*'<td>' + (r.DaysLeft !== undefined ? r.DaysLeft : '') + '</td>' +*/
+               /* '<td class="muted">' + (r.InspectionDate || '') + '</td>' +*/
+                '<td class="muted">' + (r.ApprovalDate || '') + '</td>' +
+                '<td>' + (r.ValidUpto || '') + '</td>' +
+                /*'<td class="muted" style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="' + (r.Details || '') + '">' + (r.Details || '') + '</td>' +
+                '<td><span class="badge-status ' + badgeCls + '"><span class="badge-dot"></span>' + status + '</span></td>' +*/
                 '<td><div class="tbl-actions" style="justify-content:center;">' + actions + '</div></td>' +
                 '</tr>'
             );
@@ -815,7 +931,8 @@ $(document).ready(function () {
         _companyCode     = '';   // ← variable clear
         _companyUnitCode = '';   // ← variable clear
         $('#CompanyName, #CompanyUnitName').val('');
-        $('#fLicenseNo, #fAlarmDays').val('');
+        //$('#fLicenseNo, #fAlarmDays').val('');
+        $('#fLicenseNo, #fLicenseName, #fAlarmDays').val('');
         $('#fSubType, #fDocStatus').val('');
         $('#ValidFrom, #ValidTo, #txtQuickSearch').val('');
         _allData = [];
@@ -838,10 +955,10 @@ $(document).ready(function () {
         scrollable: true, sortable: true, filterable: true, selectable: 'row', height: 430,
         toolbar: [{ template: "<input type='text' id='txtCmpKW' style='float:right' placeholder='Search...' class='k-textbox'>" }],
         columns: [
-            { field: 'CompanyCode', title: 'Code',       width: 80  },
+            { field: 'CompanyCode', title: 'Code', hidden: true ,       width: 80  },
             { field: 'CompanyName', title: 'Name',       width: 200 },
             { field: 'Address',     title: 'Address',    width: 160 },
-            { field: 'LicenseNo',   title: 'License No', width: 100 }
+            //{ field: 'LicenseNo',   title: 'License No', width: 100 }
         ]
     });
 
@@ -891,9 +1008,9 @@ $(document).ready(function () {
         scrollable: true, sortable: true, filterable: true, selectable: 'row', height: 400,
         toolbar: [{ template: "<input type='text' id='txtUnitKW' style='float:right' placeholder='Search...' class='k-textbox'>" }],
         columns: [
-            { field: 'CompanyUnitCode', title: 'Unit Code', width: 100 },
+            { field: 'CompanyUnitCode', title: 'Unit Code', width: 100 ,hidden: true },
             { field: 'CompanyUnitName', title: 'Unit Name', width: 220 },
-            { field: 'CompanyCode',     title: 'Co. Code',  width: 90  }
+            { field: 'CompanyCode', title: 'Co. Code', width: 90, hidden: true }
         ]
     });
 
@@ -934,7 +1051,101 @@ $(document).ready(function () {
 });  // ← document.ready end
     console.log('_companyCode:', typeof _companyCode, _companyCode);
     console.log('_companyUnitCode:', typeof _companyUnitCode, _companyUnitCode);
-function previewFile(url, name) {
+
+
+    // ── Open Document List Modal ───────────────────────────────────────
+window.openDocList = function(refId, title) {
+    $('#docListTitle').text(title);
+    $('#docListBody').html('<tr><td colspan="5" style="text-align:center;padding:20px;">Loading files...</td></tr>');
+    $('#docListModal').css('display', 'flex');
+
+    $.ajax({
+        // আপনার Company License এর ফাইল আনার API (GetFileByRefId) কল করুন
+        url: '@Url.Action("GetFileByRefId", "CompanyLicense")',
+        type: 'GET',
+        data: { refLevel1: refId },
+        success: function (files) {
+            var tbody = $('#docListBody');
+            tbody.empty();
+
+            if (!files || files.length === 0) {
+                tbody.html('<tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">No files found.</td></tr>');
+                return;
+            }
+
+            $.each(files, function (i, f) {
+                var ext = (f.Extention || '').toLowerCase().replace('.', '');
+                var canPreview = ['pdf','jpg','jpeg','png','gif','bmp','webp'].indexOf(ext) >= 0;
+
+                var dlUrl = '@Url.Action("Download","General")'
+                          + '?path=' + encodeURIComponent((f.FileCode || '') + (f.Extention || ''))
+                          + '&fileName=' + encodeURIComponent(f.FileName || '')
+                          + '&fileId=' + (f.FileID || '');
+
+                var fileUrlForPreview = (f.FileCode || '') + (f.Extention || '');
+                var fileNameForPreview = (f.FileName || 'Document').replace(/'/g, "\\'");
+                var fileIdForPreview = f.FileID || '';
+
+                var actions = '';
+                if (canPreview) {
+                    actions += '<a class="btn-icon preview" title="Preview" style="cursor:pointer;margin-right:8px;color:var(--accent);" onclick="previewFile(\'' + fileUrlForPreview + '\',\'' + fileNameForPreview + '\', \'' + fileIdForPreview + '\')"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                }
+                actions += '<a class="btn-icon download" title="Download" style="color:var(--success);" href="' + dlUrl + '" download="' + (f.FileName || 'file') + '" target="_blank"><i class="glyphicon glyphicon-download-alt"></i></a>';
+
+                tbody.append(
+                    '<tr>' +
+                    '<td style="color:#64748b;font-weight:600;">' + (i + 1) + '</td>' +
+                    '<td>' + (f.RefNo || 'Document') + '</td>' +
+                    '<td>' + (f.FileName || '') + '</td>' +
+                    '<td>' + (f.FileSize ? f.FileSize + ' MB' : '') + '</td>' +
+                    '<td style="text-align:center;">' + actions + '</td>' +
+                    '</tr>'
+                );
+            });
+        },
+        error: function () {
+            $('#docListBody').html('<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--danger);">Error loading files.</td></tr>');
+        }
+    });
+};
+
+window.closeDocList = function() {
+    $('#docListModal').hide();
+    $('#docListBody').empty();
+};
+
+    // ── Preview File Logic ───────────────────────────────────────
+    function previewFile(url, name, fileId) {
+        debugger
+    $('#previewTitle').text(name);
+    var ext = url.split('.').pop().toLowerCase().split('?')[0];
+
+    fileId = fileId || '';
+
+    // CompanyLicenseRpt কন্ট্রোলারের PreviewFile অ্যাকশন কল করা হচ্ছে
+    var streamUrl = '@Url.Action("PreviewFile", "CompanyLicenseRpt")?fileUrl=' + encodeURIComponent(url)
+                  + '&fileId=' + encodeURIComponent(fileId)
+                  + '&fileName=' + encodeURIComponent(name);
+
+    if (ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif') {
+        $('#previewFrame').hide();
+        $('#previewImageHolder').remove();
+        $('#previewFrame').after('<div id="previewImageHolder" style="width:100%;height:100%;overflow:auto;display:flex;align-items:center;justify-content:center;padding:16px;"><img src="' + streamUrl + '" style="max-width:100%;max-height:100%;border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.15);" /></div>');
+    } else {
+        $('#previewImageHolder').remove();
+        $('#previewFrame').show().attr('src', streamUrl);
+    }
+    $('#previewModal').css('display', 'flex');
+}
+
+function closePreview() {
+    $('#previewModal').hide();
+    $('#previewFrame').attr('src', '').show();
+    $('#previewImageHolder').remove();
+    }
+
+
+@*function previewFile(url, name) {
     $('#previewTitle').text(name);
     var ext = url.split('.').pop().toLowerCase().split('?')[0];
     var streamUrl = '@Url.Action("PreviewFile", "CompanyLicenseRpt")?fileUrl=' + encodeURIComponent(url);
@@ -948,7 +1159,7 @@ function previewFile(url, name) {
     }
     $('#previewModal').css('display', 'flex');
 }
-
+*@
 function closePreview() {
     $('#previewModal').hide();
     $('#previewFrame').attr('src', '').show();

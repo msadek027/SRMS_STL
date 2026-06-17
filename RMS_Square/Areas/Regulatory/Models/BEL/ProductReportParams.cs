@@ -56,6 +56,7 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string SubmissionDate { get; set; }
         public string ExpireDate { get; set; }
         public string ReceiveDate { get; set; }
+        public string InclusionDate { get; set; }
         public string ValidUptoDate { get; set; }
         public string RenewalDate { get; set; }
         public string Remarks { get; set; }

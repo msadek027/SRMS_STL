@@ -339,9 +339,9 @@
         <button id="btnSearch" class="btn-rpt btn-primary-rpt">
             <i class="glyphicon glyphicon-search"></i> Search
         </button>
-        <button id="btnExport" class="btn-rpt btn-success-rpt">
-            <i class="glyphicon glyphicon-download-alt"></i> Export Excel
-        </button>
+        @* <button id="btnExport" class="btn-rpt btn-success-rpt">
+                <i class="glyphicon glyphicon-download-alt"></i> Export Excel
+            </button>*@
         <button id="btnReset" class="btn-rpt btn-default-rpt">
             <i class="glyphicon glyphicon-refresh"></i> Reset
         </button>
@@ -454,7 +454,7 @@
                     <th>Brand</th>
                     <th>Variant</th>
                     <th>Pack Size</th>
-                    <th>Submission Date</th>
+                    <th>Inclusion Date</th>
                     <th>Days Left</th>
                     <th>Expire Date</th>
                     <th style="width:80px;text-align:center;">Actions</th>
@@ -465,6 +465,39 @@
     </div>
     <div class="result-footer" id="resultFooter" style="display:none;">
         <div class="page-info" id="pageInfo"></div>
+    </div>
+</div>
+
+
+<!-- ══ Document List Modal (নতুন যোগ করা অংশ) ══════════════════════ -->
+<div id="docListModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+         background:rgba(0,0,0,.6);z-index:29998;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:10px;width:70%;max-width:800px;
+                    max-height:80vh;display:flex;flex-direction:column;overflow:hidden;
+                    box-shadow:0 20px 60px rgba(0,0,0,.3);">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--border);
+                        display:flex;align-items:center;justify-content:space-between;background:var(--surface2);">
+            <strong style="font-size:15px;color:var(--accent-dark);"><i class="glyphicon glyphicon-folder-open"></i> Documents: <span id="docListProductName"></span></strong>
+            <button onclick="closeDocList()" class="btn-icon" style="width:32px;height:32px;font-size:15px;background:transparent;border:none;cursor:pointer;">
+                <i class="glyphicon glyphicon-remove"></i>
+            </button>
+        </div>
+        <div style="flex:1;overflow:auto;padding:20px;">
+            <table class="doc-table">
+                <thead>
+                    <tr>
+                        <th style="width:50px;">#</th>
+                        <th>Document Name / Type</th>
+                        <th>File Name</th>
+                        <th style="width:80px;">Size</th>
+                        <th style="width:140px;text-align:center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="docListBody">
+                    <!-- Files will be loaded here -->
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -528,20 +561,24 @@ $(document).ready(function () {
 
     // ── Render table ─────────────────────────────────────
     function renderTable(data) {
+        debugger;
         var tbody = $('#docTableBody');
         tbody.empty();
+
         if (!data || data.length === 0) {
             $('#docTable').hide();
             $('#emptyState').html('<i class="glyphicon glyphicon-search"></i><p>No records found for the selected criteria.</p>').show();
             $('#statsBar,#resultFooter').hide();
             return;
         }
+
         var uploaded = 0, pending = 0, expired = 0;
         $.each(data, function (i, r) {
             if (r.DocumentStatus === 'Uploaded') uploaded++;
             else if (r.DocumentStatus === 'Expired') expired++;
             else pending++;
         });
+
         $('#statTotal').text(data.length);
         $('#statUploaded').text(uploaded);
         $('#statPending').text(pending);
@@ -549,29 +586,33 @@ $(document).ready(function () {
         $('#statsBar').show();
 
         $.each(data, function (i, r) {
+            debugger;
             var badgeCls = r.DocumentStatus === 'Uploaded' ? 'badge-uploaded'
                 : r.DocumentStatus === 'Expired' ? 'badge-expired'
                     : 'badge-pending';
             var status = r.DocumentStatus || 'Pending';
+
+            // ── Actions Button Logic ──
             var actions = '';
-            if (r.FileUrl) {
-                actions += '<a class="btn-icon preview" title="Preview" onclick="previewFile(\'' + r.FileUrl + '\',\'' + (r.FileName || 'Document') + '\')" href="javascript:void(0)"><i class="glyphicon glyphicon-eye-open"></i></a>';
-                actions += '<a class="btn-icon download" title="Download" href="' + r.FileUrl + '" download="' + (r.FileName || 'file') + '" target="_blank"><i class="glyphicon glyphicon-download-alt"></i></a>';
+            if (r.FileCount > 0 || r.FileUrl || r.FileID) {
+                actions += '<button class="btn-rpt btn-primary-rpt" style="height:28px;padding:0 12px;font-size:12px;" onclick="openDocList(\'' + r.AnnexId + '\', \'' + (r.ProductName || '').replace(/'/g, "\\'") + '\')">';
+                actions += '<i class="glyphicon glyphicon-folder-open"></i> View Files</button>';
             } else {
                 actions += '<span style="font-size:11px;color:#aaa;">No file</span>';
             }
+
             var searchStr = [r.CompanyCode, r.CompanyName, r.CompanyUnitCode, r.CompanyUnitName, r.LicenseNo, r.CompLicenseName, r.RevisionNo, r.SubmissionType].join(' ').toLowerCase();
 
             tbody.append(
                 '<tr data-search="' + [r.CompanyName, r.ProductName, r.BrandName].join(' ').toLowerCase() + '">' +
-                '<td style="color:#64748b; font-weight:600;">' + (i+1) + '</td>' +
+                '<td style="color:#64748b; font-weight:600;">' + (i + 1) + '</td>' +
                 '<td>' + (r.CompanyName || '') + '</td>' +
                 '<td>' + (r.CompanyUnitName || '') + '</td>' +
                 '<td style="font-weight:600; color:var(--accent-dark);">' + (r.ProductName || '') + '</td>' +
                 '<td>' + (r.BrandName || '') + '</td>' +
                 '<td>' + (r.Variant || '') + '</td>' +
                 '<td>' + (r.PackSizeName || '') + '</td>' +
-                '<td>' + (r.SubmissionDate || '') + '</td>' +
+                '<td>' + (r.InclusionDate || '') + '</td>' +
                 '<td>' + (r.DaysLeft !== undefined ? r.DaysLeft : '') + '</td>' +
                 '<td style="font-weight:600; color:var(--danger);">' + (r.ValidUptoDate || '') + '</td>' +
                 '<td><div class="tbl-actions" style="justify-content:center;">' + actions + '</div></td>' +
@@ -584,7 +625,6 @@ $(document).ready(function () {
         $('#resultFooter').show();
         $('#pageInfo').text('Showing ' + data.length + ' record(s)');
     }
-
     // ── Search ────────────────────────────────────────────
     $('#btnSearch').click(function () {
         debugger
@@ -598,6 +638,7 @@ $(document).ready(function () {
             dataType: 'json',
             data: JSON.stringify(params),
             success: function (data) {
+                debugger
                 $('#divLoading').hide();
                 if (data && !data.error) {
                     _allData = data;
@@ -784,13 +825,98 @@ $(document).ready(function () {
 
 });
 
+// ── Open Document List Modal ───────────────────────────────────────
+   // ── Open Document List Modal ───────────────────────────────────────
+    window.openDocList = function(annexId, productName) {
+        $('#docListProductName').text(productName);
+        $('#docListBody').html('<tr><td colspan="5" style="text-align:center;padding:20px;">Loading files...</td></tr>');
+        $('#docListModal').css('display', 'flex');
 
+        $.ajax({
+            // আপনার API URL: Regulatory Area এর ProductReg Controller এর GetFilesByAnnexId কল হচ্ছে
+            url: '@Url.Action("GetFilesByAnnexId", "ProductRpt", new { area = "Regulatory" })',
+            type: 'GET',
+            data: { annexId: annexId }, // GetFilesByAnnexId ফাংশন annexId রিসিভ করে
+            success: function (files) {
+                var tbody = $('#docListBody');
+                tbody.empty();
 
-    function previewFile(url, name) {
+                if (!files || files.length === 0) {
+                    tbody.html('<tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">No files found.</td></tr>');
+                    return;
+                }
+
+                $.each(files, function (i, f) {
+                    var ext = (f.Extention || '').toLowerCase().replace('.', '');
+                    var canPreview = ['pdf','jpg','jpeg','png','gif','bmp','webp'].indexOf(ext) >= 0;
+
+                    // ডাউনলোড ইউআরএল
+                    var dlUrl = '@Url.Action("Download","General")'
+                              + '?path=' + encodeURIComponent((f.FileCode || '') + (f.Extention || ''))
+                              + '&fileName=' + encodeURIComponent(f.FileName || '')
+                              + '&fileId=' + (f.FileID || '');
+
+                    // প্রিভিউ এর জন্য ডেটা সেট করা
+                    var fileUrlForPreview = (f.FileCode || '') + (f.Extention || '');
+                    var fileNameForPreview = (f.FileName || 'Document').replace(/'/g, "\\'");
+
+                    // এখানে f.FileID বসিয়ে দেওয়া হলো
+                    var fileIdForPreview = f.FileID || '';
+
+                    var actions = '';
+                    if (canPreview) {
+                        actions += '<a class="btn-icon preview" title="Preview" style="cursor:pointer;margin-right:8px;color:var(--accent);" onclick="previewFile(\'' + fileUrlForPreview + '\',\'' + fileNameForPreview + '\', \'' + fileIdForPreview + '\')"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                    }
+                    actions += '<a class="btn-icon download" title="Download" style="color:var(--success);" href="' + dlUrl + '" download="' + (f.FileName || 'file') + '" target="_blank"><i class="glyphicon glyphicon-download-alt"></i></a>';
+
+                    tbody.append(
+                        '<tr>' +
+                        '<td style="color:#64748b;font-weight:600;">' + (i + 1) + '</td>' +
+                        '<td>' + (f.RefNo || 'Document') + '</td>' +
+                        '<td>' + (f.FileName || '') + '</td>' +
+                        '<td>' + (f.FileSize ? f.FileSize + ' MB' : '') + '</td>' +
+                        '<td style="text-align:center;">' + actions + '</td>' +
+                        '</tr>'
+                    );
+                });
+            },
+            error: function () {
+                $('#docListBody').html('<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--danger);">Error loading files.</td></tr>');
+            }
+        });
+    };
+
+    window.closeDocList = function() {
+        $('#docListModal').hide();
+        $('#docListBody').empty();
+    };
+
+   @* function previewFile(url, name) {
         debugger
     $('#previewTitle').text(name);
     var ext = url.split('.').pop().toLowerCase().split('?')[0];
     var streamUrl = '@Url.Action("PreviewFile", "ProductRpt")?fileUrl=' + encodeURIComponent(url);
+    if (ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif') {
+        $('#previewFrame').hide();
+        $('#previewImageHolder').remove();
+        $('#previewFrame').after('<div id="previewImageHolder" style="width:100%;height:100%;overflow:auto;display:flex;align-items:center;justify-content:center;padding:16px;"><img src="' + streamUrl + '" style="max-width:100%;max-height:100%;border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.15);" /></div>');
+    } else {
+        $('#previewImageHolder').remove();
+        $('#previewFrame').show().attr('src', streamUrl);
+    }
+    $('#previewModal').css('display', 'flex');
+}*@
+
+    function previewFile(url, name, fileId) {
+        debugger
+    $('#previewTitle').text(name);
+    var ext = url.split('.').pop().toLowerCase().split('?')[0];
+
+    // এখানে URL এর সাথে fileId এবং fileName যুক্ত করে দেওয়া হয়েছে
+    var streamUrl = '@Url.Action("PreviewFile", "ProductRpt")?fileUrl=' + encodeURIComponent(url)
+                  + '&fileId=' + encodeURIComponent(fileId)
+                  + '&fileName=' + encodeURIComponent(name);
+
     if (ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif') {
         $('#previewFrame').hide();
         $('#previewImageHolder').remove();

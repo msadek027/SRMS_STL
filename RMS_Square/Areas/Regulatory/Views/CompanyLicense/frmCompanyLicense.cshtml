@@ -147,7 +147,6 @@
     <div class="action-bar">
         <div id="MessageText" style="font-weight: 600; color: #10b981;"></div>
 
-        <!-- margin-left: auto; অ্যাড করা হয়েছে যাতে এটি সবসময় ডানদিকেই থাকে -->
         <div style="margin-left: auto;">
             <button id="btnSave" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-save"></i> Save</button>
             <button id="btnView" class="btn btn-info" type="button"><i class="glyphicon glyphicon-search"></i> Search</button>
@@ -219,10 +218,44 @@
                     <div class="col-sm-4">
                         <select id="CompLicenseName" class="form-control txtBox" name="CompLicenseName">
                             <option value="">--Select Any--</option>
-                            <option value="A">Factory License</option>
-                            <option value="B">Boiler License</option>
-                            <option value="Original License">Original License</option>
-                            <option value="License Renewal Letter">License Renewal Letter</option>
+                            <option value="Land Use Clearance / Land Conversion">Land Use Clearance / Land Conversion</option>
+                            <option value="Land Development Tax">Land Development Tax</option>
+                            <option value="Building Layout plan approval">Building Layout plan approval</option>
+                            <option value="Factory Masterplan Approval">Factory Masterplan Approval</option>
+                            <option value="Occupancy Certificate">Occupancy Certificate</option>
+                            <option value="NOC from Local Authority">NOC from Local Authority</option>
+                            <option value="Holding Tax">Holding Tax</option>
+                            <option value="Trade License">Trade License</option>
+                            <option value="Site Clearance for Environment (NOC)">Site Clearance for Environment (NOC)</option>
+                            <option value="Environment Clearance Certificate (ECC)">Environment Clearance Certificate (ECC)</option>
+                            <option value="Environment Clearance for Generator">Environment Clearance for Generator</option>
+                            <option value="ETP Approval">ETP Approval</option>
+                            <option value="Industrial Project Registration">Industrial Project Registration</option>
+                            <option value="Approach Road Permission">Approach Road Permission</option>
+                            <option value="Fire Safety Plan Approval (NOC)">Fire Safety Plan Approval (NOC)</option>
+                            <option value="Fire License">Fire License</option>
+                            <option value="Fire Effectiveness Certificate">Fire Effectiveness Certificate</option>
+                            <option value="Factory/Commercial License">Factory/Commercial License</option>
+                            <option value="Factory Layout Plan Approval (DIFE)">Factory Layout Plan Approval (DIFE)</option>
+                            <option value="Premises License">Premises License</option>
+                            <option value="Food Grain Storage">Food Grain Storage</option>
+                            <option value="Food Milling">Food Milling</option>
+                            <option value="Agriculture Marketing License (Miller)">Agriculture Marketing License (Miller)</option>
+                            <option value="Agriculture Marketing License (Warehouse)">Agriculture Marketing License (Warehouse)</option>
+                            <option value="Boiler Registration">Boiler Registration</option>
+                            <option value="Boiler License (Fitness Certificate)">Boiler License (Fitness Certificate)</option>
+                            <option value="Diesel Storage tank construction">Diesel Storage tank construction</option>
+                            <option value="Membership (Chambers)">Membership (Chambers)</option>
+                            <option value="Explosive License">Explosive License</option>
+                            <option value="NOC from WARPO">NOC from WARPO</option>
+                            <option value="Certificate of Incorporation">Certificate of Incorporation</option>
+                            <option value="Import Registration Certificate (IRC)">Import Registration Certificate (IRC)</option>
+                            <option value="Export Registration Certificate (ERC)">Export Registration Certificate (ERC)</option>
+                            <option value="Membership (BEF)">Membership (BEF)</option>
+                            <option value="Membership (BCPA)">Membership (BCPA)</option>
+                            <option value="VAT Registration (BIN)">VAT Registration (BIN)</option>
+                            <option value="Income Tax Registration (TIN)">Income Tax Registration (TIN)</option>
+                            <option value="Narcotics License">Narcotics License</option>
                         </select>
                     </div>
                 </div>
@@ -269,10 +302,10 @@
                         </div>
                     </div>
                     <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
-                    <label class="col-sm-2 modern-label">Entry Date</label>
+                    @*<label class="col-sm-2 modern-label">Entry Date</label>
                     <div class="col-sm-4">
                         <input type="text" class="form-control" id="RevisionDate" name="RevisionDate" readonly>
-                    </div>
+                    </div>*@
                 </div>
 
                 <div class="row form-group" style="margin-bottom: 0;">
@@ -302,10 +335,10 @@
                     <div class="col-sm-3">
                         <select id="ResDept1" class="form-control txtBox" name="ResDept1">
                             <option value="">--Select Any--</option>
-                            <option value="A">HR</option>
-                            <option value="B">IT</option>
-                            <option value="C">Sales</option>
-                            <option value="D">Accounting</option>
+                            <option value="HR">HR</option>
+                            <option value="IT">IT</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Accounting">Accounting</option>
                         </select>
                     </div>
                     <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
@@ -313,10 +346,10 @@
                     <div class="col-sm-4">
                         <select id="ResDept2" class="form-control txtBox" name="ResDept2">
                             <option value="">--Select Any--</option>
-                            <option value="A">HR</option>
-                            <option value="B">IT</option>
-                            <option value="C">Sales</option>
-                            <option value="D">Accounting</option>
+                            <option value="HR">HR</option>
+                            <option value="IT">IT</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Accounting">Accounting</option>
                         </select>
                     </div>
                 </div>
@@ -331,13 +364,44 @@
                     <div class="col-sm-3">
                         <select id="RefNo" class="form-control txtBox" name="RefNo">
                             <option value="">--Select Any--</option>
-                            <option value="Inspection Letter">Inspection Letter</option>
-                            <option value="Inspection Report">Inspection Report</option>
-                            <option value="Original License">Original License</option>
-                            <option value="License Renewal Letter">License Renewal Letter</option>
-                            <option value="List of Annexure">List of Annexure</option>
-                            <option value="List of Technical Person">List of Technical Person</option>
-                            <option value="List of Machineries">List of Machineries</option>
+                            <option value="Land Use Clearance / Land Conversion">Land Use Clearance / Land Conversion</option>
+                            <option value="Land Development Tax">Land Development Tax</option>
+                            <option value="Building Layout plan approval">Building Layout plan approval</option>
+                            <option value="Factory Masterplan Approval">Factory Masterplan Approval</option>
+                            <option value="Occupancy Certificate">Occupancy Certificate</option>
+                            <option value="NOC from Local Authority">NOC from Local Authority</option>
+                            <option value="Holding Tax">Holding Tax</option>
+                            <option value="Trade License">Trade License</option>
+                            <option value="Site Clearance for Environment (NOC)">Site Clearance for Environment (NOC)</option>
+                            <option value="Environment Clearance Certificate (ECC)">Environment Clearance Certificate (ECC)</option>
+                            <option value="Environment Clearance for Generator">Environment Clearance for Generator</option>
+                            <option value="ETP Approval">ETP Approval</option>
+                            <option value="Industrial Project Registration">Industrial Project Registration</option>
+                            <option value="Approach Road Permission">Approach Road Permission</option>
+                            <option value="Fire Safety Plan Approval (NOC)">Fire Safety Plan Approval (NOC)</option>
+                            <option value="Fire License">Fire License</option>
+                            <option value="Fire Effectiveness Certificate">Fire Effectiveness Certificate</option>
+                            <option value="Factory/Commercial License">Factory/Commercial License</option>
+                            <option value="Factory Layout Plan Approval (DIFE)">Factory Layout Plan Approval (DIFE)</option>
+                            <option value="Premises License">Premises License</option>
+                            <option value="Food Grain Storage">Food Grain Storage</option>
+                            <option value="Food Milling">Food Milling</option>
+                            <option value="Agriculture Marketing License (Miller)">Agriculture Marketing License (Miller)</option>
+                            <option value="Agriculture Marketing License (Warehouse)">Agriculture Marketing License (Warehouse)</option>
+                            <option value="Boiler Registration">Boiler Registration</option>
+                            <option value="Boiler License (Fitness Certificate)">Boiler License (Fitness Certificate)</option>
+                            <option value="Diesel Storage tank construction">Diesel Storage tank construction</option>
+                            <option value="Membership (Chambers)">Membership (Chambers)</option>
+                            <option value="Explosive License">Explosive License</option>
+                            <option value="NOC from WARPO">NOC from WARPO</option>
+                            <option value="Certificate of Incorporation">Certificate of Incorporation</option>
+                            <option value="Import Registration Certificate (IRC)">Import Registration Certificate (IRC)</option>
+                            <option value="Export Registration Certificate (ERC)">Export Registration Certificate (ERC)</option>
+                            <option value="Membership (BEF)">Membership (BEF)</option>
+                            <option value="Membership (BCPA)">Membership (BCPA)</option>
+                            <option value="VAT Registration (BIN)">VAT Registration (BIN)</option>
+                            <option value="Income Tax Registration (TIN)">Income Tax Registration (TIN)</option>
+                            <option value="Narcotics License">Narcotics License</option>
                         </select>
                     </div>
                     <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
@@ -383,7 +447,27 @@ $(document).ready(function () {
 
     CheckUnSavedData();
     ClearRequiredTextBoxRedColor();
+    // ── Make Dropdown Searchable using Select2 ──
+    $('#CompLicenseName').select2({
+        width: '100%', 
+        placeholder: "--Select Any--",
+        allowClear: true
+    });
 
+    $('#RefNo').select2({
+        width: '100%',
+        placeholder: "--Select Any--",
+        allowClear: true
+    });
+
+    $('#CompLicenseName').on('change', function () {
+        changeAny = 1;
+    });
+
+    // ── Datepickers ──
+    $('.input-group.date').datepicker({
+        format: "d/mm/yyyy", autoclose: true, todayHighlight: true
+    });
     // ── Datepickers ──
     $('.input-group.date').datepicker({
         format: "d/mm/yyyy", autoclose: true, todayHighlight: true
@@ -547,7 +631,7 @@ $(document).ready(function () {
         //$('#CLID').val(row.CLID);
         $('#RevisionNo').val(row.RevisionNo       || '');
         $('#LicenseNo').val(row.LicenseNo         || '');
-        $('#CompLicenseName').val(row.CompLicenseName || '');
+        $('#CompLicenseName').val(row.CompLicenseName || '').trigger('change');
         $('#SubmissionDate').val(row.SubmissionDate || '');
         $('#InspectionDate').val(row.InspectionDate || '');
         $('#ApprovalDate').val(row.ApprovalDate   || '');
@@ -640,6 +724,7 @@ $(document).ready(function () {
 
     // Search popup dblclick → load company header + load that specific record
     $('#DisplayPopupWindowGrid').dblclick(function () {
+        debugger
         var grid = $(this).data('kendoGrid');
         var row  = grid.dataItem(grid.select());
         if (!row) return;

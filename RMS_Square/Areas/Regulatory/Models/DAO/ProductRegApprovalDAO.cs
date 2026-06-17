@@ -53,6 +53,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" TO_CHAR(D.DTL_APPROVAL_DATE,'dd/mm/yyyy')  DTL_APPROVAL_DATE,");
             query.Append(" NVL(D.APPROVAL_STATUS,'N')                 APPROVAL_STATUS,");
             query.Append(" D.APPROVED_BY,");
+            query.Append(" D.DTL_REMARKS,");
             query.Append(" TO_CHAR(D.APPROVED_DATE,'dd/mm/yyyy')    APPROVED_DATE,");
            // query.Append(" D.APPROVAL_REMARKS,");
             query.Append(" D.COMPANY_CODE AS COMPANY_UNIT_CODE, CU.COMPANY_UNIT_NAME,");
@@ -94,7 +95,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                     AuthorityType = row["AUTHORITY_TYPE"].ToString(),
                     AuthorityName = row["AUTHORITY_NAME"].ToString(),
                     Remarks = row["REMARKS"].ToString(),
-                   // DtlRemarks = row["DtlREMARKS"].ToString(),
+                    DtlRemarks = row["DTL_REMARKS"].ToString(),
                     SubmissionDate = row["SUBMISSION_DATE"].ToString(),
                     RenewalDate = row["RENEWAL_DATE"].ToString(),
                     ValidUptoDate = row["VALID_UPTO"].ToString(),

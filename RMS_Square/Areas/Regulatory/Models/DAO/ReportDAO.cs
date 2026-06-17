@@ -404,6 +404,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" ) F ON F.REFLEVEL1 = D.ANNEX_ID AND F.RN = 1");
 
             query.Append(" WHERE NVL(D.IS_DELETE,'N') = 'N'");
+            query.Append(" AND D.APPROVAL_STATUS = 'Y'");
 
             // ── Filters ──────────────────────────────────────────────────────
             if (!string.IsNullOrWhiteSpace(param.CompanyCode))
@@ -484,6 +485,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                             AuthorityLicenseName = row["AUTHORITY_LICENSE_NAME"].ToString(),
                             SubmissionDate = row["SUBMISSION_DATE"].ToString(),
                             ReceiveDate = row["RECEIVE_DATE"].ToString(),
+                            InclusionDate = row["INCLUSION_DATE"].ToString(),
                             ValidUptoDate = row["VALID_UPTO"].ToString(),
                             RenewalDate = row["RENEWAL_DATE"].ToString(),
                             Remarks = row["REMARKS"].ToString(),
@@ -579,10 +581,10 @@ WHERE 1=1
                 sql += " AND CL.COMPANY_CODE = :CompanyUnitCode";
                 prms.Add(new OracleParameter("CompanyUnitCode", p.CompanyUnitCode));
             }
-            if (!string.IsNullOrEmpty(p.LicenseNo))
+            if (!string.IsNullOrEmpty(p.CompLicenseName))
             {
-                sql += " AND UPPER(CL.LICENSE_NO) LIKE UPPER(:LicenseNo)";
-                prms.Add(new OracleParameter("LicenseNo", "%" + p.LicenseNo + "%"));
+                sql += " AND CL.COMP_LICENSE_NAME = :CompLicenseName";
+                prms.Add(new OracleParameter("CompLicenseName", p.CompLicenseName));
             }
             if (!string.IsNullOrEmpty(p.SubmissionType))
             {

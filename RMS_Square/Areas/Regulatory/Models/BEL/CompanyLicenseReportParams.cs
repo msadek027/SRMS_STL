@@ -11,6 +11,7 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string CompanyUnitCode { get; set; }
         public string CompanyUnitName { get; set; }
         public string LicenseNo { get; set; }
+        public string CompLicenseName { get; set; }
         public string SubmissionType { get; set; }
         public string ValidFrom { get; set; }
         public string ValidTo { get; set; }

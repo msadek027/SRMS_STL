@@ -1,9 +1,11 @@
 ﻿using RMS_Square.Areas.Regulatory.Models.BEL;
 using RMS_Square.Areas.Regulatory.Models.DAO;
+using RMS_Square.DAL.Common;
 using RMS_Square.DAL.Gateway;
 using System;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using Systems.Controllers;
 
@@ -93,53 +95,25 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         }
 
         // ── File Preview (same pattern as ProductRpt) ────────────────────
-        public ActionResult PreviewFile(string fileUrl)
+        public ActionResult PreviewFile(string fileUrl, string fileName, string fileId)
         {
             try
             {
-                if (string.IsNullOrEmpty(fileUrl)) return HttpNotFound();
+                string uploadRoot = Server.MapPath(Utility.GetServerPath());
+                string[] found = System.IO.Directory.GetFiles(
+                    uploadRoot, fileUrl, System.IO.SearchOption.AllDirectories);
 
-                var uri = new Uri("http://localhost" + fileUrl);
-                var qs = System.Web.HttpUtility.ParseQueryString(uri.Query);
-                string fileId = qs["fileId"];
-                string guidName = qs["path"];
-                string fileName = qs["fileName"];
+                if (found.Length == 0)
+                    return HttpNotFound();
 
-                if (string.IsNullOrEmpty(fileId)) return HttpNotFound("fileId missing.");
-
-                DBHelper db = new DBHelper();
-                var fileInfo = db.GetDocumentFileInfoById(fileId);
-
-                if (fileInfo == null || string.IsNullOrEmpty(fileInfo.FilePath))
-                    return HttpNotFound("File record not found. FileId: " + fileId);
-
-                string filePath = Server.MapPath(
-                    fileInfo.FilePath.TrimEnd('/') + "/" + guidName);
-
-                if (!System.IO.File.Exists(filePath))
-                    return Content("File not found on disk: " + filePath);
-
-                string ext = Path.GetExtension(guidName).ToLower();
-                string contentType;
-                switch (ext)
-                {
-                    case ".pdf": contentType = "application/pdf"; break;
-                    case ".jpg":
-                    case ".jpeg": contentType = "image/jpeg"; break;
-                    case ".png": contentType = "image/png"; break;
-                    case ".gif": contentType = "image/gif"; break;
-                    default: contentType = "application/octet-stream"; break;
-                }
-
-                string displayName = !string.IsNullOrEmpty(fileName) ? fileName : guidName;
-                Response.Headers["Content-Disposition"] =
-                    "inline; filename=\"" + displayName + "\"";
-
-                return File(filePath, contentType);
+                string contentType = MimeMapping.GetMimeMapping(fileName);
+                Response.AppendHeader("Content-Disposition",
+                    "inline; filename=\"" + fileName + "\"");
+                return File(found[0], contentType);
             }
-            catch (Exception ex)
+            catch
             {
-                return Content("Error: " + ex.Message);
+                return HttpNotFound();
             }
         }
     }

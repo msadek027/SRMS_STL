@@ -686,6 +686,69 @@
 
         <!-- Authority Info -->
         <div class="gui-card">
+            <h4 class="gui-section-title"><i class="glyphicon glyphicon-education text-primary"></i> Authority Info</h4>
+
+            <div class="row form-group">
+                <label class="col-sm-2 modern-label">Authority Type <span class="asterisk">*</span></label>
+                <div class="col-sm-3">
+                    <select id="AuthorityType" class="form-control txtBox" name="AuthorityType">
+                        <option value="">--Select Any--</option>
+                        <option value="BSTI">BSTI</option>
+                        <option value="Plant Protection Wing">Plant Protection Wing (dept. of Agricultural Extension)</option>
+                        <option value="DGDA">DGDA</option>
+                    </select>
+                </div>
+                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+                @*<label class="col-sm-2 modern-label">Authority Name <span class="asterisk">*</span></label>
+                <div class="col-sm-4">
+                    <input type="text" id="AuthorityName" name="AuthorityName" class="form-control txtBox" placeholder="Enter Authority Name" />
+                </div>*@
+                <label class="col-sm-2 modern-label">Authority Name <span class="asterisk">*</span></label>
+                <div class="col-sm-3">
+                    <select id="AuthorityName" class="form-control txtBox" name="AuthorityName">
+                        <option value="">--Select Any--</option>
+                    </select>
+                </div>
+            </div>
+
+            <!--<div class="row form-group">
+            <label class="col-sm-2 modern-label">License No <span class="asterisk">*</span></label>
+            <div class="col-sm-3">
+                <input type="text" id="AuthorityLicenseNo" name="AuthorityLicenseNo" class="form-control txtBox" placeholder="Enter License No" />
+            </div>
+            <div class="col-sm-1 gap-col"></div>-->
+            <!-- Middle Gap -->
+            <!--<label class="col-sm-2 modern-label">License Name <span class="asterisk">*</span></label>
+            <div class="col-sm-4">
+                <select id="AuthorityLicenseName" class="form-control txtBox" name="AuthorityLicenseName">
+                    <option value="">--Select Any--</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+            </div>
+        </div>-->
+            <!--<div class="row form-group" style="margin-bottom: 0;">
+        <label class="col-sm-2 modern-label">Document Type <span class="asterisk">*</span></label>
+        <div class="col-sm-3">
+            <select id="DocumentType" class="form-control txtBox" name="DocumentType">
+                <option value="">--Select Any--</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+            </select>
+        </div>
+        <div class="col-sm-1 gap-col"></div>-->
+            <!-- Middle Gap -->
+            <!--<label class="col-sm-2 modern-label">Document No <span class="asterisk">*</span></label>
+            <div class="col-sm-4">
+                <input type="text" id="DocumentNo" name="DocumentNo" class="form-control txtBox" placeholder="Enter Document No" />
+            </div>
+        </div>-->
+        </div>
+        @*<div class="gui-card">
             <h4 class="gui-section-title">
                 <i class="glyphicon glyphicon-education text-primary"></i> Authority Info
             </h4>
@@ -706,55 +769,59 @@
                     <input type="text" id="AuthorityName" class="form-control editable" placeholder="Enter Authority Name" />
                 </div>
             </div>
-        </div>
+        </div>*@
+
 
         <!-- Registration Information -->
-        <div class="gui-card">
-            <h4 class="gui-section-title">
-                <i class="glyphicon glyphicon-list-alt text-primary"></i> Registration Information
-            </h4>
-            <div class="row form-group">
-                <label class="col-sm-2 modern-label">Submission Date</label>
-                <div class="col-sm-3">
-                    <div class="input-group date">
-                        <input type="text" class="form-control editable" id="SubmissionDate" placeholder="dd/mm/yyyy" />
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                    </div>
+    <div class="gui-card">
+        <h4 class="gui-section-title">
+            <i class="glyphicon glyphicon-list-alt text-primary"></i> Registration Information
+        </h4>
+        <div class="row form-group">
+            @*<label class="col-sm-2 modern-label">Submission Date</label>
+            <div class="col-sm-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="ReceivedDate" name="ReceivedDate" disabled placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                 </div>
-                <div class="col-sm-1"></div>
-                <label class="col-sm-2 modern-label">Inclusion Date</label>
-                <div class="col-sm-4">
-                    <div class="input-group date">
-                        <input type="text" class="form-control editable" id="InclusionDate" placeholder="dd/mm/yyyy" />
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                    </div>
+            </div>*@
+            <label class="col-sm-2 modern-label">Inclusion Date</label>
+            <div class="col-sm-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control" id="InclusionDate" name="InclusionDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                 </div>
             </div>
-            <div class="row form-group">
-                <label class="col-sm-2 modern-label">Approval / Renewal Date</label>
-                <div class="col-sm-3">
-                    <div class="input-group date">
-                        <input type="text" class="form-control editable" id="RenewalDate" placeholder="dd/mm/yyyy" />
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                    </div>
-                </div>
-                <div class="col-sm-1"></div>
-                <label class="col-sm-2 modern-label">Valid Up To</label>
-                <div class="col-sm-4">
-                    <div class="input-group date">
-                        <input type="text" class="form-control editable" id="ValidUptoDate" placeholder="dd/mm/yyyy" />
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                    </div>
+            <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+            <label class="col-sm-2 modern-label">Approval / Renewal Date</label>
+            <div class="col-sm-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control" id="RenewalDate" name="RenewalDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                 </div>
             </div>
-            <div class="row form-group" style="margin-bottom:0;">
-                <label class="col-sm-2 modern-label">Justification</label>
-                <div class="col-sm-9">
-                    <input type="text" class="form-control editable" id="Remarks"
-                           placeholder="Enter justification remarks…" maxlength="300" />
+
+        </div>
+
+        <div class="row form-group">
+
+
+
+            <label class="col-sm-2 modern-label">Valid Up To</label>
+            <div class="col-sm-3">
+                <div class="input-group date">
+                    <input type="text" class="form-control txtBox" id="ValidUptoDate" name="ValidUptoDate" placeholder="dd/mm/yyyy">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                 </div>
+            </div>
+            <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+            <label class="col-sm-2 modern-label">Justification</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control txtBox" id="Remarks" name="Remarks" placeholder="Enter justification remarks..." maxlength="300">
             </div>
         </div>
+
+    </div>
 
         <!-- Uploaded Documents (read-only) -->
         <div class="gui-card">
@@ -868,6 +935,35 @@ $(document).ready(function () {
     // Datepickers
     $('.input-group.date').datepicker({
         format: "d/mm/yyyy", autoclose: true, todayHighlight: true
+    });
+
+
+    //===============================
+    // Authority Type অনুযায়ী Name এর ম্যাপিং
+    var authorityMapping = {
+        "BSTI": ["PCR", "CM", "Calibration", "Verification", "Import NOC", "Halal"],
+        "Plant Protection Wing": ["Import (Technical Grade Materials)", "Advertising", "Wholesale", "Formulation"],
+        "DGDA": ["NOC"]
+    };
+
+    // Authority Type পরিবর্তন হলে যা ঘটবে
+    $('#AuthorityType').on('change', function () {
+        var selectedType = $(this).val();
+        var $authNameDropdown = $('#AuthorityName');
+
+        // আগের অপশনগুলো ক্লিয়ার করে ডিফল্ট অপশন সেট করা
+        $authNameDropdown.empty();
+        $authNameDropdown.append('<option value="">--Select Any--</option>');
+
+        // যদি কোনো টাইপ সিলেক্ট করা হয় এবং সেটির ডেটা ম্যাপিং এ থাকে
+        if (selectedType && authorityMapping[selectedType]) {
+            var options = authorityMapping[selectedType];
+            $.each(options, function (index, value) {
+                $authNameDropdown.append('<option value="' + value + '">' + value + '</option>');
+            });
+        }
+
+        changeAny = 1; // ডাটা চেঞ্জ হয়েছে তা বোঝানোর জন্য
     });
 
     /* ════════════════════════════════════
@@ -1040,6 +1136,7 @@ $(document).ready(function () {
        LOAD DETAIL
     ════════════════════════════════════ */
     function loadDetail(row) {
+        debugger
         $('#AnnexId').val(row.AnnexId);
 
         // Readonly context
@@ -1055,8 +1152,8 @@ $(document).ready(function () {
         $('#DtlSubmissionDate').val(row.DtlSubmissionDate || '');
         $('#DtlApprovalDate').val(row.DtlApprovalDate     || '');
         $('#DtlRemarks').val(row.DtlRemarks               || '');
-        $('#AuthorityType').val(row.AuthorityType         || '');
-        $('#AuthorityName').val(row.AuthorityName         || '');
+        $('#AuthorityType').val(row.AuthorityType || '').trigger('change');
+        $('#AuthorityName').val(row.AuthorityName || '');
         $('#SubmissionDate').val(row.SubmissionDate       || '');
         $('#InclusionDate').val(row.InclusionDate         || '');
         $('#RenewalDate').val(row.RenewalDate             || '');

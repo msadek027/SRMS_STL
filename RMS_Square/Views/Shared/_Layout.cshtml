@@ -45,7 +45,7 @@
 
 </head>
 <!--<<body class="hold-transition skin-blue sidebar-mini">-->
-<body class="skin-blue-light sidebar-collapse ">
+<body class="skin-blue-light sidebar-mini">
     <div class="wrapper">
         <header class="main-header">
             <!-- Logo -->
@@ -256,12 +256,38 @@
             });
         }
 
+      /*  $.ajax({
+            url: "/Home/LoadMenu",
+            method: 'GET',
+            dataType: "JSON",
+            success: function (data) {
+                buildMenu($('#MenuItem'), data);
+            }
+        });*/
         $.ajax({
             url: "/Home/LoadMenu",
             method: 'GET',
             dataType: "JSON",
             success: function (data) {
                 buildMenu($('#MenuItem'), data);
+
+                // বর্তমান পেজের URL বের করা
+                var currentUrl = window.location.pathname.toLowerCase();
+
+                // মেনুর প্রতিটি <a> ট্যাগ চেক করা
+                $('#MenuItem a').each(function () {
+                    var menuUrl = $(this).attr('href');
+
+                    // যদি বর্তমান URL এবং মেনুর URL মিলে যায়
+                    if (menuUrl && menuUrl !== "#" && currentUrl.indexOf(menuUrl.toLowerCase()) !== -1) {
+
+                        // বর্তমান মেনু আইটেমটিকে Active করা
+                        $(this).closest('li').addClass('active');
+
+                        // প্যারেন্ট মডিউল (Treeview) গুলোকে Active করে খোলা রাখা
+                        $(this).parents('.treeview').addClass('active');
+                    }
+                });
             }
         });
 
