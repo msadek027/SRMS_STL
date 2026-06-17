@@ -378,7 +378,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" D.COMPANY_CODE AS COMPANY_UNIT_CODE, CU.COMPANY_UNIT_NAME,");
             query.Append(" C.COMPANY_CODE, C.COMPANY_NAME, C.LICENSE_NO,");
             query.Append(" P.PRODUCT_CODE, P.PRODUCT_NAME, P.BRAND_NAME, P.PRODUCT_CATEGORY,");
-            query.Append(" P.PRODUCT_SPECIFICATION, P.GENERIC_CODE, P.PACK_SIZE_NAME,");
+            query.Append(" P.PRODUCT_SPECIFICATION, P.GENERIC_CODE, P.PACK_SIZE_NAME,P.PRODUCT_VARIANT,");
 
             query.Append(" F.FILEID, F.FILECODE, F.FILENAME, F.EXTENTION, F.FILEPATH, F.REFNO AS DOC_REF_NO,");
 
@@ -471,9 +471,11 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                             CompanyUnitName = row["COMPANY_UNIT_NAME"] != DBNull.Value ? row["COMPANY_UNIT_NAME"].ToString() : "",
                             LicenseNo = row["LICENSE_NO"].ToString(),
                             ProductCode = row["PRODUCT_CODE"].ToString(),
+                            ProductName = row["PRODUCT_NAME"].ToString(),
                             BrandName = row["BRAND_NAME"].ToString(),
                             GenericStrength = row["GENERIC_CODE"].ToString(),
-                            PackSize = row["PACK_SIZE_NAME"].ToString(),
+                            PackSizeName = row["PACK_SIZE_NAME"].ToString(),
+                            Variant = row["PRODUCT_VARIANT"].ToString(),
                             ProductCategory = row["PRODUCT_CATEGORY"].ToString(),
                             ProductSpec = row["PRODUCT_SPECIFICATION"].ToString(),
                             AuthorityType = row["AUTHORITY_TYPE"].ToString(),

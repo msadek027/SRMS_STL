@@ -1364,6 +1364,7 @@
     <Content Include="Areas\Regulatory\Views\ProductRpt\frmProductRpt.cshtml" />
     <Content Include="Areas\Regulatory\Views\ProductDocReport\frmDocumentReport.cshtml" />
     <Content Include="Areas\Regulatory\Views\CompanyLicenseRpt\frmCompanyLicenseRpt.cshtml" />
+    <Content Include="Areas\Regulatory\Views\ProductRegApproval\frmProductRegApproval.cshtml" />
     <None Include="Properties\PublishProfiles\RMS_Square.pubxml" />
     <Content Include="Reports\SourceValidationMainRpt.rpt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1477,6 +1478,7 @@
     <Compile Include="Areas\Regulatory\Controllers\ProductDocReportController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\ProductInfoController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\ProductPriceController.cs" />
+    <Compile Include="Areas\Regulatory\Controllers\ProductRegApprovalController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\ProductRegController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\ProductRptController.cs" />
     <Compile Include="Areas\Regulatory\Controllers\ProductTypeInfoController.cs" />
@@ -1556,6 +1558,7 @@
     <Compile Include="Areas\Regulatory\Models\DAO\PriceFixComDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\ProductInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\ProductPriceDAO.cs" />
+    <Compile Include="Areas\Regulatory\Models\DAO\ProductRegApprovalDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\ProductRegistrationDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\ProductTypeInfoDAO.cs" />
     <Compile Include="Areas\Regulatory\Models\DAO\PromotionInfoDAO.cs" />

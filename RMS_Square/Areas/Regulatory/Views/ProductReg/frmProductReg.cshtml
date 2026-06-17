@@ -174,75 +174,132 @@
         <input type="hidden" id="AnnexId" value="" />
 
         <!-- ── Section 1: Company Header (Read Only Context) ── -->
+        <!--<div class="gui-card context-card">
+    <h4 class="gui-section-title"><i class="glyphicon glyphicon-briefcase text-info"></i> Company Information</h4>
+
+    <div class="row form-group">
+        <label class="col-sm-2 modern-label">Company Code <span class="asterisk">*</span></label>
+        <div class="col-sm-3">
+            <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" placeholder="Press Any" readonly />
+        </div>
+        <div class="col-sm-1 gap-col"></div>-->
+        <!-- Middle Gap -->
+        <!--<label class="col-sm-2 modern-label">Company Name</label>
+        <div class="col-sm-4">
+            <input type="text" id="CompanyName" name="CompanyName" class="form-control" readonly />
+        </div>
+    </div>
+
+    <div class="row form-group" style="margin-bottom: 0;">
+        <label class="col-sm-2 modern-label">Unit Code</label>
+        <div class="col-sm-3">
+            <input type="text" id="CompanyUnitCode" name="CompanyUnitCode" readonly class="form-control" placeholder="Auto" />
+        </div>
+        <div class="col-sm-1 gap-col"></div>-->
+        <!-- Middle Gap -->
+        <!--<label class="col-sm-2 modern-label">Unit Name</label>
+            <div class="col-sm-4">
+                <input type="text" id="CompanyUnitName" name="CompanyUnitName" readonly class="form-control" placeholder="Auto" />
+            </div>
+        </div>
+    </div>-->
+
         <div class="gui-card context-card">
             <h4 class="gui-section-title"><i class="glyphicon glyphicon-briefcase text-info"></i> Company Information</h4>
 
-            <div class="row form-group">
-                <label class="col-sm-2 modern-label">Company Code <span class="asterisk">*</span></label>
-                <div class="col-sm-3">
-                    <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" placeholder="Press Any" readonly />
-                </div>
-                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
-
-                <label class="col-sm-2 modern-label">Company Name</label>
-                <div class="col-sm-4">
-                    <input type="text" id="CompanyName" name="CompanyName" class="form-control" readonly />
-                </div>
-            </div>
+            <!-- Hidden inputs — backend এর জন্য -->
+            <input type="hidden" id="CompanyCode" name="CompanyCode" />
+            <input type="hidden" id="CompanyUnitCode" name="CompanyUnitCode" />
 
             <div class="row form-group" style="margin-bottom: 0;">
-                <label class="col-sm-2 modern-label">Unit Code</label>
-                <div class="col-sm-3">
-                    <input type="text" id="CompanyUnitCode" name="CompanyUnitCode" readonly class="form-control" placeholder="Auto" />
+                <label class="col-sm-2 modern-label">Company Name <span class="asterisk">*</span></label>
+                <div class="col-sm-4">
+                    <input type="text" id="CompanyName" name="CompanyName" class="form-control txtBox"
+                           placeholder="Click to select company..." readonly style="cursor:pointer;" />
                 </div>
-                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+                <div class="col-sm-1 gap-col"></div>
 
                 <label class="col-sm-2 modern-label">Unit Name</label>
-                <div class="col-sm-4">
-                    <input type="text" id="CompanyUnitName" name="CompanyUnitName" readonly class="form-control" placeholder="Auto" />
+                <div class="col-sm-3">
+                    <input type="text" id="CompanyUnitName" name="CompanyUnitName"
+                           class="form-control" placeholder="Auto" readonly />
                 </div>
             </div>
         </div>
 
         <!-- ── Section 2: Product Information (Read Only Context) ── -->
+        <!--<div class="gui-card context-card">
+        <h4 class="gui-section-title"><i class="glyphicon glyphicon-tag text-info"></i> Product Information</h4>
+
+        <div class="row form-group">
+            <label class="col-sm-2 modern-label">Product Code <span class="asterisk">*</span></label>
+            <div class="col-sm-3">
+                <input type="text" id="ProductCode" name="ProductCode" class="form-control txtBox" placeholder="Press Any" readonly />
+            </div>
+            <div class="col-sm-1 gap-col"></div>-->
+        <!-- Middle Gap -->
+        <!--<label class="col-sm-2 modern-label">Product Name</label>
+        <div class="col-sm-4">
+            <input type="text" id="ProductName" name="ProductName" class="form-control txtBox" readonly />
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <label class="col-sm-2 modern-label">Product Category</label>
+        <div class="col-sm-3">
+            <input type="text" id="ProductCategory" name="ProductCategory" class="form-control" readonly />
+        </div>
+        <div class="col-sm-1 gap-col"></div>-->
+        <!-- Middle Gap -->
+        <!--<label class="col-sm-2 modern-label">Brand Name</label>
+        <div class="col-sm-4">
+            <input type="text" id="BrandName" name="BrandName" class="form-control" readonly />
+        </div>
+    </div>
+
+    <div class="row form-group" style="margin-bottom: 0;">
+        <label class="col-sm-2 modern-label">Product Specification</label>
+        <div class="col-sm-3">
+            <input type="text" id="ProductSpecification" name="ProductSpecification" class="form-control txtBox" readonly />
+        </div>
+        <div class="col-sm-1 gap-col"></div>-->
+        <!-- Middle Gap -->
+        <!--<label class="col-sm-2 modern-label">Pack Size</label>
+            <div class="col-sm-4">
+                <input type="text" id="PackSizeName" name="PackSizeName" class="form-control" readonly />
+            </div>
+        </div>
+    </div>-->
+
         <div class="gui-card context-card">
             <h4 class="gui-section-title"><i class="glyphicon glyphicon-tag text-info"></i> Product Information</h4>
 
-            <div class="row form-group">
-                <label class="col-sm-2 modern-label">Product Code <span class="asterisk">*</span></label>
-                <div class="col-sm-3">
-                    <input type="text" id="ProductCode" name="ProductCode" class="form-control txtBox" placeholder="Press Any" readonly />
-                </div>
-                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+            <!-- Hidden input — backend এর জন্য -->
+            <input type="hidden" id="ProductCode" name="ProductCode" />
 
-                <label class="col-sm-2 modern-label">Product Name</label>
+            <div class="row form-group">
+                <label class="col-sm-2 modern-label">Product Name <span class="asterisk">*</span></label>
                 <div class="col-sm-4">
-                    <input type="text" id="ProductName" name="ProductName" class="form-control txtBox" readonly />
+                    <input type="text" id="ProductName" name="ProductName" class="form-control txtBox"
+                           placeholder="Click to select product..." readonly style="cursor:pointer;" />
                 </div>
-            </div>
+                <div class="col-sm-1 gap-col"></div>
 
-            <div class="row form-group">
                 <label class="col-sm-2 modern-label">Product Category</label>
                 <div class="col-sm-3">
                     <input type="text" id="ProductCategory" name="ProductCategory" class="form-control" readonly />
                 </div>
-                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+            </div>
 
+            <div class="row form-group">
                 <label class="col-sm-2 modern-label">Brand Name</label>
                 <div class="col-sm-4">
                     <input type="text" id="BrandName" name="BrandName" class="form-control" readonly />
                 </div>
-            </div>
-
-            <div class="row form-group" style="margin-bottom: 0;">
-                <label class="col-sm-2 modern-label">Product Specification</label>
-                <div class="col-sm-3">
-                    <input type="text" id="ProductSpecification" name="ProductSpecification" class="form-control txtBox" readonly />
-                </div>
-                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+                <div class="col-sm-1 gap-col"></div>
 
                 <label class="col-sm-2 modern-label">Pack Size</label>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <input type="text" id="PackSizeName" name="PackSizeName" class="form-control" readonly />
                 </div>
             </div>
@@ -333,14 +390,14 @@
                     </div>
                 </div>
 
-                <div class="row form-group">
+                <!--<div class="row form-group">
                     <label class="col-sm-2 modern-label">License No <span class="asterisk">*</span></label>
                     <div class="col-sm-3">
                         <input type="text" id="AuthorityLicenseNo" name="AuthorityLicenseNo" class="form-control txtBox" placeholder="Enter License No" />
                     </div>
-                    <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+                    <div class="col-sm-1 gap-col"></div>--> <!-- Middle Gap -->
 
-                    <label class="col-sm-2 modern-label">License Name <span class="asterisk">*</span></label>
+                    <!--<label class="col-sm-2 modern-label">License Name <span class="asterisk">*</span></label>
                     <div class="col-sm-4">
                         <select id="AuthorityLicenseName" class="form-control txtBox" name="AuthorityLicenseName">
                             <option value="">--Select Any--</option>
@@ -350,47 +407,39 @@
                             <option value="D">D</option>
                         </select>
                     </div>
-                </div>
+                </div>-->
 
                 <!--<div class="row form-group" style="margin-bottom: 0;">
-                    <label class="col-sm-2 modern-label">Document Type <span class="asterisk">*</span></label>
-                    <div class="col-sm-3">
-                        <select id="DocumentType" class="form-control txtBox" name="DocumentType">
-                            <option value="">--Select Any--</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-1 gap-col"></div>--> <!-- Middle Gap -->
-
-                    <!--<label class="col-sm-2 modern-label">Document No <span class="asterisk">*</span></label>
-                    <div class="col-sm-4">
-                        <input type="text" id="DocumentNo" name="DocumentNo" class="form-control txtBox" placeholder="Enter Document No" />
-                    </div>
-                </div>-->
+            <label class="col-sm-2 modern-label">Document Type <span class="asterisk">*</span></label>
+            <div class="col-sm-3">
+                <select id="DocumentType" class="form-control txtBox" name="DocumentType">
+                    <option value="">--Select Any--</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+            </div>
+            <div class="col-sm-1 gap-col"></div>-->
+                <!-- Middle Gap -->
+                <!--<label class="col-sm-2 modern-label">Document No <span class="asterisk">*</span></label>
+                <div class="col-sm-4">
+                    <input type="text" id="DocumentNo" name="DocumentNo" class="form-control txtBox" placeholder="Enter Document No" />
+                </div>
+            </div>-->
             </div>
 
             <!-- ── Section 5: Registration Information ── -->
             <div class="gui-card">
                 <h4 class="gui-section-title"><i class="glyphicon glyphicon-list-alt text-primary"></i> Registration Information</h4>
 
-                <div class="row form-group">
-                    <label class="col-sm-2 modern-label">Received Date</label>
-                    <div class="col-sm-3">
-                        <div class="input-group date">
-                            <input type="text" class="form-control txtBox" id="ReceivedDate" name="ReceivedDate" disabled placeholder="dd/mm/yyyy">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                        </div>
-                    </div>
-                </div>
+                
 
                 <div class="row form-group">
                     <label class="col-sm-2 modern-label">Submission Date</label>
                     <div class="col-sm-3">
                         <div class="input-group date">
-                            <input type="text" class="form-control" id="SubmissionDate" name="SubmissionDate" placeholder="dd/mm/yyyy">
+                            <input type="text" class="form-control txtBox" id="ReceivedDate" name="ReceivedDate" disabled placeholder="dd/mm/yyyy">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                         </div>
                     </div>
@@ -733,17 +782,17 @@ $(document).ready(function () {
         columnMenu: true, reorderable: true, resizable: true,
         columns: [
             { field: "AnnexId",         hidden: true },
-            { field: "CompanyCode",     locked: true, title: "CompCode",       width: 120 },
+            { field: "CompanyCode", hidden: true, title: "CompCode",       width: 120 },
             { field: "CompanyName",     locked: true, title: "CompanyName",    width: 140 },
-            { field: "CompanyUnitCode", locked: true, title: "UnitCode",       width: 120 },
+            { field: "CompanyUnitCode", hidden: true, title: "UnitCode",       width: 120 },
             { field: "CompanyUnitName", locked: true, title: "UnitName",       width: 140 },
-            { field: "ProductCode",     locked: true, title: "ProductCode",    width: 120 },
+            { field: "ProductCode", hidden: true, title: "ProductCode",    width: 120 },
             { field: "ProductName",     locked: true, title: "ProductName",    width: 140 },
             { field: "BrandName",                     title: "BrandName",      width: 120 },
-            { field: "ProposedBy",                    title: "ProposedBy",     width: 120 },
-            { field: "ReceivedDate",                  title: "ReceivedDate",   width: 120 },
+            { field: "ProposedBy", hidden: true  ,          title: "ProposedBy",     width: 120 },
+            { field: "ReceivedDate", hidden: true,           title: "ReceivedDate",   width: 120 },
             { field: "SubmissionDate",                title: "SubmissionDate", width: 120 },
-            { field: "ApvApprovalDate",               title: "ApprovalDate",   width: 120 },
+            { field: "ApvApprovalDate", hidden: true,            title: "ApprovalDate",   width: 120 },
             { field: "ValidUptoDate",                 title: "ValidUpto",      width: 120 },
             { field: "AlarmDays",                     title: "AlarmDays",      width: 100 }
         ]
@@ -853,7 +902,11 @@ $(document).ready(function () {
     }
 
     $('#btnFind').click(function () { CompanyWindow.open(); loadCompanyGrid(); });
-    $("#CompanyCode").on('click dblclick keyup keypress keydown', function () { CompanyWindow.open(); loadCompanyGrid(); });
+    //$("#CompanyCode").on('click dblclick keyup keypress keydown', function () { CompanyWindow.open(); loadCompanyGrid(); });
+    $("#CompanyName").on('click', function () {
+        CompanyWindow.open();
+        loadCompanyGrid();
+    });
 
     $('#CompanyWindowGrid').kendoGrid({
         dataSource: new kendo.data.DataSource({
@@ -867,9 +920,9 @@ $(document).ready(function () {
         toolbar: [{ template: "<input type='text' id='txtCompanyKeyword' style='float:right' placeholder='Search...' class='k-textbox'>" }],
         height: 430, columnMenu: true, reorderable: true, resizable: true,
         columns: [
-            { field: "CompanyCode",     title: "CompanyCode", width: 100 },
+            { field: "CompanyCode", title: "CompanyCode", width: 100, hidden: true },
             { field: "CompanyName",     title: "CompanyName", width: 140 },
-            { field: "CompanyUnitCode", title: "UnitCode",    width: 100 },
+            { field: "CompanyUnitCode", title: "UnitCode", width: 100, hidden: true },
             { field: "CompanyUnitName", title: "UnitName",    width: 140 }
         ]
     }).data('kendoGrid');
@@ -906,7 +959,7 @@ $(document).ready(function () {
     });
 
     // ── Product helpers ─────────────────────────────────────────────
-    $('#btnFindProduct').click(function () {
+   /* $('#btnFindProduct').click(function () {
         var unitCode = $('#CompanyUnitCode').val();
         if (!unitCode || unitCode.trim() === "") { toastr.warning('Please select a company first.'); return; }
         ProductWindow.open().center(); loadProductGrid(unitCode);
@@ -916,6 +969,27 @@ $(document).ready(function () {
         var unitCode = $('#CompanyUnitCode').val();
         if (!unitCode || unitCode.trim() === "") { toastr.warning('Please select a company first.'); return; }
         ProductWindow.open().center(); loadProductGrid(unitCode);
+    });*/
+
+    // ── Product: Name field click → popup ──
+    $('#btnFindProduct').click(function () {
+        var unitCode = $('#CompanyUnitCode').val();
+        if (!unitCode || unitCode.trim() === "") {
+            toastr.warning('Please select a company first.');
+            return;
+        }
+        ProductWindow.open().center();
+        loadProductGrid(unitCode);
+    });
+
+    $("#ProductName").on('click', function () {
+        var unitCode = $('#CompanyUnitCode').val();
+        if (!unitCode || unitCode.trim() === "") {
+            toastr.warning('Please select a company first.');
+            return;
+        }
+        ProductWindow.open().center();
+        loadProductGrid(unitCode);
     });
 
     $('#ProductWindowGrid').kendoGrid({
@@ -930,12 +1004,12 @@ $(document).ready(function () {
         toolbar: [{ template: "<input type='text' id='txtProductKeyword' style='float:right' placeholder='Search...' class='k-textbox'>" }],
         height: 430, columnMenu: true, reorderable: true, resizable: true,
         columns: [
-            { field: "ProductCode",         title: "ProductCode", width: 120 },
+            { field: "ProductCode", title: "ProductCode", width: 120, hidden: true },
             { field: "ProductName",          title: "ProductName", width: 140 },
             { field: "PackSizeName",         title: "PackSize",    width: 80  },
             { field: "BrandName",            title: "BrandName",   width: 100 },
             { field: "ProductCategory",      title: "Category",    width: 100 },
-            { field: "ProductSpecification", title: "ProductSpec", width: 120 }
+           // { field: "ProductSpecification", title: "ProductSpec", width: 120 }
         ]
     }).data('kendoGrid');
 

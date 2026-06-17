@@ -63,41 +63,40 @@
                 }
             });
         });
-        $("#CompanyCode").on('keyup keypress keydown click dblclick', function (e) {
-            CompanyWindow.open();
-            $.ajax({
-                url: '@Url.Action("GetAllCompany", "General")',
-                method: 'get',
-                data: 'json',
-                success: function (data) {
-
-                    var flatData = [];
-
-                    $.each(data, function (i, company) {
-
-                        if (company.Units && company.Units.length > 0) {
-                            $.each(company.Units, function (j, unit) {
-                                flatData.push({
-                                    CompanyCode: company.CompanyCode,
-                                    CompanyName: company.CompanyName,
-                                    CompanyUnitCode: unit.CompanyUnitCode,
-                                    CompanyUnitName: unit.CompanyUnitName
-                                });
-                            });
-                        } else {
-                            flatData.push({
-                                CompanyCode: company.CompanyCode,
-                                CompanyName: company.CompanyName,
-                                CompanyUnitCode: "",
-                                CompanyUnitName: ""
-                            });
-                        }
+        // CompanyCode এর পুরনো event সরিয়ে এটা দিন:
+$("#CompanyName").on('click', function () {
+    CompanyWindow.open();
+    $.ajax({
+        url: '@Url.Action("GetAllCompany", "General")',
+        method: 'get',
+        data: 'json',
+        success: function (data) {
+            var flatData = [];
+            $.each(data, function (i, company) {
+                if (company.Units && company.Units.length > 0) {
+                    $.each(company.Units, function (j, unit) {
+                        flatData.push({
+                            CompanyCode: company.CompanyCode,
+                            CompanyName: company.CompanyName,
+                            LicenseNo: company.LicenseNo,
+                            CompanyUnitCode: unit.CompanyUnitCode,
+                            CompanyUnitName: unit.CompanyUnitName
+                        });
                     });
-
-                    $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(flatData);
+                } else {
+                    flatData.push({
+                        CompanyCode: company.CompanyCode,
+                        CompanyName: company.CompanyName,
+                        LicenseNo: company.LicenseNo,
+                        CompanyUnitCode: "",
+                        CompanyUnitName: ""
+                    });
                 }
             });
-        });
+            $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(flatData);
+        }
+    });
+});
         //Initializing Main page details Kendo Grid Colums
         var companyGrid = $('#CompanyWindowGrid').kendoGrid({
             dataSource: new kendo.data.DataSource({
@@ -812,67 +811,25 @@
         <div class="gui-card context-card">
             <h4 class="gui-section-title"><i class="glyphicon glyphicon-briefcase text-info"></i> Company Information</h4>
 
+            <!-- Company Code: hidden করো, কিন্তু input রাখো -->
             <div class="row form-group">
-                <label class="col-sm-2 modern-label">Company Code <span class="asterisk">*</span></label>
-                <div class="col-sm-3">
-                    <input type="text" id="CompanyCode" name="CompanyCode" class="form-control txtBox" placeholder="Press Any" readonly />
-                </div>
-
-                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
-
-                <label class="col-sm-2 modern-label">Company Name</label>
+                <label class="col-sm-2 modern-label">Company Name <span class="asterisk">*</span></label>
                 <div class="col-sm-4">
-                    <input type="text" id="CompanyName" name="CompanyName" class="form-control" readonly />
-                </div>
-            </div>
-
-            <div class="row form-group" style="margin-bottom: 0;">
-                <label class="col-sm-2 modern-label">Unit Code</label>
-                <div class="col-sm-3">
-                    <input type="text" id="CompanyUnitCode" name="CompanyUnitCode" class="form-control" placeholder="Auto" readonly />
+                    <input type="text" id="CompanyName" name="CompanyName" class="form-control txtBox" placeholder="Click to select..." readonly />
                 </div>
 
-                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+                <div class="col-sm-1 gap-col"></div>
 
                 <label class="col-sm-2 modern-label">Unit Name</label>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <input type="text" id="CompanyUnitName" name="CompanyUnitName" class="form-control" placeholder="Auto" readonly />
                 </div>
             </div>
+
+            <!-- Hidden inputs — backend এর জন্য রইল -->
+            <input type="hidden" id="CompanyCode" name="CompanyCode" />
+            <input type="hidden" id="CompanyUnitCode" name="CompanyUnitCode" />
         </div>
-
-        <!-- Section 2: Product Core Details -->
-        <!--<div class="gui-card">
-        <h4 class="gui-section-title"><i class="glyphicon glyphicon-tag text-primary"></i> Product Details</h4>
-
-        <div class="row form-group">
-            <label class="col-sm-2 modern-label">Product Code</label>
-            <div class="col-sm-3">
-                <input type="text" id="ProductCode" name="ProductCode" placeholder="Auto Generated" class="form-control" readonly />
-            </div>
-
-            <div class="col-sm-1 gap-col"></div>-->
-        <!-- Middle Gap -->
-        <!--<label class="col-sm-2 modern-label">Product Name</label>
-        <div class="col-sm-4">
-            <input type="text" maxlength="150" id="ProductName" name="ProductName" placeholder="Enter Product Name" class="form-control" />
-        </div>
-    </div>
-
-    <div class="row form-group" style="margin-bottom: 0;">
-        <label class="col-sm-2 modern-label">Pack Size</label>
-        <div class="col-sm-3">
-            <input type="text" id="PackSizeName" name="PackSizeName" maxlength="300" placeholder="e.g. 10x10" class="form-control" />
-        </div>
-
-        <div class="col-sm-1 gap-col"></div>-->
-        <!-- Middle Gap -->
-        <!--<label class="col-sm-2 modern-label">Brand Name</label>
-            <div class="col-sm-4">
-                <input type="text" id="BrandName" name="BrandName" placeholder="Enter Brand Name" class="form-control" />
-            </div>
-        </div>
-    </div>-->
 
         <div class="gui-card">
             <h4 class="gui-section-title"><i class="glyphicon glyphicon-tag text-primary"></i> Product Details</h4>
@@ -882,12 +839,7 @@
             <div class="row form-group">
                 <label class="col-sm-2 modern-label">Product Variant</label>
                 <div class="col-sm-3">
-                    <select class="form-control" id="ProductVariant" name="ProductVariant">
-                        <option value="" selected="selected">-- Select Variant --</option>
-                        <option value="Standard">Standard</option>
-                        <option value="Premium">Premium</option>
-                        <option value="Deluxe">Deluxe</option>
-                    </select>
+                    <input type="text" class="form-control" id="ProductVariant" name="ProductVariant" placeholder="Enter Product Variant" />
                 </div>
 
                 <div class="col-sm-1 gap-col"></div> <label class="col-sm-2 modern-label">Product Name</label>
@@ -910,7 +862,7 @@
         </div>
 
         <!-- Section 3: Classification & Status -->
-        <div class="gui-card">
+        <!--<div class="gui-card">
             <h4 class="gui-section-title"><i class="glyphicon glyphicon-cog text-primary"></i> Classification & Settings</h4>
 
             <div class="row form-group">
@@ -922,9 +874,9 @@
                     </select>
                 </div>
 
-                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+                <div class="col-sm-1 gap-col"></div>--> <!-- Middle Gap -->
 
-                <label class="col-sm-2 modern-label">Manufacturing Type</label>
+                <!--<label class="col-sm-2 modern-label">Manufacturing Type</label>
                 <div class="col-sm-4">
                     <select class="form-control text" id="ManufacturingType">
                         <option selected="selected" value="Local">Local</option>
@@ -942,14 +894,14 @@
                     </select>
                 </div>
 
-                <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+                <div class="col-sm-1 gap-col"></div>--> <!-- Middle Gap -->
 
-                <label class="col-sm-2 modern-label">Remarks</label>
+                <!--<label class="col-sm-2 modern-label">Remarks</label>
                 <div class="col-sm-4">
                     <textarea class="form-control" id="Remarks" name="Remarks" placeholder="Enter any additional remarks here..." rows="2"></textarea>
                 </div>
             </div>
-        </div>
+        </div>-->
 
     </div>
 </div>

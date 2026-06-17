@@ -59,5 +59,8 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string ChooseOption { get; set; }
+        public string ApprovalStatus { get; set; }  // 'Y' / 'N'
+        public string ApprovedBy { get; set; }
+        public string ApprovedDate { get; set; }
     }
 }

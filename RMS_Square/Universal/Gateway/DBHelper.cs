@@ -94,7 +94,33 @@ namespace RMS_Square.DAL.Gateway
 
             return dt;
         }
+        public DataTable GetDataTable(string connString, string qry, OracleParameter[] parameters)
+        {
+            DataTable dt = new DataTable();
 
+            using (OracleConnection objConn = new OracleConnection(connString))
+            {
+                using (OracleCommand objCmd = new OracleCommand(qry, objConn))
+                {
+                    if (parameters != null && parameters.Length > 0)
+                    {
+                        objCmd.Parameters.AddRange(parameters);
+                    }
+
+                    objConn.Open();
+
+                    using (OracleDataReader rdr = objCmd.ExecuteReader())
+                    {
+                        if (rdr.HasRows)
+                        {
+                            dt.Load(rdr);
+                        }
+                    }
+                }
+            }
+
+            return dt;
+        }
         // ── DB Helper ─────────────────────────────────────────────────────
         public DocumentFileInfoBEL GetDocumentFileInfoById(string fileId)
         {

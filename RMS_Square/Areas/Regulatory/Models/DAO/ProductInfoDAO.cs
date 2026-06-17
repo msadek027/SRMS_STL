@@ -331,44 +331,100 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             return item;
         }
 
+        /*       public List<ProductInfoBEL> GetProductFromAnnex(string companyCode)
+               {
+                   var query = new System.Text.StringBuilder();
+
+                   query.Append(" SELECT A.DAR_NO,A.PRODUCT_CODE,A.BRAND_NAME,A.PRODUCT_CATEGORY,A.COMPANY_CODE,A.COMPANY_NAME,A.SAP_PRODUCT_CODE,A.GENERIC_CODE,A.PACK_SIZE_NAME,");
+                   query.Append(" A.LICENSE_NO,A.DOSAGE_FORM_NAME FROM ( SELECT D.ANNEX_ID,D.REVISION_NO,D.RECIPE_ID,D.DAR_NO,P.PRODUCT_CODE,P.BRAND_NAME,P.PRODUCT_CATEGORY,P.PRODUCT_VARIANT, ");
+                   query.Append(" C.COMPANY_CODE,C.COMPANY_NAME, C.LICENSE_NO,P.SAP_PRODUCT_CODE,P.GENERIC_CODE,P.PACK_SIZE_NAME,DF.DOSAGE_FORM_NAME  ");
+                   query.Append(" FROM PRODUCT_REGISTRATION_INFO D LEFT JOIN  RECIPE_INFO R ON R.ID=D.RECIPE_ID  LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=R.COMPANY_CODE ");
+                   query.Append(" LEFT JOIN  PRODUCT_INFO P ON P.PRODUCT_CODE=R.PRODUCT_CODE ");
+                   query.Append(" LEFT JOIN  DOSAGE_FORM_INFO DF ON DF.DOSAGE_FORM_CODE=P.DOSAGE_FORM_CODE  WHERE D.IS_DELETE <>'Y' ) A ");
+                   query.Append(" INNER JOIN ( SELECT RECIPE_ID,MAX(REVISION_NO) AS MaxRvNo FROM PRODUCT_REGISTRATION_INFO GROUP BY RECIPE_ID) B ");
+                   query.Append(" ON B.RECIPE_ID=A.RECIPE_ID AND B.MaxRvNo=A.REVISION_NO WHERE 1=1 ");
+
+                   if (!string.IsNullOrEmpty(companyCode))
+                   {
+                       query.Append(" AND COMPANY_CODE ='" + companyCode + "'");
+                   }
+
+                   DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), query.ToString());
+                   List<ProductInfoBEL> item;
+
+                   item = (from DataRow row in dt.Rows
+                           select new ProductInfoBEL
+                           {
+                               ProductCode = row["PRODUCT_CODE"].ToString(),
+                               SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
+                               GenericStrength = row["GENERIC_CODE"].ToString(),
+                               GenAndStrength = row["GENERIC_CODE"].ToString(),
+                               PackSize = row["PACK_SIZE_NAME"].ToString(),
+                               PackSizeName = row["PACK_SIZE_NAME"].ToString(),
+                               DosageForm = row["DOSAGE_FORM_NAME"].ToString(),
+                               DarNo = row["DAR_NO"].ToString(),
+                               BrandName = row["BRAND_NAME"].ToString(),
+                               CompanyName = row["COMPANY_NAME"].ToString(),
+                               CompanyCode = row["COMPANY_CODE"].ToString()
+
+                           }).ToList();
+                   return item;
+               }*/
+
         public List<ProductInfoBEL> GetProductFromAnnex(string companyCode)
         {
-            var query = new System.Text.StringBuilder();
-       
-            query.Append(" SELECT A.DAR_NO,A.PRODUCT_CODE,A.BRAND_NAME,A.PRODUCT_CATEGORY,A.COMPANY_CODE,A.COMPANY_NAME,A.SAP_PRODUCT_CODE,A.GENERIC_CODE,A.PRODUCT_VARIANT,A.PACK_SIZE_NAME,");
-            query.Append(" A.LICENSE_NO,A.DOSAGE_FORM_NAME FROM ( SELECT D.ANNEX_ID,D.REVISION_NO,D.RECIPE_ID,D.DAR_NO,P.PRODUCT_CODE,P.BRAND_NAME,P.PRODUCT_CATEGORY, ");
-            query.Append(" C.COMPANY_CODE,C.COMPANY_NAME, C.LICENSE_NO,P.SAP_PRODUCT_CODE,P.GENERIC_CODE,P.PACK_SIZE_NAME,DF.DOSAGE_FORM_NAME  ");
-            query.Append(" FROM PRODUCT_REGISTRATION_INFO D LEFT JOIN  RECIPE_INFO R ON R.ID=D.RECIPE_ID  LEFT JOIN  COMPANY_INFO C ON C.COMPANY_CODE=R.COMPANY_CODE ");
-            query.Append(" LEFT JOIN  PRODUCT_INFO P ON P.PRODUCT_CODE=R.PRODUCT_CODE ");
-            query.Append(" LEFT JOIN  DOSAGE_FORM_INFO DF ON DF.DOSAGE_FORM_CODE=P.DOSAGE_FORM_CODE  WHERE D.IS_DELETE <>'Y' ) A ");
-            query.Append(" INNER JOIN ( SELECT RECIPE_ID,MAX(REVISION_NO) AS MaxRvNo FROM PRODUCT_REGISTRATION_INFO GROUP BY RECIPE_ID) B ");
-            query.Append(" ON B.RECIPE_ID=A.RECIPE_ID AND B.MaxRvNo=A.REVISION_NO WHERE 1=1 ");
-          
-            if (!string.IsNullOrEmpty(companyCode))
-            {
-                query.Append(" AND COMPANY_CODE ='" + companyCode + "'");
-            }
-                
-            DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), query.ToString());
-            List<ProductInfoBEL> item;
+            string query = @"
+        SELECT PRODUCT_CODE,
+               SAP_PRODUCT_CODE,
+               GENERIC_CODE,
+               STRENGTH_CODE,
+               DOSAGE_FORM_CODE,
+               BRAND_NAME,
+               PRODUCT_CATEGORY,
+               THERAPEUTIC_CLASS_CODE,
+               PRODUCT_SPECIFICATION,
+               INTRODUCED_BANGLADESH,
+               MANUFACTURING_TYPE,
+               PRODUCT_TYPE_CODE,
+               STATUS,
+               REMARKS,
+               SET_BY,
+               SET_ON,
+               UPDATE_BY,
+               UPDATE_DATE,
+               PACK_SIZE_NAME,
+               COMPANY_CODE,
+               PRODUCT_NAME,
+               PRODUCT_VARIANT
+          FROM PRODUCT_INFO
+         WHERE COMPANY_CODE = :COMPANY_CODE";
 
-            item = (from DataRow row in dt.Rows
+            OracleParameter[] parameters =
+            {
+        new OracleParameter("COMPANY_CODE", companyCode)
+    };
+
+            DataTable dt = dbHelper.GetDataTable(
+                dbConn.SAConnStrReader(),
+                query,
+                parameters);
+
+            return (from DataRow row in dt.Rows
                     select new ProductInfoBEL
                     {
-                        ProductCode = row["PRODUCT_CODE"].ToString(),
-                        SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
-                        GenericStrength = row["GENERIC_CODE"].ToString(),
-                        GenAndStrength = row["GENERIC_CODE"].ToString(),
-                        PackSize = row["PACK_SIZE_NAME"].ToString(),
-                        PackSizeName = row["PACK_SIZE_NAME"].ToString(),
-                        DosageForm = row["DOSAGE_FORM_NAME"].ToString(),
-                        DarNo = row["DAR_NO"].ToString(),
-                        BrandName = row["BRAND_NAME"].ToString(),
-                        CompanyName = row["COMPANY_NAME"].ToString(),
-                        CompanyCode = row["COMPANY_CODE"].ToString()
-
+                        ProductCode = row["PRODUCT_CODE"]?.ToString(),
+                        SAPProductCode = row["SAP_PRODUCT_CODE"]?.ToString(),
+                        GenericCode = row["GENERIC_CODE"]?.ToString(),
+                        StrengthCode = row["STRENGTH_CODE"]?.ToString(),
+                        BrandName = row["BRAND_NAME"]?.ToString(),
+                        ProductCategory = row["PRODUCT_CATEGORY"]?.ToString(),
+                        PackSizeName = row["PACK_SIZE_NAME"]?.ToString(),
+                        CompanyCode = row["COMPANY_CODE"]?.ToString(),
+                        ProductName = row["PRODUCT_NAME"]?.ToString(),
+                        ProductVariant = row["PRODUCT_VARIANT"]?.ToString(),
+                        Status = row["STATUS"]?.ToString(),
+                        Remarks = row["REMARKS"]?.ToString()
                     }).ToList();
-            return item;
         }
 
 

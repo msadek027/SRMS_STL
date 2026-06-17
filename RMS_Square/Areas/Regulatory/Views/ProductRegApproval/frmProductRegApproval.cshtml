@@ -1,0 +1,1256 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<link href="~/Content/CSS/InputText.css" rel="stylesheet" />
+
+<style>
+    /* ── Mirrors frmProductReg design exactly ── */
+    :root {
+        --primary: #4f46e5;
+        --info: #0ea5e9;
+        --bg-page: #f4f7fb;
+        --card-bg: #ffffff;
+        --text-main: #1e293b;
+        --text-muted: #475569;
+        --border-soft: #e2e8f0;
+        --green: #10b981;
+        --green-bg: #f0fdf4;
+        --green-bd: #6ee7b7;
+    }
+
+    /* Action Bar */
+    .action-bar {
+        background: var(--card-bg);
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,.02), 0 4px 12px rgba(0,0,0,.04);
+        padding: 16px 24px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        border: 1px solid var(--border-soft);
+    }
+
+        .action-bar .btn {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 8px 20px;
+            transition: all 0.2s ease;
+            margin-left: 8px;
+            border: none;
+        }
+
+            .action-bar .btn i {
+                margin-right: 6px;
+            }
+
+    .btn-primary {
+        background-color: var(--primary);
+        box-shadow: 0 4px 10px rgba(79,70,229,.3);
+        color: #fff;
+    }
+
+        .btn-primary:hover {
+            background-color: #4338ca;
+            transform: translateY(-1px);
+            color: #fff;
+        }
+
+    .btn-success {
+        background-color: #059669;
+        box-shadow: 0 4px 10px rgba(5,150,105,.3);
+        color: #fff;
+    }
+
+        .btn-success:hover {
+            background-color: #047857;
+            transform: translateY(-1px);
+            color: #fff;
+        }
+
+    .btn-default {
+        background-color: #f1f5f9;
+        color: #334155;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+        .btn-default:hover {
+            background-color: #e2e8f0;
+            color: #0f172a;
+        }
+
+    /* Cards — identical to frmProductReg */
+    .gui-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,.02), 0 4px 12px rgba(0,0,0,.04);
+        border: 1px solid var(--border-soft);
+        padding: 30px 24px;
+        margin-bottom: 24px;
+    }
+
+        .gui-card.context-card {
+            background: #fcfdfd;
+            border-left: 4px solid var(--info);
+        }
+
+        .gui-card.approval-card {
+            background: var(--green-bg);
+            border-left: 4px solid var(--green);
+        }
+
+    .gui-section-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-top: 0;
+        margin-bottom: 25px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border-soft);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Form elements */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .modern-label {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-align: left;
+        padding-top: 8px;
+        letter-spacing: .3px;
+    }
+
+    .form-control {
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+        padding: 8px 14px;
+        height: auto;
+        font-size: 14px;
+        color: var(--text-main);
+        box-shadow: none !important;
+        transition: all .2s;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(79,70,229,.1) !important;
+        }
+
+        .form-control[readonly], .form-control[disabled] {
+            background-color: #f1f5f9;
+            color: #64748b;
+            cursor: not-allowed;
+            border-color: #e2e8f0;
+            opacity: 1;
+        }
+
+        .form-control.editable {
+            background: #fff;
+            cursor: text;
+        }
+
+        .form-control.clickable {
+            cursor: pointer;
+        }
+
+            .form-control.clickable:hover {
+                border-color: var(--primary);
+                background: #eff6ff;
+            }
+
+    .input-group-addon {
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-left: none;
+        color: var(--info);
+    }
+
+    .asterisk {
+        color: #ef4444;
+        font-weight: bold;
+        margin-left: 2px;
+    }
+
+    /* File table */
+    .file-tbl {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        margin-top: 8px;
+    }
+
+        .file-tbl thead th {
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border-soft);
+            padding: 9px 14px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .file-tbl tbody tr {
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .file-tbl tbody td {
+            padding: 9px 14px;
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        .file-tbl tbody tr:hover td {
+            background: #f8fafc;
+        }
+
+    .dl-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--primary);
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        padding: 4px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all .15s;
+    }
+    /* Preview modal */
+    .prev-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15,23,42,.7);
+        z-index: 19999;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .prev-modal.open {
+            display: flex;
+        }
+
+    .prev-modal-box {
+        background: #1e293b;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 1000px;
+        height: 88vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 12px 48px rgba(0,0,0,.5);
+    }
+
+    .prev-modal-hd {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 18px;
+        background: #0f172a;
+        flex-shrink: 0;
+        border-bottom: 1px solid #334155;
+    }
+
+    .prev-modal-name {
+        flex: 1;
+        font-size: 13px;
+        font-weight: 600;
+        color: #e2e8f0;
+    }
+
+    .prev-modal-close {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        border: 1px solid #334155;
+        background: #1e293b;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+        font-size: 13px;
+        transition: all .15s;
+    }
+
+        .prev-modal-close:hover {
+            background: #dc2626;
+            color: #fff;
+            border-color: #dc2626;
+        }
+
+    .prev-modal-body {
+        flex: 1;
+        overflow: hidden;
+    }
+
+        .prev-modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+        }
+
+        .prev-modal-body .img-wrap {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 16px;
+            background: #334155;
+        }
+
+        .prev-modal-body img {
+            max-width: 100%;
+            border-radius: 6px;
+            box-shadow: 0 4px 20px rgba(0,0,0,.4);
+        }
+
+        .prev-modal-body .no-prev {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            flex-direction: column;
+            gap: 12px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        .dl-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+    /* Approve button */
+    .btn-approve-big {
+        width: 100%;
+        padding: 14px;
+        font-size: 15px;
+        font-weight: 700;
+        font-family: inherit;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        background: #059669;
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(5,150,105,.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all .18s;
+    }
+
+        .btn-approve-big i {
+            font-size: 18px;
+        }
+
+        .btn-approve-big:hover {
+            background: #047857;
+            box-shadow: 0 6px 20px rgba(5,150,105,.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-approve-big:active {
+            transform: scale(.98);
+        }
+
+    /* Popup */
+    .popup-bd {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15,23,42,.52);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .popup-bd.open {
+            display: flex;
+        }
+
+    .popup-box {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 40px rgba(0,0,0,.18);
+        width: 94%;
+        max-width: 960px;
+        max-height: 86vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .popup-hd {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 22px;
+        border-bottom: 1px solid var(--border-soft);
+        background: #f8fafc;
+        flex-shrink: 0;
+    }
+
+    .popup-hd-title {
+        font-size: 15px;
+        font-weight: 700;
+        flex: 1;
+        color: var(--text-main);
+    }
+
+    .popup-hd-close {
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        font-size: 14px;
+        transition: all .15s;
+    }
+
+        .popup-hd-close:hover {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fca5a5;
+        }
+
+    .popup-srch {
+        padding: 13px 22px;
+        border-bottom: 1px solid var(--border-soft);
+        flex-shrink: 0;
+        position: relative;
+    }
+
+        .popup-srch .glyphicon {
+            position: absolute;
+            left: 33px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+    #popupSearch {
+        width: 100%;
+        padding: 9px 12px 9px 34px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 13.5px;
+        outline: none;
+        transition: all .15s;
+    }
+
+        #popupSearch:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79,70,229,.1);
+        }
+
+    .popup-scroll {
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .popup-tbl {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+        .popup-tbl thead th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border-soft);
+            padding: 9px 14px;
+            text-align: left;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .popup-tbl tbody tr {
+            border-bottom: 1px solid var(--border-soft);
+            cursor: pointer;
+        }
+
+            .popup-tbl tbody tr:hover td {
+                background: #eff6ff;
+            }
+
+        .popup-tbl tbody td {
+            padding: 10px 14px;
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        .popup-tbl td.dim {
+            color: #64748b;
+        }
+
+        .popup-tbl td.fw6 {
+            font-weight: 600;
+        }
+
+    .popup-ft {
+        padding: 10px 22px;
+        border-top: 1px solid var(--border-soft);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f8fafc;
+        font-size: 12px;
+        color: #64748b;
+    }
+
+        .popup-ft strong {
+            color: var(--primary);
+        }
+
+    /* Section divider */
+    .sec-div {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #94a3b8;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        margin: 4px 0 20px;
+    }
+
+        .sec-div::before, .sec-div::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-soft);
+        }
+
+    #detailSection {
+        display: none;
+    }
+</style>
+
+<div class="container-fluid" style="padding:20px 0;">
+
+    <input type="hidden" id="AnnexId" />
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+        <div id="MessageText" style="font-weight:600; color:#10b981;"></div>
+        <div style="margin-left:auto;">
+            <button id="btnSave" class="btn btn-success" type="button" style="display:none;">
+                <i class="glyphicon glyphicon-ok"></i> Save &amp; Approve
+            </button>
+            <button id="btnReset" class="btn btn-default" type="button">
+                <i class="glyphicon glyphicon-refresh"></i> Reset
+            </button>
+        </div>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="gui-card context-card">
+        <h4 class="gui-section-title">
+            <i class="glyphicon glyphicon-filter text-info"></i> Filter &amp; Search
+        </h4>
+        <div class="row form-group">
+            <label class="col-sm-2 modern-label">Company Name <span class="asterisk">*</span></label>
+            <div class="col-sm-4">
+                <input type="hidden" id="FilterCompanyCode" />
+                <input type="hidden" id="FilterCompanyUnitCode" />
+                <input type="text" id="FilterCompanyName" class="form-control clickable"
+                       placeholder="Click to select company…" readonly />
+            </div>
+            <label class="col-sm-2 modern-label">Unit Name</label>
+            <div class="col-sm-3">
+                <input type="text" id="FilterUnitName" class="form-control" readonly placeholder="Auto" />
+            </div>
+        </div>
+        <div class="row form-group" style="margin-bottom:0;">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button id="btnSearch" class="btn btn-primary" type="button">
+                    <i class="glyphicon glyphicon-search"></i> Search
+                </button>
+                <button id="btnShowAll" class="btn btn-default" type="button" style="margin-left:8px;">
+                    <i class="glyphicon glyphicon-list"></i> Show All
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Section -->
+    <div id="detailSection">
+        <div class="sec-div">Selected Registration — Review &amp; Approve</div>
+
+        <!-- Company & Product (readonly) -->
+        <div class="gui-card context-card">
+            <h4 class="gui-section-title">
+                <i class="glyphicon glyphicon-briefcase text-info"></i> Company &amp; Product
+                <small style="font-size:12px;font-weight:500;color:#94a3b8;margin-left:4px;">Read-only context</small>
+            </h4>
+            <div class="row form-group">
+                <label class="col-sm-2 modern-label">Company Name</label>
+                <div class="col-sm-4">
+                    <input type="text" id="CompanyName" class="form-control" readonly />
+                </div>
+                <label class="col-sm-2 modern-label">Unit Name</label>
+                <div class="col-sm-3">
+                    <input type="text" id="CompanyUnitName" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="row form-group">
+                <label class="col-sm-2 modern-label">Product Name</label>
+                <div class="col-sm-4">
+                    <input type="text" id="ProductName" class="form-control" readonly />
+                </div>
+                <label class="col-sm-2 modern-label">Product Category</label>
+                <div class="col-sm-3">
+                    <input type="text" id="ProductCategory" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="row form-group" style="margin-bottom:0;">
+                <label class="col-sm-2 modern-label">Brand Name</label>
+                <div class="col-sm-4">
+                    <input type="text" id="BrandName" class="form-control" readonly />
+                </div>
+                <label class="col-sm-2 modern-label">Pack Size</label>
+                <div class="col-sm-3">
+                    <input type="text" id="PackSizeName" class="form-control" readonly />
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Submission Info -->
+        <div class="gui-card">
+            <h4 class="gui-section-title">
+                <i class="glyphicon glyphicon-tint text-primary"></i> Sample Submission Info
+            </h4>
+            <div class="row form-group">
+                <label class="col-sm-2 modern-label">Sample Receive Date</label>
+                <div class="col-sm-3">
+                    <div class="input-group date">
+                        <input type="text" class="form-control editable" id="DtlReceivedDate" placeholder="dd/mm/yyyy" />
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <label class="col-sm-2 modern-label">Sample Submission Date</label>
+                <div class="col-sm-4">
+                    <div class="input-group date">
+                        <input type="text" class="form-control editable" id="DtlSubmissionDate" placeholder="dd/mm/yyyy" />
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group" style="margin-bottom:0;">
+                <label class="col-sm-2 modern-label">Sample Approval Date</label>
+                <div class="col-sm-3">
+                    <div class="input-group date">
+                        <input type="text" class="form-control editable" id="DtlApprovalDate" placeholder="dd/mm/yyyy" />
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <label class="col-sm-2 modern-label">Remarks</label>
+                <div class="col-sm-4">
+                    <input type="text" id="DtlRemarks" class="form-control editable" placeholder="Enter remarks" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Authority Info -->
+        <div class="gui-card">
+            <h4 class="gui-section-title">
+                <i class="glyphicon glyphicon-education text-primary"></i> Authority Info
+            </h4>
+            <div class="row form-group" style="margin-bottom:0;">
+                <label class="col-sm-2 modern-label">Authority Type <span class="asterisk">*</span></label>
+                <div class="col-sm-3">
+                    <select id="AuthorityType" class="form-control editable">
+                        <option value="">--Select Any--</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                </div>
+                <div class="col-sm-1"></div>
+                <label class="col-sm-2 modern-label">Authority Name <span class="asterisk">*</span></label>
+                <div class="col-sm-4">
+                    <input type="text" id="AuthorityName" class="form-control editable" placeholder="Enter Authority Name" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Information -->
+        <div class="gui-card">
+            <h4 class="gui-section-title">
+                <i class="glyphicon glyphicon-list-alt text-primary"></i> Registration Information
+            </h4>
+            <div class="row form-group">
+                <label class="col-sm-2 modern-label">Submission Date</label>
+                <div class="col-sm-3">
+                    <div class="input-group date">
+                        <input type="text" class="form-control editable" id="SubmissionDate" placeholder="dd/mm/yyyy" />
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <label class="col-sm-2 modern-label">Inclusion Date</label>
+                <div class="col-sm-4">
+                    <div class="input-group date">
+                        <input type="text" class="form-control editable" id="InclusionDate" placeholder="dd/mm/yyyy" />
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <label class="col-sm-2 modern-label">Approval / Renewal Date</label>
+                <div class="col-sm-3">
+                    <div class="input-group date">
+                        <input type="text" class="form-control editable" id="RenewalDate" placeholder="dd/mm/yyyy" />
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <label class="col-sm-2 modern-label">Valid Up To</label>
+                <div class="col-sm-4">
+                    <div class="input-group date">
+                        <input type="text" class="form-control editable" id="ValidUptoDate" placeholder="dd/mm/yyyy" />
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group" style="margin-bottom:0;">
+                <label class="col-sm-2 modern-label">Justification</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control editable" id="Remarks"
+                           placeholder="Enter justification remarks…" maxlength="300" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Uploaded Documents (read-only) -->
+        <div class="gui-card">
+            <h4 class="gui-section-title">
+                <i class="glyphicon glyphicon-paperclip text-primary"></i> Uploaded Documents
+                <small style="font-size:12px;font-weight:500;color:#94a3b8;margin-left:4px;">Attached by registrant — download only</small>
+            </h4>
+            <table class="file-tbl">
+                <thead>
+                    <tr>
+                        <th>Document Name</th>
+                        <th>File Name</th>
+                        <th style="width:100px;">Size (MB)</th>
+                        <th style="width:220px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="fileListBody">
+                    <tr><td colspan="4" style="text-align:center;padding:22px;color:#94a3b8;">No files attached.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Approval Card -->
+        @* <div class="gui-card approval-card">
+            <h4 class="gui-section-title" style="border-color:#a7f3d0;">
+                <i class="glyphicon glyphicon-check" style="color:#059669;"></i> Approval
+            </h4>
+            <div class="row form-group" style="margin-bottom:20px;">
+                <label class="col-sm-2 modern-label">Approval Remarks</label>
+                <div class="col-sm-9">
+                    <input type="text" id="ApprovalRemarks" class="form-control editable"
+                           placeholder="Optional approval remarks…" />
+                </div>
+            </div>
+            <button class="btn-approve-big" id="btnApproveInline" type="button">
+                <i class="glyphicon glyphicon-ok-circle"></i> Approve &amp; Save
+            </button>
+        </div>*@
+        <!-- Preview Modal -->
+        <div class="prev-modal" id="previewModal">
+            <div class="prev-modal-box">
+                <div class="prev-modal-hd">
+                    <i class="glyphicon glyphicon-file" style="color:#94a3b8;"></i>
+                    <span class="prev-modal-name" id="prevModalName"></span>
+                    <button class="prev-modal-close" id="prevModalClose">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
+                <div class="prev-modal-body" id="prevModalBody"></div>
+            </div>
+        </div>
+    </div><!-- /detailSection -->
+</div>
+
+<!-- ── Product list popup ── -->
+<div class="popup-bd" id="productPopup">
+    <div class="popup-box">
+        <div class="popup-hd">
+            <i class="glyphicon glyphicon-th-list" style="color:#4f46e5;font-size:15px;"></i>
+            <span class="popup-hd-title">Select Product Registration</span>
+            <button class="popup-hd-close" id="popupClose">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+        <div class="popup-srch">
+            <span class="glyphicon glyphicon-search"></span>
+            <input type="text" id="popupSearch" placeholder="Search by company, product, brand, authority…" />
+        </div>
+        <div class="popup-scroll">
+            <table class="popup-tbl">
+                <thead>
+                    <tr>
+                        <th style="width:145px;">Company</th>
+                        <th style="width:115px;">Unit</th>
+                        <th style="width:160px;">Product</th>
+                        <th style="width:115px;">Brand</th>
+                        <th style="width:125px;">Authority</th>
+                        <th style="width:100px;">Valid Upto</th>
+                        <th style="width:105px;">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="popupBody"></tbody>
+            </table>
+        </div>
+        <div class="popup-ft">
+            <span>Showing <strong id="popupCount">0</strong> record(s)</span>
+            <span style="font-style:italic;">Click a row to select</span>
+        </div>
+    </div>
+</div>
+
+<!-- ── Company Kendo Window ── -->
+<div class="row">
+    <div id="CompanyWindow" class="PopupWindowLayout" style="display:none;">
+        <div id="CompanyWindowGrid" class="PopUpGrid"></div>
+    </div>
+</div>
+
+<!-- Loading overlay -->
+<div id="divLoading" style="margin:0;padding:0;position:fixed;right:0;top:0;width:100%;height:100%;
+     background:rgba(13,27,42,.8);backdrop-filter:blur(3px);z-index:30001;display:none;">
+    <p style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+       color:#fff;font-weight:600;font-size:16px;">
+        Please wait… <img src="../../Content/Images/ajax-loader1.gif" style="margin-left:10px;">
+    </p>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function () {
+
+    // Datepickers
+    $('.input-group.date').datepicker({
+        format: "d/mm/yyyy", autoclose: true, todayHighlight: true
+    });
+
+    /* ════════════════════════════════════
+       COMPANY KENDO WINDOW
+    ════════════════════════════════════ */
+    var CompanyWindow = $("#CompanyWindow").kendoWindow({
+        actions: ["Minimize","Maximize","Close"],
+        width: "78%", height: "68%", draggable: true, modal: true,
+        title: "Select Company"
+    }).data("kendoWindow").center();
+
+    $('#CompanyWindowGrid').kendoGrid({
+        dataSource: new kendo.data.DataSource({
+            schema: { model: { id: "CompanyCode" } }, pageSize: 10
+        }),
+        pageable: { pageSizes: true, buttonCount: 5 },
+        scrollable: true, sortable: true, filterable: true,
+        editable: false, selectable: "row",
+        toolbar: [{
+            template: "<input type='text' id='txtCKw' style='float:right;' placeholder='Search…' class='k-textbox'>"
+        }],
+        height: 370, resizable: true,
+        columns: [
+            { field: "CompanyName",     title: "Company", width: 210 },
+            { field: "CompanyUnitName", title: "Unit",    width: 170 }
+        ]
+    });
+
+    $("#txtCKw").keyup(function () {
+        var v = $(this).val();
+        $("#CompanyWindowGrid").data("kendoGrid").dataSource.filter({
+            logic: "or", filters: [
+                { field: "CompanyCode",     operator: "contains", value: v },
+                { field: "CompanyName",     operator: "contains", value: v },
+                { field: "CompanyUnitCode", operator: "contains", value: v },
+                { field: "CompanyUnitName", operator: "contains", value: v }
+            ]
+        });
+    });
+
+    function loadCompanyGrid() {
+        $.ajax({
+            url: '@Url.Action("GetAllCompany","General")',
+            method: 'get', dataType: 'json',
+            success: function (data) {
+                var flat = [];
+                $.each(data, function (i, c) {
+                    if (c.Units && c.Units.length) {
+                        $.each(c.Units, function (j, u) {
+                            flat.push({
+                                CompanyCode: c.CompanyCode, CompanyName: c.CompanyName,
+                                CompanyUnitCode: u.CompanyUnitCode, CompanyUnitName: u.CompanyUnitName
+                            });
+                        });
+                    } else {
+                        flat.push({ CompanyCode: c.CompanyCode, CompanyName: c.CompanyName,
+                                    CompanyUnitCode: '', CompanyUnitName: '' });
+                    }
+                });
+                $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(flat);
+            }
+        });
+    }
+
+    $('#FilterCompanyName').on('click', function () { CompanyWindow.open(); loadCompanyGrid(); });
+
+    $('#CompanyWindowGrid').on('dblclick', function () {
+        var g = $(this).data('kendoGrid');
+        var r = g.dataItem(g.select());
+        if (!r) return;
+        $('#FilterCompanyCode').val(r.CompanyCode);
+        $('#FilterCompanyUnitCode').val(r.CompanyUnitCode);
+        $('#FilterCompanyName').val(r.CompanyName);
+        $('#FilterUnitName').val(r.CompanyUnitName);
+        CompanyWindow.close();
+    });
+
+    /* ════════════════════════════════════
+       SEARCH → OPEN POPUP
+    ════════════════════════════════════ */
+    var _popupData = [];
+
+    function doSearch() {
+        $.ajax({
+            url: '@Url.Action("GetAllInfo","ProductRegApproval")',
+            method: 'get', dataType: 'json',
+            data: {
+                companyUnitCode: $('#FilterCompanyUnitCode').val(),
+                companyCode:     $('#FilterCompanyCode').val(),
+                productCode:     '',
+                approvalStatus:  ''
+            },
+            success: function (data) {
+                var rows = data || [];
+                if (!rows.length) {
+                    if (typeof AcknowledgeMsg === 'function') AcknowledgeMsg();
+                    return;
+                }
+                _popupData = rows;
+                renderPopup(rows);
+                $('#productPopup').addClass('open');
+                $('#popupSearch').val('').focus();
+            }
+        });
+    }
+
+    $('#btnSearch').click(function () { doSearch(); });
+
+    $('#btnShowAll').click(function () {
+        $('#FilterCompanyCode,#FilterCompanyUnitCode').val('');
+        $('#FilterCompanyName,#FilterUnitName').val('');
+        doSearch();
+    });
+
+    /* ════════════════════════════════════
+       POPUP
+    ════════════════════════════════════ */
+    function renderPopup(rows) {
+        if (!rows.length) {
+            $('#popupBody').html(
+                '<tr><td colspan="7" style="text-align:center;padding:28px;color:#94a3b8;">No records found.</td></tr>'
+            );
+            $('#popupCount').text(0); return;
+        }
+        var html = '';
+        $.each(rows, function (i, r) {
+            var badge = (r.ApprovalStatus === 'Y')
+                ? '<span style="background:#f0fdf4;color:#16a34a;border:1px solid #86efac;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Approved</span>'
+                : '<span style="background:#fffbeb;color:#b45309;border:1px solid #fcd34d;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">Pending</span>';
+            html += '<tr data-idx="' + i + '">'
+                + '<td class="fw6">' + (r.CompanyName || '') + '</td>'
+                + '<td class="dim">' + (r.CompanyUnitName || '') + '</td>'
+                + '<td class="fw6">' + (r.ProductName || '') + '</td>'
+                + '<td class="dim">' + (r.BrandName || '') + '</td>'
+                + '<td class="dim">' + (r.AuthorityName || '') + '</td>'
+                + '<td class="dim">' + (r.ValidUptoDate || '') + '</td>'
+                + '<td>' + badge + '</td>'
+                + '</tr>';
+        });
+        $('#popupBody').html(html);
+        $('#popupCount').text(rows.length);
+    }
+
+    $('#popupSearch').on('input', function () {
+        var v = $(this).val().toLowerCase().trim();
+        if (!v) { renderPopup(_popupData); return; }
+        var filtered = _popupData.filter(function (r) {
+            return [r.CompanyName, r.CompanyUnitName, r.ProductName,
+                    r.BrandName, r.AuthorityName, r.ValidUptoDate]
+                   .join(' ').toLowerCase().indexOf(v) >= 0;
+        });
+        renderPopup(filtered);
+    });
+
+    $('#popupBody').on('click', 'tr', function () {
+        var idx = parseInt($(this).data('idx'), 10);
+        var row = _popupData[idx];
+        if (!row) return;
+        loadDetail(row);
+        $('#productPopup').removeClass('open');
+        $('html,body').animate({ scrollTop: $('#detailSection').offset().top - 60 }, 360);
+    });
+
+    $('#popupClose').click(function () { $('#productPopup').removeClass('open'); });
+    $('#productPopup').on('click', function (e) {
+        if ($(e.target).is('#productPopup')) $(this).removeClass('open');
+    });
+
+    /* ════════════════════════════════════
+       LOAD DETAIL
+    ════════════════════════════════════ */
+    function loadDetail(row) {
+        $('#AnnexId').val(row.AnnexId);
+
+        // Readonly context
+        $('#CompanyName').val(row.CompanyName         || '');
+        $('#CompanyUnitName').val(row.CompanyUnitName || '');
+        $('#ProductName').val(row.ProductName         || '');
+        $('#ProductCategory').val(row.ProductCategory || '');
+        $('#BrandName').val(row.BrandName             || '');
+        $('#PackSizeName').val(row.PackSizeName       || '');
+
+        // Editable
+        $('#DtlReceivedDate').val(row.DtlReceivedDate     || '');
+        $('#DtlSubmissionDate').val(row.DtlSubmissionDate || '');
+        $('#DtlApprovalDate').val(row.DtlApprovalDate     || '');
+        $('#DtlRemarks').val(row.DtlRemarks               || '');
+        $('#AuthorityType').val(row.AuthorityType         || '');
+        $('#AuthorityName').val(row.AuthorityName         || '');
+        $('#SubmissionDate').val(row.SubmissionDate       || '');
+        $('#InclusionDate').val(row.InclusionDate         || '');
+        $('#RenewalDate').val(row.RenewalDate             || '');
+        $('#ValidUptoDate').val(row.ValidUptoDate         || '');
+        $('#Remarks').val(row.Remarks                     || '');
+        $('#ApprovalRemarks').val(row.ApprovalRemarks     || '');
+
+        loadFiles(row.AnnexId);
+
+        $('#detailSection').show();
+        $('#btnSave').show();
+    }
+
+    /* ════════════════════════════════════
+       FILE LIST (read-only, download only)
+    ════════════════════════════════════ */
+   @* function loadFiles(annexId) {
+        if (!annexId) {
+            $('#fileListBody').html('<tr><td colspan="4" style="text-align:center;padding:22px;color:#94a3b8;">No files attached.</td></tr>');
+            return;
+        }
+        $.ajax({
+            url: '@Url.Action("GetFileByRefId","ProductReg")',
+            type: 'GET', data: { refLevel1: annexId },
+            success: function (files) {
+                if (!files || !files.length) {
+                    $('#fileListBody').html('<tr><td colspan="4" style="text-align:center;padding:22px;color:#94a3b8;">No files attached.</td></tr>');
+                    return;
+                }
+                var html = '';
+                $.each(files, function (i, f) {
+                    var dlUrl = '@Url.Action("Download","General")'
+                        + '?path='     + encodeURIComponent((f.FileCode || '') + (f.Extention || ''))
+                        + '&fileName=' + encodeURIComponent(f.FileName || '')
+                        + '&fileId='   + (f.FileID || '');
+                    html += '<tr>'
+                        + '<td>' + (f.RefNo    || '') + '</td>'
+                        + '<td>' + (f.FileName || '') + '</td>'
+                        + '<td>' + (f.FileSize || '') + '</td>'
+                        + '<td><a class="dl-btn" href="' + dlUrl + '">'
+                        + '<i class="glyphicon glyphicon-download-alt"></i> Download</a></td>'
+                        + '</tr>';
+                });
+                $('#fileListBody').html(html);
+            }
+        });
+    }*@
+
+   /* ════════════════════════════════════
+   FILE LIST (preview + download)
+════════════════════════════════════ */
+function loadFiles(annexId) {
+    if (!annexId) {
+        $('#fileListBody').html('<tr><td colspan="4" style="text-align:center;padding:22px;color:#94a3b8;">No files attached.</td></tr>');
+        return;
+    }
+    $.ajax({
+        url: '@Url.Action("GetFileByRefId","ProductReg")',
+        type: 'GET', data: { refLevel1: annexId },
+        success: function (files) {
+            if (!files || !files.length) {
+                $('#fileListBody').html('<tr><td colspan="4" style="text-align:center;padding:22px;color:#94a3b8;">No files attached.</td></tr>');
+                return;
+            }
+            var html = '';
+            $.each(files, function (i, f) {
+                debugger
+                var ext = (f.Extention || '').toLowerCase().replace('.', '');
+                var canPreview = ['pdf','jpg','jpeg','png','gif','bmp','webp'].indexOf(ext) >= 0;
+                var dlUrl = '@Url.Action("Download","General")'
+                    + '?path='     + encodeURIComponent((f.FileCode || '') + (f.Extention || ''))
+                    + '&fileName=' + encodeURIComponent(f.FileName || '')
+                    + '&fileId='   + (f.FileID || '');
+                var previewBtn = canPreview
+                    ? '<button class="dl-btn btn-preview" style="background:#f0fdf4;color:#059669;border-color:#6ee7b7;margin-right:6px;"'
+                      + ' data-filecode="' + encodeURIComponent((f.FileCode || '') + (f.Extention || '')) + '"'
+                      + ' data-filename="' + encodeURIComponent(f.FileName || '') + '"'
+                      + ' data-fileid="' + (f.FileID || '') + '"'
+                      + ' data-ext="' + ext + '">'
+                      + '<i class="glyphicon glyphicon-eye-open"></i> Preview</button>'
+                    : '';
+                html += '<tr>'
+                    + '<td>' + (f.RefNo    || '') + '</td>'
+                    + '<td>' + (f.FileName || '') + '</td>'
+                    + '<td>' + (f.FileSize || '') + '</td>'
+                    + '<td>' + previewBtn
+                    + '<a class="dl-btn" href="' + dlUrl + '">'
+                    + '<i class="glyphicon glyphicon-download-alt"></i> Download</a></td>'
+                    + '</tr>';
+            });
+            $('#fileListBody').html(html);
+        }
+    });
+}
+
+// Preview button click
+$(document).on('click', '.btn-preview', function () {
+    var fileCode = decodeURIComponent($(this).data('filecode'));
+    var fileName = decodeURIComponent($(this).data('filename'));
+    var fileId   = $(this).data('fileid');
+    var ext      = $(this).data('ext');
+
+    // নতুন — Area explicitly দিয়ে:
+var fileUrl = '@Url.Action("PreviewFile", "ProductRegApproval", new { area = "Regulatory" })'
+    + '?path='     + encodeURIComponent(fileCode)
+    + '&fileName=' + encodeURIComponent(fileName)
+    + '&fileId='   + fileId;
+
+    $('#prevModalName').text(fileName);
+    var body = $('#prevModalBody').empty();
+
+    if (ext === 'pdf') {
+        body.html('<iframe src="' + fileUrl + '" allowfullscreen></iframe>');
+    } else {
+        body.html('<div class="img-wrap"><img src="' + fileUrl + '" alt="' + fileName + '" /></div>');
+    }
+
+    $('#previewModal').addClass('open');
+});
+
+    $('#prevModalClose').on('click', function () {
+        $('#previewModal').removeClass('open');
+        $('#prevModalBody').empty();
+    });
+
+    $('#previewModal').on('click', function (e) {
+        if ($(e.target).is('#previewModal')) {
+            $('#previewModal').removeClass('open');
+            $('#prevModalBody').empty();
+        }
+    });
+
+    /* ════════════════════════════════════
+       SAVE = all field changes + ApprovalStatus Y
+    ════════════════════════════════════ */
+    function doSave() {
+        var annexId = $('#AnnexId').val();
+        if (!annexId) { toastr.warning('Please select a record first.'); return; }
+
+        $("#divLoading").show();
+        $.ajax({
+            url: '@Url.Action("SaveApproval","ProductRegApproval")',
+            type: 'POST',
+            contentType: 'application/json;',
+            dataType: 'json',
+            data: JSON.stringify({
+                AnnexId:          annexId,
+                ApprovalStatus:   'Y',
+                ApprovalRemarks:  $('#ApprovalRemarks').val(),
+                DtlReceivedDate:  $('#DtlReceivedDate').val(),
+                DtlSubmissionDate:$('#DtlSubmissionDate').val(),
+                DtlApprovalDate:  $('#DtlApprovalDate').val(),
+                DtlRemarks:       $('#DtlRemarks').val(),
+                AuthorityType:    $('#AuthorityType').val(),
+                AuthorityName:    $('#AuthorityName').val(),
+                SubmissionDate:   $('#SubmissionDate').val(),
+                InclusionDate:    $('#InclusionDate').val(),
+                RenewalDate:      $('#RenewalDate').val(),
+                ValidUptoDate:    $('#ValidUptoDate').val(),
+                Remarks:          $('#Remarks').val()
+            }),
+            success: function (res) {
+                $("#divLoading").hide();
+                if (res.Status === "Yes") {
+                    toastr.success('Registration approved successfully.');
+                    $('#detailSection').hide();
+                    $('#btnSave').hide();
+                    $('#AnnexId').val('');
+                    $('#MessageText').text('Approved successfully.');
+                } else {
+                    toastr.error(res.Status || 'Save failed.');
+                }
+            },
+            error: function () {
+                $("#divLoading").hide();
+                toastr.error('Server error. Please try again.');
+            }
+        });
+    }
+
+    $('#btnSave').click(function () { doSave(); });
+    $('#btnApproveInline').click(function () { doSave(); });
+
+    /* ════════════════════════════════════
+       RESET
+    ════════════════════════════════════ */
+    $('#btnReset').click(function () {
+        $('#AnnexId').val('');
+        $('#MessageText').text('');
+        $('#FilterCompanyCode,#FilterCompanyUnitCode').val('');
+        $('#FilterCompanyName,#FilterUnitName').val('');
+        $('#detailSection').hide();
+        $('#btnSave').hide();
+    });
+
+}); // end ready
+</script>

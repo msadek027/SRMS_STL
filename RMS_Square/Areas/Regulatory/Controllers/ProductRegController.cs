@@ -3,12 +3,9 @@ using CrystalDecisions.Shared;
 using RMS_Square.Areas.Regulatory.Models.BEL;
 using RMS_Square.Areas.Regulatory.Models.DAO;
 using RMS_Square.DAL.Common;
-using RMS_Square.Models;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Systems.ActionFilter;
 using Systems.Controllers;
@@ -27,8 +24,10 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             _serverFilePath = Utility.GetServerPath();
             _dalObj = new ProductRegistrationDAO();
         }
+
         //
         // GET: /Regulatory/ProductReg/
+
         [ActionAuth]
         public ActionResult frmProductReg()
         {
@@ -63,7 +62,6 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                     return Json(new { Status = "! Error : Error Code:" + e.Message.Substring(0, 9) });//Other Wise Error Found
             }
         }
-
 
         public ActionResult UploadFile(string refLevel1, string refLevel2, string fileSize, string refNo)
         {
@@ -111,6 +109,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                 return Json(new { msgType = "FUE", FileList = "" }, JsonRequestBehavior.AllowGet);
             }
         }
+
         public ActionResult GetFileByRefId(string refLevel1, string refLevel2)
         {
             _fileModel = new FileDetailModel();
@@ -132,6 +131,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
         }
+
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult GetAllInfoByCompany(string companyCode)
         {
@@ -140,6 +140,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             var data = _dalObj.GetAllInfo(model, orderBy: "DESC");
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
         [ActionAuth]
         public ActionResult frmProductRegView()
         {
@@ -149,6 +150,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             }
             return Redirect(string.Format("~/Home/frmHome"));
         }
+
         [HttpPost]
         public ActionResult GetInfoByParams(ProductRegistrationBEL model)
         {
@@ -167,6 +169,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                 return Json(new { dataMaster = "", dataLevel1 = "" }, JsonRequestBehavior.AllowGet);
             }
         }
+
         public ActionResult frmProductRegRpt()
         {
             if (Session["UserID"] != null)

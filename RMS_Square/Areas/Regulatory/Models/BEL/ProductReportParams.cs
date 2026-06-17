@@ -40,9 +40,11 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string LicenseNo { get; set; }
         // Product
         public string ProductCode { get; set; }
+        public string ProductName { get; set; }
         public string BrandName { get; set; }
         public string GenericStrength { get; set; }
-        public string PackSize { get; set; }
+        public string PackSizeName { get; set; }
+        public string Variant { get; set; }
         public string ProductCategory { get; set; }
         public string ProductSpec { get; set; }
         // Authority
@@ -52,6 +54,7 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string AuthorityLicenseName { get; set; }
         // Dates
         public string SubmissionDate { get; set; }
+        public string ExpireDate { get; set; }
         public string ReceiveDate { get; set; }
         public string ValidUptoDate { get; set; }
         public string RenewalDate { get; set; }

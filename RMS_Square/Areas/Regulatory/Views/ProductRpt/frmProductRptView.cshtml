@@ -496,88 +496,6 @@
 </div>
 
 <!-- ══ Filter Card ══════════════════════════════════════════════════ -->
-<!--<div class="filter-card">
-    <div class="filter-card-head">
-        <i class="glyphicon glyphicon-filter"></i> Filter / Search Criteria
-    </div>
-    <div class="filter-card-body">-->
-<!-- Row 1 -->
-<!--<div class="frow">
-    <div class="fg fg-xl">
-        <label>Company</label>
-        <div style="display:flex;gap:0;">
-            <input type="text" id="CompanyName" class="form-control"
-                   style="border-radius:5px 0 0 5px;width:240px;"
-                   placeholder="Press Search to Select" readonly />
-            <input type="hidden" id="CompanyCode" />
-            <button id="btnCompanyFind" class="btn-rpt btn-primary-rpt"
-                    style="border-radius:0 5px 5px 0;height:34px;">
-                <i class="glyphicon glyphicon-search"></i>
-            </button>
-        </div>
-    </div>
-    <div class="fg fg-lg">
-        <label>License No</label>
-        <input type="text" id="fLicenseNo" class="form-control"
-               placeholder="Search by License No..." />
-    </div>
-    <div class="fg fg-md">
-        <label>Submission Type</label>
-        <select id="fSubType" class="form-control">
-            <option value="">All</option>
-            <option value="New">New</option>
-            <option value="Renewal">Renewal</option>
-            <option value="Amendment">Amendment</option>
-        </select>
-    </div>
-    <div class="fg fg-sm">
-        <label>Doc Status</label>
-        <select id="fDocStatus" class="form-control">
-            <option value="">All</option>
-            <option value="Uploaded">Uploaded</option>
-            <option value="Pending">Pending</option>
-            <option value="Expired">Expired</option>
-        </select>
-    </div>
-</div>-->
-<!-- Row 2 -->
-<!--<div class="frow">
-            <div class="fg fg-md">
-                <label>Valid From Date</label>
-                <div class="input-group-date">
-                    <input type="text" class="form-control" id="ValidFrom"
-                           placeholder="dd/mm/yyyy" style="width:130px;" />
-                    <span class="addon"><i class="glyphicon glyphicon-th"></i></span>
-                </div>
-            </div>
-            <div class="fg fg-md">
-                <label>Valid To Date</label>
-                <div class="input-group-date">
-                    <input type="text" class="form-control" id="ValidTo"
-                           placeholder="dd/mm/yyyy" style="width:130px;" />
-                    <span class="addon"><i class="glyphicon glyphicon-th"></i></span>
-                </div>
-            </div>
-            <div class="fg fg-md">
-                <label>Submission Date (From)</label>
-                <div class="input-group-date">
-                    <input type="text" class="form-control" id="SubFrom"
-                           placeholder="dd/mm/yyyy" style="width:130px;" />
-                    <span class="addon"><i class="glyphicon glyphicon-th"></i></span>
-                </div>
-            </div>
-            <div class="fg fg-md">
-                <label>Submission Date (To)</label>
-                <div class="input-group-date">
-                    <input type="text" class="form-control" id="SubTo"
-                           placeholder="dd/mm/yyyy" style="width:130px;" />
-                    <span class="addon"><i class="glyphicon glyphicon-th"></i></span>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>-->
 
 <div class="filter-card">
     <div class="filter-card-head">
@@ -593,7 +511,7 @@
                     <input type="text" id="CompanyName" class="form-control"
                            style="border-radius:5px 0 0 5px;flex:1;"
                            placeholder="Press Search to Select" readonly />
-                    <input type="hidden" id="CompanyCode" />
+
                     <button id="btnCompanyFind" class="btn-rpt btn-primary-rpt"
                             style="border-radius:0 5px 5px 0;height:34px;flex-shrink:0;">
                         <i class="glyphicon glyphicon-search"></i>
@@ -607,14 +525,13 @@
                     <input type="text" id="CompanyUnitName" class="form-control"
                            style="border-radius:5px 0 0 5px;flex:1;"
                            placeholder="Press Search to Select" readonly />
-                    <input type="hidden" id="CompanyUnitCode" />
+
                     <button id="btnUnitFind" class="btn-rpt btn-primary-rpt"
                             style="border-radius:0 5px 5px 0;height:34px;flex-shrink:0;">
                         <i class="glyphicon glyphicon-search"></i>
                     </button>
                 </div>
             </div>
-
             <div class="fg" style="flex:1;min-width:180px;">
                 <label>License No</label>
                 <input type="text" id="fLicenseNo" class="form-control"
@@ -777,44 +694,43 @@
     </div>
 </div>
 
+
 <script type="text/javascript">
+
+// ── State variables ───────────────────────────────────
+var _companyCode     = '';
+var _companyUnitCode = '';
+
 $(document).ready(function () {
 
-    // Datepicker
     $('.input-group-date input[type="text"]').datepicker({
         format: "dd/mm/yyyy", autoclose: true, todayHighlight: true
     });
 
     var _allData = [];
 
-    // ── Collect params ───────────────────────────────────
     function collectParams() {
         return {
-            CompanyCode: $('#CompanyCode').val(),
-            CompanyUnitCode: $('#CompanyUnitCode').val(),
-            LicenseNo: $('#fLicenseNo').val(),
+            CompanyCode:    _companyCode,
+            CompanyUnitCode: _companyUnitCode,
+            LicenseNo:      $('#fLicenseNo').val(),
             SubmissionType: $('#fSubType').val(),
-            ValidFrom: $('#ValidFrom').val(),
-            ValidTo: $('#ValidTo').val(),
-            AlarmDays: $('#fAlarmDays').val(),
-            DocStatus: $('#fDocStatus').val()
+            ValidFrom:      $('#ValidFrom').val(),
+            ValidTo:        $('#ValidTo').val(),
+            AlarmDays:      $('#fAlarmDays').val(),
+            DocStatus:      $('#fDocStatus').val()
         };
     }
 
-    // ── Render table ─────────────────────────────────────
     function renderTable(data) {
         var tbody = $('#docTableBody');
         tbody.empty();
-
         if (!data || data.length === 0) {
             $('#docTable').hide();
-            $('#emptyState')
-                .html('<i class="glyphicon glyphicon-search"></i>' +
-                      '<p>No records found for the selected criteria.</p>').show();
+            $('#emptyState').html('<i class="glyphicon glyphicon-search"></i><p>No records found for the selected criteria.</p>').show();
             $('#statsBar,#resultFooter').hide();
             return;
         }
-
         var uploaded = 0, pending = 0, expired = 0;
         $.each(data, function(i, r) {
             if (r.DocumentStatus === 'Uploaded')     uploaded++;
@@ -832,132 +748,82 @@ $(document).ready(function () {
                          : r.DocumentStatus === 'Expired'  ? 'badge-expired'
                          : 'badge-pending';
             var status = r.DocumentStatus || 'Pending';
-
             var actions = '';
             if (r.FileUrl) {
-                actions += '<a class="btn-icon preview" title="Preview" '
-                    + 'onclick="previewFile(\'' + r.FileUrl + '\',\'' + (r.FileName || 'Document') + '\')" '
-                    + 'href="javascript:void(0)">'
-                    + '<i class="glyphicon glyphicon-eye-open"></i></a>';
-                actions += '<a class="btn-icon download" title="Download" '
-                    + 'href="' + r.FileUrl + '" download="' + (r.FileName || 'file') + '" target="_blank">'
-                    + '<i class="glyphicon glyphicon-download-alt"></i></a>';
+                actions += '<a class="btn-icon preview" title="Preview" onclick="previewFile(\'' + r.FileUrl + '\',\'' + (r.FileName || 'Document') + '\')" href="javascript:void(0)"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                actions += '<a class="btn-icon download" title="Download" href="' + r.FileUrl + '" download="' + (r.FileName || 'file') + '" target="_blank"><i class="glyphicon glyphicon-download-alt"></i></a>';
             } else {
                 actions += '<span style="font-size:11px;color:#aaa;">No file</span>';
             }
-
-            var searchStr = [
-                r.CompanyCode, r.CompanyName, r.CompanyUnitCode, r.CompanyUnitName, r.LicenseNo,
-                r.CompLicenseName, r.RevisionNo, r.SubmissionType
-            ].join(' ').toLowerCase();
-
+            var searchStr = [r.CompanyCode, r.CompanyName, r.CompanyUnitCode, r.CompanyUnitName, r.LicenseNo, r.CompLicenseName, r.RevisionNo, r.SubmissionType].join(' ').toLowerCase();
             tbody.append(
                 '<tr data-search="' + searchStr + '">' +
                 '<td class="muted">' + (i + 1) + '</td>' +
-                '<td><span style="font-weight:600;">' + (r.CompanyName || '') + '</span>' +
-                '<br><small class="muted">' + (r.CompanyCode || '') + '</small></td>' +
-                '<td><span style="font-weight:600;">' + (r.CompanyUnitName || '') + '</span>' +
-                '<br><small class="muted">' + (r.CompanyUnitCode || '') + '</small></td>' +
+                '<td><span style="font-weight:600;">' + (r.CompanyName || '') + '</span><br><small class="muted">' + (r.CompanyCode || '') + '</small></td>' +
+                '<td><span style="font-weight:600;">' + (r.CompanyUnitName || '') + '</span><br><small class="muted">' + (r.CompanyUnitCode || '') + '</small></td>' +
                 '<td>' + (r.CompLicenseName || '') + '</td>' +
                 '<td class="muted">' + (r.LicenseNo || '') + '</td>' +
-              /*  '<td class="muted">' + (r.RevisionNo || '') + '</td>' +
-                '<td>' + (r.SubmissionType || '') + '</td>' +*/
                 '<td class="muted">' + (r.SubmissionDate || '') + '</td>' +
                 '<td>' + (r.DaysLeft !== undefined ? r.DaysLeft : '') + '</td>' +
                 '<td class="muted">' + (r.InspectionDate || '') + '</td>' +
                 '<td class="muted">' + (r.ApprovalDate || '') + '</td>' +
                 '<td>' + (r.ValidUpto || '') + '</td>' +
-                '<td class="muted" style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"' +
-                    ' title="' + (r.Details || '') + '">' + (r.Details || '') + '</td>' +
-                '<td><span class="badge-status ' + badgeCls + '">' +
-                    '<span class="badge-dot"></span>' + status + '</span></td>' +
+                '<td class="muted" style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="' + (r.Details || '') + '">' + (r.Details || '') + '</td>' +
+                '<td><span class="badge-status ' + badgeCls + '"><span class="badge-dot"></span>' + status + '</span></td>' +
                 '<td><div class="tbl-actions" style="justify-content:center;">' + actions + '</div></td>' +
                 '</tr>'
             );
         });
-
         $('#emptyState').hide();
         $('#docTable').show();
         $('#resultFooter').show();
         $('#pageInfo').text('Showing ' + data.length + ' record(s)');
     }
 
-    // ── Search ────────────────────────────────────────────
     $('#btnSearch').click(function () {
         $('#divLoading').css('display', 'flex');
         $.ajax({
             url: '@Url.Action("GetCompanyLicenseReportData", "CompanyLicenseRpt")',
-            type: 'POST',
-            contentType: 'application/json',
-            dataType: 'json',
+            type: 'POST', contentType: 'application/json', dataType: 'json',
             data: JSON.stringify(collectParams()),
             success: function (data) {
                 $('#divLoading').hide();
-                if (data && !data.error) {
-                    _allData = data;
-                    renderTable(data);
-                } else {
-                    _allData = [];
-                    renderTable([]);
-                    if (data && data.error) toastr.warning(data.error);
-                }
+                if (data && !data.error) { _allData = data; renderTable(data); }
+                else { _allData = []; renderTable([]); if (data && data.error) toastr.warning(data.error); }
             },
-            error: function () {
-                $('#divLoading').hide();
-                toastr.error('Server error while fetching data.');
-            }
+            error: function () { $('#divLoading').hide(); toastr.error('Server error.'); }
         });
     });
 
-    // ── Quick search ─────────────────────────────────────
     $('#txtQuickSearch').on('keyup', function () {
         var val = $(this).val().toLowerCase().trim();
-        if (!val) {
-            $('#docTableBody tr').show();
-        } else {
-            $('#docTableBody tr').each(function () {
-                $(this).toggle(
-                    ($(this).data('search') || '').indexOf(val) !== -1
-                );
-            });
-        }
+        if (!val) { $('#docTableBody tr').show(); }
+        else { $('#docTableBody tr').each(function () { $(this).toggle(($(this).data('search') || '').indexOf(val) !== -1); }); }
         $('#pageInfo').text('Showing ' + $('#docTableBody tr:visible').length + ' record(s)');
     });
 
-    // ── Export ────────────────────────────────────────────
     $('#btnExport').click(function () {
-        if (!_allData || _allData.length === 0) {
-            toastr.warning('No data to export. Please search first.'); return;
-        }
+        if (!_allData || _allData.length === 0) { toastr.warning('No data to export.'); return; }
         var params = collectParams();
         params.ReportType = 'EXCEL';
-        var form = $('<form method="POST" style="display:none;" target="_blank"' +
-                     ' action="@Url.Action("ExportCompanyLicenseReport", "CompanyLicenseRpt")">');
-        $.each(params, function (k, v) {
-            form.append('<input type="hidden" name="' + k + '" value="' + (v || '') + '">');
-        });
-        $('body').append(form);
-        form.submit();
-        form.remove();
+        var form = $('<form method="POST" style="display:none;" target="_blank" action="@Url.Action("ExportCompanyLicenseReport", "CompanyLicenseRpt")">');
+        $.each(params, function (k, v) { form.append('<input type="hidden" name="' + k + '" value="' + (v || '') + '">'); });
+        $('body').append(form); form.submit(); form.remove();
     });
 
-    // ── Reset ─────────────────────────────────────────────
     $('#btnReset').click(function () {
-        $('#CompanyCode,#CompanyName').val('');
-        $('#CompanyUnitCode,#CompanyUnitName').val('');
-        $('#fLicenseNo,#fAlarmDays').val('');
-        $('#fSubType,#fDocStatus').val('');
-        $('#ValidFrom,#ValidTo,#txtQuickSearch').val('');
+        _companyCode     = '';   // ← variable clear
+        _companyUnitCode = '';   // ← variable clear
+        $('#CompanyName, #CompanyUnitName').val('');
+        $('#fLicenseNo, #fAlarmDays').val('');
+        $('#fSubType, #fDocStatus').val('');
+        $('#ValidFrom, #ValidTo, #txtQuickSearch').val('');
         _allData = [];
         renderTable([]);
         $('#statsBar,#resultFooter').hide();
-        $('#emptyState')
-            .html('<i class="glyphicon glyphicon-inbox"></i>' +
-                '<p>Use the filters above and click <strong>Search</strong> to load records.</p>')
-            .show();
+        $('#emptyState').html('<i class="glyphicon glyphicon-inbox"></i><p>Use the filters above and click <strong>Search</strong> to load records.</p>').show();
         $('#docTable').hide();
     });
-
 
     // ── Company Popup ─────────────────────────────────────
     var CompanyWindow = $('#CompanyWindow').kendoWindow({
@@ -967,13 +833,9 @@ $(document).ready(function () {
     }).data('kendoWindow').center();
 
     $('#CompanyWindowGrid').kendoGrid({
-        dataSource: new kendo.data.DataSource({
-            batch: true, pageSize: 10,
-            schema: { model: { id: 'CompanyCode' } }
-        }),
+        dataSource: new kendo.data.DataSource({ batch: true, pageSize: 10, schema: { model: { id: 'CompanyCode' } } }),
         pageable: { pageSizes: true, buttonCount: 5 },
-        scrollable: true, sortable: true, filterable: true,
-        selectable: 'row', height: 430,
+        scrollable: true, sortable: true, filterable: true, selectable: 'row', height: 430,
         toolbar: [{ template: "<input type='text' id='txtCmpKW' style='float:right' placeholder='Search...' class='k-textbox'>" }],
         columns: [
             { field: 'CompanyCode', title: 'Code',       width: 80  },
@@ -988,20 +850,20 @@ $(document).ready(function () {
         $.ajax({
             url: '@Url.Action("GetAllCompany", "General")', method: 'GET',
             success: function (data) {
-                if (data && data.length)
-                    $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(data);
-                else
-                    CompanyWindow.close();
+                if (data && data.length) $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(data);
+                else CompanyWindow.close();
             }
         });
     });
 
     $('#CompanyWindowGrid').dblclick(function () {
-        var g   = $(this).data('kendoGrid');
+        var g = $(this).data('kendoGrid');
         var row = g.dataItem(g.select());
         if (row) {
-            $('#CompanyCode').val(row.CompanyCode);
+            _companyCode = row.CompanyCode;        // ← variable-এ store
             $('#CompanyName').val(row.CompanyName);
+            _companyUnitCode = '';                  // ← company change হলে unit clear
+            $('#CompanyUnitName').val('');
         }
         CompanyWindow.close();
     });
@@ -1015,83 +877,71 @@ $(document).ready(function () {
             ]
         });
     });
+
     // ── Unit Popup ────────────────────────────────────────
-var UnitWindow = $('#UnitWindow').kendoWindow({
-    actions: ['Minimize', 'Maximize', 'Close'],
-    width: '70%', height: '70%',
-    draggable: true, modal: true, title: 'List of Company Unit'
-}).data('kendoWindow').center();
+    var UnitWindow = $('#UnitWindow').kendoWindow({
+        actions: ['Minimize', 'Maximize', 'Close'],
+        width: '70%', height: '70%',
+        draggable: true, modal: true, title: 'List of Company Unit'
+    }).data('kendoWindow').center();
 
-$('#UnitWindowGrid').kendoGrid({
-    dataSource: new kendo.data.DataSource({
-        batch: true, pageSize: 10,
-        schema: { model: { id: 'CompanyUnitCode' } }
-    }),
-    pageable: { pageSizes: true, buttonCount: 5 },
-    scrollable: true, sortable: true, filterable: true,
-    selectable: 'row', height: 400,
-    toolbar: [{ template: "<input type='text' id='txtUnitKW' style='float:right' placeholder='Search...' class='k-textbox'>" }],
-    columns: [
-        { field: 'CompanyUnitCode', title: 'Unit Code', width: 100 },
-        { field: 'CompanyUnitName', title: 'Unit Name', width: 220 },
-        { field: 'CompanyCode',     title: 'Co. Code',  width: 90  }
-    ]
-});
-
-$('#btnUnitFind').click(function () {
-    var cc = $('#CompanyCode').val();
-    if (!cc) { toastr.warning('Please select a company first.'); return; }
-    UnitWindow.open().center();
-    $.ajax({
-        url: '@Url.Action("GetCompanyUnitByCompany", "General")',
-        type: 'GET',
-        data: { companyCode: cc },
-        success: function (data) {
-            if (data && data.length)
-                $('#UnitWindowGrid').data('kendoGrid').dataSource.data(data);
-            else
-                UnitWindow.close();
-        }
-    });
-});
-
-$('#UnitWindowGrid').dblclick(function () {
-    var g   = $(this).data('kendoGrid');
-    var row = g.dataItem(g.select());
-    if (row) {
-        $('#CompanyUnitCode').val(row.CompanyUnitCode);
-        $('#CompanyUnitName').val(row.CompanyUnitName);
-    }
-    UnitWindow.close();
-});
-
-$('#UnitWindow').on('keyup', '#txtUnitKW', function () {
-    var v = $(this).val();
-    $('#UnitWindowGrid').data('kendoGrid').dataSource.filter({
-        logic: 'or', filters: [
-            { field: 'CompanyUnitCode', operator: 'contains', value: v },
-            { field: 'CompanyUnitName', operator: 'contains', value: v }
+    $('#UnitWindowGrid').kendoGrid({
+        dataSource: new kendo.data.DataSource({ batch: true, pageSize: 10, schema: { model: { id: 'CompanyUnitCode' } } }),
+        pageable: { pageSizes: true, buttonCount: 5 },
+        scrollable: true, sortable: true, filterable: true, selectable: 'row', height: 400,
+        toolbar: [{ template: "<input type='text' id='txtUnitKW' style='float:right' placeholder='Search...' class='k-textbox'>" }],
+        columns: [
+            { field: 'CompanyUnitCode', title: 'Unit Code', width: 100 },
+            { field: 'CompanyUnitName', title: 'Unit Name', width: 220 },
+            { field: 'CompanyCode',     title: 'Co. Code',  width: 90  }
         ]
     });
-});
-});
 
-// ── Preview ───────────────────────────────────────────
+    $('#btnUnitFind').click(function () {
+        if (!_companyCode) { toastr.warning('Please select a company first.'); return; }  // ← variable ব্যবহার
+        UnitWindow.open().center();
+        $.ajax({
+            url: '@Url.Action("GetCompanyUnitByCompany", "General")',
+            type: 'GET',
+            data: { companyCode: _companyCode },   // ← variable ব্যবহার
+            success: function (data) {
+                if (data && data.length) $('#UnitWindowGrid').data('kendoGrid').dataSource.data(data);
+                else UnitWindow.close();
+            }
+        });
+    });
+
+    $('#UnitWindowGrid').dblclick(function () {
+        var g = $(this).data('kendoGrid');
+        var row = g.dataItem(g.select());
+        if (row) {
+            _companyUnitCode = row.CompanyUnitCode;   // ← variable-এ store
+            $('#CompanyUnitName').val(row.CompanyUnitName);
+        }
+        UnitWindow.close();
+    });
+
+    $('#UnitWindow').on('keyup', '#txtUnitKW', function () {
+        var v = $(this).val();
+        $('#UnitWindowGrid').data('kendoGrid').dataSource.filter({
+            logic: 'or', filters: [
+                { field: 'CompanyUnitCode', operator: 'contains', value: v },
+                { field: 'CompanyUnitName', operator: 'contains', value: v }
+            ]
+        });
+    });
+
+});  // ← document.ready end
+    console.log('_companyCode:', typeof _companyCode, _companyCode);
+    console.log('_companyUnitCode:', typeof _companyUnitCode, _companyUnitCode);
 function previewFile(url, name) {
     $('#previewTitle').text(name);
-    var ext       = url.split('.').pop().toLowerCase().split('?')[0];
-    var streamUrl = '@Url.Action("PreviewFile", "CompanyLicenseRpt")?fileUrl='
-                    + encodeURIComponent(url);
-
+    var ext = url.split('.').pop().toLowerCase().split('?')[0];
+    var streamUrl = '@Url.Action("PreviewFile", "CompanyLicenseRpt")?fileUrl=' + encodeURIComponent(url);
     if (ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif') {
         $('#previewFrame').hide();
         $('#previewImageHolder').remove();
-        $('#previewFrame').after(
-            '<div id="previewImageHolder" style="width:100%;height:100%;' +
-            'overflow:auto;display:flex;align-items:center;justify-content:center;padding:16px;">' +
-            '<img src="' + streamUrl + '" style="max-width:100%;max-height:100%;' +
-            'border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.15);" /></div>'
-        );
+        $('#previewFrame').after('<div id="previewImageHolder" style="width:100%;height:100%;overflow:auto;display:flex;align-items:center;justify-content:center;padding:16px;"><img src="' + streamUrl + '" style="max-width:100%;max-height:100%;border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.15);" /></div>');
     } else {
         $('#previewImageHolder').remove();
         $('#previewFrame').show().attr('src', streamUrl);
