@@ -473,7 +473,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" WHERE D.IS_DELETE <>'Y' ) A INNER JOIN ( SELECT RECIPE_ID,MAX(REVISION_NO) AS MaxRvNo FROM PRODUCT_REGISTRATION_INFO GROUP BY RECIPE_ID) B  ");
             query.Append(" ON B.RECIPE_ID=A.RECIPE_ID AND B.MaxRvNo=A.REVISION_NO ");
             query.Append(" WHERE 1=1 ");
-            query.Append(" AND P.STATUS = 'Active' ");
+            //query.Append(" AND P.STATUS = 'Active' ");
             
             if (!string.IsNullOrEmpty(model.CompanyCode))
             {

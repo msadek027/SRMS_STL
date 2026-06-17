@@ -51,6 +51,134 @@ namespace RMS_Square.Controllers
             var s = Session["UserId"];
             return View();
         }
+        [HttpGet]
+        public JsonResult GetDashboardData()
+        {
+            try
+            {
+                DBHelper dbHelper = new DBHelper();
+
+                // ── 1. KPI Cards Data ──────────────────────────────────────
+                string qryTotal = "SELECT COUNT(1) FROM PRODUCT_REGISTRATION_INFO WHERE NVL(IS_DELETE,'N')='N'";
+                string qryPending = "SELECT COUNT(1) FROM PRODUCT_REGISTRATION_INFO WHERE NVL(IS_DELETE,'N')='N' AND NVL(APPROVAL_STATUS,'N')='N'";
+                string qryExpired = "SELECT COUNT(1) FROM PRODUCT_REGISTRATION_INFO WHERE NVL(IS_DELETE,'N')='N' AND VALID_UPTO < SYSDATE";
+                string qryExpiringSoon = "SELECT COUNT(1) FROM PRODUCT_REGISTRATION_INFO WHERE NVL(IS_DELETE,'N')='N' AND VALID_UPTO >= SYSDATE AND VALID_UPTO <= SYSDATE + 30";
+
+                int totalActive = Convert.ToInt32(dbHelper.GetValue(qryTotal) ?? "0");
+                int pendingApprovals = Convert.ToInt32(dbHelper.GetValue(qryPending) ?? "0");
+                int expired = Convert.ToInt32(dbHelper.GetValue(qryExpired) ?? "0");
+                int expiringSoon = Convert.ToInt32(dbHelper.GetValue(qryExpiringSoon) ?? "0");
+
+                // ── 2. Chart Data: Authority Wise ──────────────────────────
+                string qryBSTI = "SELECT COUNT(1) FROM PRODUCT_REGISTRATION_INFO WHERE AUTHORITY_TYPE = 'BSTI' AND NVL(IS_DELETE,'N')='N'";
+                string qryDGDA = "SELECT COUNT(1) FROM PRODUCT_REGISTRATION_INFO WHERE AUTHORITY_TYPE = 'DGDA' AND NVL(IS_DELETE,'N')='N'";
+
+                int bstiCount = Convert.ToInt32(dbHelper.GetValue(qryBSTI) ?? "0");
+                int dgdaCount = Convert.ToInt32(dbHelper.GetValue(qryDGDA) ?? "0");
+
+                var authorityData = new
+                {
+                    labels = new[] { "BSTI", "DGDA", "Others" },
+                    values = new[] { bstiCount, dgdaCount, (totalActive - bstiCount - dgdaCount) }
+                };
+
+                var statusData = new
+                {
+                    labels = new[] { "Approved", "Pending", "Expired" },
+                    values = new[] { (totalActive - pendingApprovals - expired), pendingApprovals, expired }
+                };
+
+                // ── 3. Table Data: Top 5 Expiring Soon ─────────────────────
+                string qryTable = @"SELECT * FROM (
+                              SELECT P.PRODUCT_NAME, C.COMPANY_NAME, TO_CHAR(D.VALID_UPTO, 'dd/mm/yyyy') AS VALID_UPTO, ROUND(D.VALID_UPTO - SYSDATE, 0) AS DAYS_LEFT 
+                              FROM PRODUCT_REGISTRATION_INFO D
+                              LEFT JOIN PRODUCT_INFO P ON D.PRODUCT_CODE = P.PRODUCT_CODE
+                              LEFT JOIN COMPANY_INFO C ON D.COMPANY_CODE = C.COMPANY_CODE
+                              WHERE NVL(D.IS_DELETE,'N')='N' AND D.VALID_UPTO >= SYSDATE AND D.VALID_UPTO <= SYSDATE + 60 
+                              ORDER BY D.VALID_UPTO ASC
+                            ) WHERE ROWNUM <= 5";
+
+                // DBConnection বাদ দিয়ে সরাসরি GetDataTable কল করা হলো
+                DataTable dtExpiring = dbHelper.GetDataTable(qryTable);
+
+                var expiringList = new List<object>();
+
+                if (dtExpiring != null)
+                {
+                    foreach (DataRow row in dtExpiring.Rows)
+                    {
+                        expiringList.Add(new
+                        {
+                            ProductName = row["PRODUCT_NAME"].ToString(),
+                            CompanyName = row["COMPANY_NAME"].ToString(),
+                            ValidUpto = row["VALID_UPTO"].ToString(),
+                            DaysLeft = row["DAYS_LEFT"].ToString()
+                        });
+                    }
+                }
+
+                // Return everything as a single JSON object
+                return Json(new
+                {
+                    KPI = new { Total = totalActive, Pending = pendingApprovals, Expired = expired, ExpiringSoon = expiringSoon },
+                    StatusChart = statusData,
+                    AuthorityChart = authorityData,
+                    ExpiringTable = expiringList
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        public JsonResult GetDashboardChartData()
+        {
+            try
+            {
+                // ==========================================
+                // 1. Status Chart Data (Approved, Pending, Expired)
+                // ==========================================
+                string qryApproved = "SELECT COUNT(1) FROM PRODUCT_REGISTRATION_INFO WHERE NVL(IS_DELETE,'N')='N' AND APPROVAL_STATUS = 'Y'";
+                string qryPending = "SELECT COUNT(1) FROM PRODUCT_REGISTRATION_INFO WHERE NVL(IS_DELETE,'N')='N' AND (APPROVAL_STATUS = 'N' OR APPROVAL_STATUS IS NULL)";
+                string qryExpired = "SELECT COUNT(1) FROM PRODUCT_REGISTRATION_INFO WHERE NVL(IS_DELETE,'N')='N' AND VALID_UPTO < SYSDATE";
+
+                int approvedCount = Convert.ToInt32(dbHelper.GetValue(qryApproved));
+                int pendingCount = Convert.ToInt32(dbHelper.GetValue(qryPending));
+                int expiredCount = Convert.ToInt32(dbHelper.GetValue(qryExpired));
+
+                // ==========================================
+                // 2. Applications by Category Data
+                // ==========================================
+                // উদাহরণস্বরূপ: ক্যাটাগরি অনুযায়ী প্রোডাক্টের সংখ্যা
+                string qryLocal = "SELECT COUNT(1) FROM PRODUCT_INFO WHERE MANUFACTURING_TYPE = 'Local'";
+                string qryImport = "SELECT COUNT(1) FROM PRODUCT_INFO WHERE MANUFACTURING_TYPE = 'Import'";
+
+                int localCount = Convert.ToInt32(dbHelper.GetValue(qryLocal));
+                int importCount = Convert.ToInt32(dbHelper.GetValue(qryImport));
+
+                // সব ডাটা একটি JSON অবজেক্টে প্যাক করে পাঠানো হচ্ছে
+                var chartData = new
+                {
+                    StatusData = new
+                    {
+                        labels = new[] { "Approved", "Pending", "Expired" },
+                        values = new[] { approvedCount, pendingCount, expiredCount }
+                    },
+                    CategoryData = new
+                    {
+                        labels = new[] { "Local Production", "Imported" },
+                        values = new[] { localCount, importCount }
+                    }
+                };
+
+                return Json(chartData, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         public ActionResult frmNewIndex()
         {
