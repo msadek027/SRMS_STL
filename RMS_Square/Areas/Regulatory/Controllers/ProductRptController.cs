@@ -2,14 +2,10 @@
 using RMS_Square.Areas.Regulatory.Models.DAO;
 using RMS_Square.DAL.Gateway;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
-using System.Data.OracleClient;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
-using Systems.ActionFilter;
 using Systems.Controllers;
 using Systems.Models;
 
@@ -113,8 +109,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             }
         }
 
-        // ── File Preview (same pattern as ProductRpt) ────────────────────
-    
+        // ── File Preview (same pattern as ProductRpt) ────────────────────   
 
         public ActionResult PreviewFile(string fileUrl, string fileId, string fileName)
         {
@@ -164,8 +159,6 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             }
         }
 
-
-
         // ── Search: Grid  ───────────────────────────────────────
         [HttpPost]
         public JsonResult GetProductReportData(ProductReportParams param)
@@ -196,6 +189,7 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                 return Json(new { error = ex.Message });
             }
         }
+
         [HttpGet]
         public JsonResult GetFilesByAnnexId(string annexId)
         {
@@ -291,9 +285,5 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                 return View("frmProductRpt");
             }
         }
-
-      
-
-
     }
 }

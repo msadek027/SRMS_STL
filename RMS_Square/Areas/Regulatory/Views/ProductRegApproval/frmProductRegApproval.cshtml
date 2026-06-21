@@ -691,12 +691,13 @@
             <div class="row form-group">
                 <label class="col-sm-2 modern-label">Authority Type <span class="asterisk">*</span></label>
                 <div class="col-sm-3">
-                    <select id="AuthorityType" class="form-control txtBox" name="AuthorityType">
-                        <option value="">--Select Any--</option>
-                        <option value="BSTI">BSTI</option>
-                        <option value="Plant Protection Wing">Plant Protection Wing (dept. of Agricultural Extension)</option>
-                        <option value="DGDA">DGDA</option>
-                    </select>
+                    @*<select id="AuthorityType" class="form-control txtBox" name="AuthorityType">
+            <option value="">--Select Any--</option>
+            <option value="BSTI">BSTI</option>
+            <option value="Plant Protection Wing">Plant Protection Wing (dept. of Agricultural Extension)</option>
+            <option value="DGDA">DGDA</option>
+        </select>*@
+                    <input type="text" id="AuthorityType" name="AuthorityType" placeholder="Enter Authority Type" class="txtBox form-control" />
                 </div>
                 <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
                 @*<label class="col-sm-2 modern-label">Authority Name <span class="asterisk">*</span></label>
@@ -705,9 +706,11 @@
                 </div>*@
                 <label class="col-sm-2 modern-label">Authority Name <span class="asterisk">*</span></label>
                 <div class="col-sm-3">
-                    <select id="AuthorityName" class="form-control txtBox" name="AuthorityName">
-                        <option value="">--Select Any--</option>
-                    </select>
+                    @*<select id="AuthorityName" class="form-control txtBox" name="AuthorityName">
+            <option value="">--Select Any--</option>
+        </select>*@
+                    <input type="text" id="AuthorityName" name="AuthorityName" placeholder="Enter Authority Name" class="txtBox form-control" />
+
                 </div>
             </div>
 
