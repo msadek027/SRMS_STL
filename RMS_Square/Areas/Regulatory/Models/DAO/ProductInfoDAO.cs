@@ -186,7 +186,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                    }
                }*/
 
-        public bool SaveUpdate(ProductInfoBEL master, string userId)
+        /*public bool SaveUpdate(ProductInfoBEL master, string userId)
         {
             try
             {
@@ -258,6 +258,84 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }*/
+
+        public bool SaveUpdate(ProductInfoBEL master, string userId)
+        {
+            try
+            {
+                string Qry = "";
+                string setOndate = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                string pCode = "";
+
+                // এই ফাংশনটি যেকোনো সিঙ্গেল কোট (') কে ডাবল সিঙ্গেল কোটে ('') কনভার্ট করে দেবে
+                string EscapeSql(string input)
+                {
+                    return (input ?? "").Replace("'", "''").Trim();
+                }
+
+                // pName এর জন্য আর আলাদা করে Replace করার দরকার নেই, EscapeSql ব্যবহার করলেই হবে
+                string pName = EscapeSql(master.ProductName);
+
+                // 1. If ProductCode is empty, it's a NEW record (INSERT)
+                if (string.IsNullOrEmpty(master.ProductCode))
+                {
+                    IUMode = "I";
+
+                    // Generate Auto-Incremented Product Code
+                    string maxIdQry = "SELECT NVL(MAX(TO_NUMBER(PRODUCT_CODE)), 0) + 1 FROM PRODUCT_INFO";
+
+                    var dtMax = dbHelper.GetDataTable(dbConn.SAConnStrReader(), maxIdQry);
+                    pCode = dtMax.Rows[0][0].ToString();
+
+                    // Assign to MaxID so the controller can send it back to the frontend
+                    this.MaxID = pCode;
+
+                    // INSERT Logic Snippet (সব ফিল্ডে EscapeSql ব্যবহার করা হয়েছে)
+                    Qry = "INSERT INTO PRODUCT_INFO " +
+                          "(PRODUCT_CODE, PRODUCT_VARIANT, PRODUCT_NAME, COMPANY_CODE, SAP_PRODUCT_CODE, BRAND_NAME, GENERIC_CODE, STRENGTH_CODE, DOSAGE_FORM_CODE, PACK_SIZE_NAME, " +
+                          "PRODUCT_CATEGORY, THERAPEUTIC_CLASS_CODE, PRODUCT_SPECIFICATION, INTRODUCED_BANGLADESH, MANUFACTURING_TYPE, PRODUCT_TYPE_CODE, STATUS, REMARKS, SET_BY, SET_ON) " +
+                          "VALUES('" + pCode + "','" + EscapeSql(master.ProductVariant) + "','" + pName + "','" + EscapeSql(master.CompanyCode) + "','" + EscapeSql(master.SAPProductCode) + "','" + EscapeSql(master.BrandName) + "','" + EscapeSql(master.GenericCode) + "','" + EscapeSql(master.StrengthCode) + "','" + EscapeSql(master.DosageFormCode) + "','" + EscapeSql(master.PackSizeName) + "'," +
+                          "'" + EscapeSql(master.ProductCategory) + "','" + EscapeSql(master.TherapeuticClassCode) + "','" + EscapeSql(master.ProductSpecification) + "','" + EscapeSql(master.IntroducedInBD) + "','" + EscapeSql(master.ManufacturingType) + "','" + EscapeSql(master.ProductTypeCode) + "','" + EscapeSql(master.Status) + "','" + EscapeSql(master.Remarks) + "','" + EscapeSql(userId) + "',TO_DATE('" + setOndate + "','dd/MM/yyyy HH24:mi:ss'))";
+                }
+                // 2. If ProductCode has a value, it's an EXISTING record (UPDATE)
+                else
+                {
+                    IUMode = "U";
+                    pCode = master.ProductCode.Trim();
+
+                    this.MaxID = pCode;
+
+                    // UPDATE Logic Snippet (সব ফিল্ডে EscapeSql ব্যবহার করা হয়েছে)
+                    Qry = "UPDATE PRODUCT_INFO SET " +
+                          "PRODUCT_VARIANT='" + EscapeSql(master.ProductVariant) + "', " +
+                          "PRODUCT_NAME='" + pName + "', " +
+                          "SAP_PRODUCT_CODE='" + EscapeSql(master.SAPProductCode) + "', " +
+                          "COMPANY_CODE='" + EscapeSql(master.CompanyCode) + "', " +
+                          "BRAND_NAME='" + EscapeSql(master.BrandName) + "', " +
+                          "GENERIC_CODE='" + EscapeSql(master.GenericCode) + "', " +
+                          "STRENGTH_CODE='" + EscapeSql(master.StrengthCode) + "', " +
+                          "PACK_SIZE_NAME='" + EscapeSql(master.PackSizeName) + "', " +
+                          "DOSAGE_FORM_CODE='" + EscapeSql(master.DosageFormCode) + "', " +
+                          "PRODUCT_CATEGORY='" + EscapeSql(master.ProductCategory) + "', " +
+                          "THERAPEUTIC_CLASS_CODE='" + EscapeSql(master.TherapeuticClassCode) + "', " +
+                          "PRODUCT_SPECIFICATION='" + EscapeSql(master.ProductSpecification) + "', " +
+                          "INTRODUCED_BANGLADESH='" + EscapeSql(master.IntroducedInBD) + "', " +
+                          "MANUFACTURING_TYPE='" + EscapeSql(master.ManufacturingType) + "', " +
+                          "PRODUCT_TYPE_CODE='" + EscapeSql(master.ProductTypeCode) + "', " +
+                          "STATUS='" + EscapeSql(master.Status) + "', " +
+                          "REMARKS='" + EscapeSql(master.Remarks) + "', " +
+                          "UPDATE_BY='" + EscapeSql(userId) + "', " +
+                          "UPDATE_DATE=TO_DATE('" + setOndate + "','dd/MM/yyyy HH24:mi:ss') " +
+                          "WHERE PRODUCT_CODE='" + pCode + "'";
+                }
+
+                return dbHelper.CmdExecute(dbConn.SAConnStrReader(), Qry);
+            }
+            catch (Exception ex)
+            {
+                throw; // "throw ex;" এর বদলে শুধু "throw;" ব্যবহার করা ভালো, এতে অরিজিনাল এরর লোকেশন ট্র‍্যাক করা যায়।
             }
         }
         public List<ProductInfoBEL> GetAllActiveProduct(string companyCode)
