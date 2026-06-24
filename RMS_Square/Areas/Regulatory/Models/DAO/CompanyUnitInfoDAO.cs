@@ -34,7 +34,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             return item;
         }
 
-        /*public bool SaveUpdate(CompanyUnitInfoBEL master, string userId)
+        public bool SaveUpdate(CompanyUnitInfoBEL master, string userId)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
 
                 // CompanyCode required for insert or when changing company on update
                 if (string.IsNullOrWhiteSpace(master.CompanyCode))
-                throw new ArgumentException("master cannot be null");
+                    throw new ArgumentException("master cannot be null");
 
                 string Qry = "";
 
@@ -80,8 +80,8 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                     MaxID = prefix + nextSuffix;
                     IUMode = "I";
 
-                    Qry = "INSERT INTO COMPANY_UNIT_INFO (COMPANY_UNIT_CODE, COMPANY_UNIT_NAME, COMPANY_CODE, ADDRESS) " +
-                          "VALUES ('" + MaxID + "', '" + master.CompanyUnitName + "', '" + master.CompanyCode + "',+'" + master.Address + "')";
+                    Qry = "INSERT INTO COMPANY_UNIT_INFO (COMPANY_UNIT_CODE, COMPANY_UNIT_NAME, COMPANY_CODE,ADDRESS) " +
+                          "VALUES ('" + MaxID + "', '" + master.CompanyUnitName + "', '" + master.CompanyCode + "','" + master.Address + "')";
                 }
                 else
                 {
@@ -131,15 +131,22 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                         string newCode = prefix + nextSuffix;
 
                         // Update COMPANY_UNIT_CODE to newCode and other fields
-                        Qry = "UPDATE COMPANY_UNIT_INFO SET COMPANY_UNIT_CODE = '" + newCode + "', COMPANY_UNIT_NAME = '" + master.CompanyUnitName + "', COMPANY_CODE = '" + master.CompanyCode + "' " +
-                              "WHERE COMPANY_UNIT_CODE = '" + oldCode + "',ADDRESS = '" + master.Address + "'";
+                        Qry = "UPDATE COMPANY_UNIT_INFO SET " +
+                                "COMPANY_UNIT_CODE = '" + newCode + "', " +
+                                "COMPANY_UNIT_NAME = '" + master.CompanyUnitName + "', " +
+                                "COMPANY_CODE = '" + master.CompanyCode + "', " +
+                                "ADDRESS = '" + master.Address + "' " +
+                                "WHERE COMPANY_UNIT_CODE = '" + oldCode + "'";
 
                         MaxID = newCode; // report new id to caller
                     }
                     else
                     {
                         // company not changed -> simple update
-                        Qry = "UPDATE COMPANY_UNIT_INFO SET COMPANY_UNIT_NAME = '" + master.CompanyUnitName + "', COMPANY_CODE = '" + master.CompanyCode + "' " + "', ADDRESS = '" + master.Address + "' "+
+                        Qry = "UPDATE COMPANY_UNIT_INFO SET " +
+                              "COMPANY_UNIT_NAME = '" + master.CompanyUnitName + "', " +
+                              "COMPANY_CODE = '" + master.CompanyCode + "', " +
+                              "ADDRESS = '" + master.Address + "' " +
                               "WHERE COMPANY_UNIT_CODE = '" + oldCode + "'";
                         MaxID = oldCode;
                     }
@@ -151,129 +158,8 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             {
                 throw errorException;
             }
-        }*/
-
-        public bool SaveUpdate(CompanyUnitInfoBEL master, string userId)
-        {
-            try
-            {
-                if (master == null)
-                    throw new ArgumentNullException(nameof(master));
-
-                // CompanyCode required for insert or when changing company on update
-                if (string.IsNullOrWhiteSpace(master.CompanyCode))
-                    throw new ArgumentException("CompanyCode is required.", nameof(master.CompanyCode));
-
-                string Qry = "";
-
-                if (string.IsNullOrWhiteSpace(master.CompanyUnitCode))
-                {
-                    // INSERT path: generate new COMPANY_UNIT_CODE for the selected company
-                    string prefix = master.CompanyCode.Trim();
-
-                    string qMax = "SELECT MAX(COMPANY_UNIT_CODE) AS MAXID FROM COMPANY_UNIT_INFO WHERE COMPANY_UNIT_CODE LIKE '" + prefix + "%'";
-                    DataTable dtMax = dbHelper.GetDataTable(dbConn.SAConnStrReader(), qMax);
-
-                    string nextSuffix = "01";
-                    if (dtMax != null && dtMax.Rows.Count > 0 && dtMax.Rows[0]["MAXID"] != DBNull.Value)
-                    {
-                        string maxId = dtMax.Rows[0]["MAXID"].ToString();
-                        string currentSuffix = string.Empty;
-                        if (maxId.Length > prefix.Length)
-                            currentSuffix = maxId.Substring(prefix.Length);
-
-                        int num;
-                        if (int.TryParse(currentSuffix, out num))
-                        {
-                            num++;
-                        }
-                        else
-                        {
-                            num = 1;
-                        }
-
-                        int pad = Math.Max(2, currentSuffix.Length > 0 ? currentSuffix.Length : 2);
-                        nextSuffix = num.ToString().PadLeft(pad, '0');
-                    }
-
-                    MaxID = prefix + nextSuffix;
-                    IUMode = "I";
-
-                    // FIXED: Removed the extra '+' sign before ADDRESS parameter
-                    Qry = "INSERT INTO COMPANY_UNIT_INFO (COMPANY_UNIT_CODE, COMPANY_UNIT_NAME, COMPANY_CODE, ADDRESS) " +
-                          "VALUES ('" + MaxID + "', '" + master.CompanyUnitName + "', '" + master.CompanyCode + "', '" + master.Address + "')";
-                }
-                else
-                {
-                    // UPDATE path
-                    string oldCode = master.CompanyUnitCode.Trim();
-                    MaxID = oldCode;
-                    IUMode = "U";
-
-                    // Get existing company code for the record
-                    string qOld = "SELECT COMPANY_CODE FROM COMPANY_UNIT_INFO WHERE COMPANY_UNIT_CODE = '" + oldCode + "'";
-                    DataTable dtOld = dbHelper.GetDataTable(dbConn.SAConnStrReader(), qOld);
-
-                    string existingCompanyCode = null;
-                    if (dtOld != null && dtOld.Rows.Count > 0 && dtOld.Rows[0]["COMPANY_CODE"] != DBNull.Value)
-                        existingCompanyCode = dtOld.Rows[0]["COMPANY_CODE"].ToString().Trim();
-
-                    // If company changed, generate a new COMPANY_UNIT_CODE under new company and update the PK value
-                    if (!string.IsNullOrEmpty(existingCompanyCode) && !string.Equals(existingCompanyCode, master.CompanyCode, StringComparison.Ordinal))
-                    {
-                        string prefix = master.CompanyCode.Trim();
-
-                        string qMax = "SELECT MAX(COMPANY_UNIT_CODE) AS MAXID FROM COMPANY_UNIT_INFO WHERE COMPANY_UNIT_CODE LIKE '" + prefix + "%'";
-                        DataTable dtMax = dbHelper.GetDataTable(dbConn.SAConnStrReader(), qMax);
-
-                        string nextSuffix = "01";
-                        if (dtMax != null && dtMax.Rows.Count > 0 && dtMax.Rows[0]["MAXID"] != DBNull.Value)
-                        {
-                            string maxId = dtMax.Rows[0]["MAXID"].ToString();
-                            string currentSuffix = string.Empty;
-                            if (maxId.Length > prefix.Length)
-                                currentSuffix = maxId.Substring(prefix.Length);
-
-                            int num;
-                            if (int.TryParse(currentSuffix, out num))
-                            {
-                                num++;
-                            }
-                            else
-                            {
-                                num = 1;
-                            }
-
-                            int pad = Math.Max(2, currentSuffix.Length > 0 ? currentSuffix.Length : 2);
-                            nextSuffix = num.ToString().PadLeft(pad, '0');
-                        }
-
-                        string newCode = prefix + nextSuffix;
-
-                        // FIXED: Moved ADDRESS to the SET clause instead of WHERE clause
-                        Qry = "UPDATE COMPANY_UNIT_INFO SET COMPANY_UNIT_CODE = '" + newCode + "', COMPANY_UNIT_NAME = '" + master.CompanyUnitName + "', COMPANY_CODE = '" + master.CompanyCode + "', ADDRESS = '" + master.Address + "' " +
-                              "WHERE COMPANY_UNIT_CODE = '" + oldCode + "'";
-
-                        MaxID = newCode; // report new id to caller
-                    }
-                    else
-                    {
-                        // company not changed -> simple update
-                        // FIXED: Removed extra single quotes causing syntax error
-                        Qry = "UPDATE COMPANY_UNIT_INFO SET COMPANY_UNIT_NAME = '" + master.CompanyUnitName + "', COMPANY_CODE = '" + master.CompanyCode + "', ADDRESS = '" + master.Address + "' " +
-                              "WHERE COMPANY_UNIT_CODE = '" + oldCode + "'";
-                        MaxID = oldCode;
-                    }
-                }
-
-                return dbHelper.CmdExecute(dbConn.SAConnStrReader(), Qry);
-            }
-            catch (Exception errorException)
-            {
-                // Re-throwing exactly this way loses the stack trace. Just use `throw;`
-                throw;
-            }
         }
+
         public List<CompanyInfoBEL> GetCompanyList()
         {
             string qry = "SELECT COMPANY_CODE, COMPANY_NAME FROM COMPANY_INFO ORDER BY COMPANY_NAME";

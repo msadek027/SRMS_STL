@@ -40,13 +40,14 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                 SELECT 
                     A.COMPANY_CODE,
                     A.COMPANY_NAME,
-                    A.ADDRESS,
+                    A.ADDRESS AS COMPANY_ADDRESS,
                     A.LICENSE_NO,
                     A.CONTACT_NO,
                     A.EMAIL_ID,
                     A.FACILITY,
                     B.COMPANY_UNIT_CODE,
-                    B.COMPANY_UNIT_NAME
+                    B.COMPANY_UNIT_NAME,
+                    B.ADDRESS
                 FROM COMPANY_INFO A
                 LEFT JOIN COMPANY_UNIT_INFO B ON A.COMPANY_CODE = B.COMPANY_CODE
                 ORDER BY A.COMPANY_NAME, B.COMPANY_UNIT_CODE";
@@ -92,6 +93,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                             {
                                 CompanyUnitCode = unitCode,
                                 CompanyUnitName = row["COMPANY_UNIT_NAME"] == DBNull.Value ? string.Empty : row["COMPANY_UNIT_NAME"].ToString(),
+                                Address = row["ADDRESS"] == DBNull.Value ? string.Empty : row["ADDRESS"].ToString(),
                                 CompanyCode = companyCode
                             };
                             company.Units.Add(unit);

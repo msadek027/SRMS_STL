@@ -34,6 +34,13 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
 
             return _dbHelper.CmdExecute(_dbConn.SAConnStrReader(), query.ToString());
         }*/
+        private string EscapeSql(string input)
+        {
+            return string.IsNullOrWhiteSpace(input)
+                ? ""
+                : input.Replace("'", "''").Trim();
+        }
+
         public bool SaveApproval(ProductRegistrationBEL model, string userId)
         {
             var query = new StringBuilder();
@@ -43,18 +50,21 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append("   DTL_RECEIVE_DATE    = (TO_DATE('" + model.DtlReceivedDate + "','dd/MM/yyyy')),");
             query.Append("   DTL_SUBMISSION_DATE  = (TO_DATE('" + model.DtlSubmissionDate + "','dd/MM/yyyy')),");
             query.Append("   DTL_APPROVAL_DATE    = (TO_DATE('" + model.DtlApprovalDate + "','dd/MM/yyyy')),");
-            query.Append("   DTL_REMARKS          = '" + model.DtlRemarks + "',");
-            query.Append("   AUTHORITY_TYPE       = '" + model.AuthorityType + "',");
-            query.Append("   AUTHORITY_NAME       = '" + model.AuthorityName + "',");
+            query.Append("   DTL_REMARKS          = '" + EscapeSql(model.DtlRemarks) + "',");
+            query.Append("   AUTHORITY_TYPE       = '" + EscapeSql(model.AuthorityType) + "',");
+            query.Append("   AUTHORITY_NAME       = '" + EscapeSql(model.AuthorityName) + "',");
+
             query.Append("   INCLUSION_DATE       = (TO_DATE('" + model.InclusionDate + "','dd/MM/yyyy')),");
             query.Append("   RENEWAL_DATE         = (TO_DATE('" + model.RenewalDate + "','dd/MM/yyyy')),");
-            query.Append("   VALID_UPTO      = (TO_DATE('" + model.ValidUptoDate + "','dd/MM/yyyy')),");
-            query.Append("   REMARKS              = '" + model.Remarks + "',");
-            query.Append("   APPROVAL_STATUS      = '" + model.ApprovalStatus + "',");
-            query.Append("   APPROVED_BY          = '" + userId + "',");
+            query.Append("   VALID_UPTO           = (TO_DATE('" + model.ValidUptoDate + "','dd/MM/yyyy')),");
+
+            query.Append("   REMARKS              = '" + EscapeSql(model.Remarks) + "',");
+            query.Append("   APPROVAL_STATUS      = '" + EscapeSql(model.ApprovalStatus) + "',");
+            query.Append("   APPROVED_BY          = '" + EscapeSql(userId) + "',");
+
             query.Append("   APPROVED_DATE        = (TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy") + "','dd/MM/yyyy')),");
             query.Append("   UPDATE_DATE          = (TO_DATE('" + now + "','dd/MM/yyyy HH24:mi:ss')),");
-            query.Append("   UPDATE_BY            = '" + userId + "'");
+            query.Append("   UPDATE_BY            = '" + EscapeSql(userId) + "'");
             query.Append(" WHERE ANNEX_ID = '" + model.AnnexId + "'");
 
             return _dbHelper.CmdExecute(_dbConn.SAConnStrReader(), query.ToString());

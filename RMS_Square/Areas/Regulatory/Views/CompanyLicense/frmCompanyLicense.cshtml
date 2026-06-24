@@ -181,9 +181,9 @@
 
             <!-- Row 2: Address | Revision No -->
             <div class="row form-group" style="margin-bottom: 0;">
-                <label class="col-sm-2 modern-label">Company Address</label>
+                <label class="col-sm-2 modern-label">Unit Address</label>
                 <div class="col-sm-4">
-                    <textarea class="form-control" id="Address" name="Address" placeholder="Company Address" rows="2" readonly style="padding: 6px 14px;"></textarea>
+                    <textarea class="form-control" id="Address" name="Address" placeholder="Unit Address" rows="2" readonly style="padding: 6px 14px;"></textarea>
                 </div>
                 <div class="col-sm-1 gap-col"></div>
                 <label class="col-sm-2 modern-label">Revision No</label>
@@ -838,11 +838,11 @@ $(document).ready(function () {
                     var flatData = [];
                     $.each(data, function (i, company) {
                         if (company.Units && company.Units.length > 0) {
-                            $.each(company.Units, function (j, unit) {
+                            $.each(company.Units, function (j, unit) {debugger
                                 flatData.push({
                                     CompanyCode: company.CompanyCode,
                                     CompanyName: company.CompanyName,
-                                    Address: company.Address,
+                                    Address: unit.Address,
                                     CompanyUnitCode: unit.CompanyUnitCode,
                                     CompanyUnitName: unit.CompanyUnitName
                                 });
@@ -1090,9 +1090,20 @@ $(document).ready(function () {
                             setUpdateMode();
                             // Refresh history grid (no auto-load — current record stays loaded)
                             loadHistoryGrid($('#CompanyUnitCode').val(), false);
-                        } else {
-                            ErrorFrmServerMsg(data.Status);
+                        } else if (data.Status === "Error") {
+                            // কন্ট্রোলার থেকে আসা Exception মেসেজটি দেখাবে
+                            toastr.error(data.Message);
                         }
+                        else {
+                            // অন্যান্য যেকোনো ভ্যালিডেশন এরর (যেমন "No")
+                            toastr.error(data.Message || "Operation failed.");
+                        }
+                    },
+                    // সার্ভারে কোনো 500 বা 404 এরর হলে এই ব্লকটি কল হবে
+                    error: function (xhr, status, error) {
+                        var errMessage = xhr.responseText ? xhr.responseText : error;
+                        toastr.error("Server Error: " + errMessage);
+                        console.log("AJAX Error: ", errMessage);
                     }
                 });
             } else {

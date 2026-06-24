@@ -45,20 +45,25 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                 {
                     return Json(new { ID = _dalObj.ReturnMaxID, SlNo = _dalObj.MaxID, Mode = _dalObj.IUMode, Status = "Yes", RevisionNo = _dalObj.RefNo });
                 }
-                return View();
+
+                // SaveUpdate 'false' রিটার্ন করলে View() এর বদলে Json রিটার্ন করতে হবে
+                return Json(new { Status = "No", Message = "Failed to save data. Please try again." });
             }
             catch (Exception e)
             {
-                if (e.Message.Substring(0, 9) == "ORA-00001")
-                    return Json(new { Status = "Error:ORA-00001,Data already exists!" });//Unique Identifier.
-                else if (e.Message.Substring(0, 9) == "ORA-02292")
-                    return Json(new { Status = "Error:ORA-02292,Data already exists!" });//Child Record Found.
-                else if (e.Message.Substring(0, 9) == "ORA-12899")
-                    return Json(new { Status = "Error:ORA-12899,Data Value Too Large!" });//Value Too Large.
+                string errMsg = e.Message;
+
+                // Substring(0, 9) এর বদলে নিরাপদ চেক
+                if (errMsg.StartsWith("ORA-00001"))
+                    return Json(new { Status = "Error", Message = "Data already exists! (ORA-00001)" });
+                else if (errMsg.StartsWith("ORA-02292"))
+                    return Json(new { Status = "Error", Message = "Cannot update/delete: Child Record Found! (ORA-02292)" });
+                else if (errMsg.StartsWith("ORA-12899"))
+                    return Json(new { Status = "Error", Message = "Data Value Too Large! (ORA-12899)" });
                 else
-                    return Json(new { Status = "! Error : Error Code:" + e.Message.Substring(0, 9) });//Other Wise Error Found
+                    // অন্য যেকোনো এরর হলে পুরো মেসেজটি পাঠিয়ে দিন, যাতে UI তে বুঝতে সুবিধা হয়
+                    return Json(new { Status = "Error", Message = errMsg });
             }
-            return View();
         }
         public ActionResult UploadFile(string refLevel1, string refLevel2, string fileSize, string refNo)
         {

@@ -387,7 +387,7 @@
                 <div class="col-sm-4">
                     <input type="text" id="AuthorityName" name="AuthorityName" class="form-control txtBox" placeholder="Enter Authority Name" />
                 </div>*@
-                    <label class="col-sm-2 modern-label">Authority Name <span class="asterisk">*</span></label>
+                    <label class="col-sm-2 modern-label">Authority Name </label>
                     <div class="col-sm-3">
                         @* <select id="AuthorityName" class="form-control txtBox" name="AuthorityName">
             <option value="">--Select Any--</option>
@@ -456,7 +456,7 @@
                         </div>
                     </div>
                     <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
-                    <label class="col-sm-2 modern-label">Approval / Renewal Date</label>
+                    <label class="col-sm-2 modern-label">Approval / Renewal Date<span class="asterisk">*</span></label>
                     <div class="col-sm-3">
                         <div class="input-group date">
                             <input type="text" class="form-control" id="RenewalDate" name="RenewalDate" placeholder="dd/mm/yyyy">
@@ -470,7 +470,7 @@
 
 
 
-                    <label class="col-sm-2 modern-label">Valid Up To</label>
+                    <label class="col-sm-2 modern-label">Valid Up To<span class="asterisk">*</span></label>
                     <div class="col-sm-3">
                         <div class="input-group date">
                             <input type="text" class="form-control txtBox" id="ValidUptoDate" name="ValidUptoDate" placeholder="dd/mm/yyyy">
@@ -633,6 +633,8 @@ $(document).ready(function () {
         $('#RenewalDate').val('');
         $('#ValidUptoDate').val('');
         $('#Remarks').val('');
+        $('.form-control').css('border-color', '');
+        $('.select2-selection').css('border-color', '');
     }
 
     // ════════════════════════════════════════════════════════════════
@@ -791,6 +793,9 @@ $(document).ready(function () {
                 }
             });
         }
+        $('.form-control').css('border-color', '');
+        $('.select2-selection').css('border-color', '');
+
         changeAny = 0;
     }
 
@@ -1280,9 +1285,13 @@ function CheckPagePartAccessPrivilege(status) {
     //  AnnexId > 0  →  UPDATE
     //  AnnexId = '' →  INSERT  (new entry for same product is fine)
     // ════════════════════════════════════════════════════════════════
-    $('#btnSave').click(function () {
+    $('#btnSave').click(function () {debugger
         if (changeAny === 1) {
-            var checkInput = InputValidation('CompanyCode') + InputValidation('ProductCode');
+            var checkInput = InputValidation('CompanyCode') +
+                InputValidation('AuthorityType') +
+                InputValidation('RenewalDate') +
+                InputValidation('ValidUptoDate');
+
             if (checkInput === 0) {
                 model.AnnexId               = $('#AnnexId').val();
                 model.CompanyCode           = $('#CompanyUnitCode').val();
