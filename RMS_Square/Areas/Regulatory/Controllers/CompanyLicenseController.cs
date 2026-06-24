@@ -67,11 +67,13 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             if (obj.Item1 == "S")
             {
                 _fileModel = new FileDetailModel();
-                _fileModel.FileName = obj.Item2.FileName;
+                // _fileModel.FileName = obj.Item2.FileName;
+                _fileModel.FileName = (obj.Item2.FileName ?? "").Replace("'", "''");
                 _fileModel.FileCode = obj.Item2.FileCode;
                 _fileModel.FileSize = obj.Item2.FileSize;
                 _fileModel.FileType = obj.Item2.FileType;
-                _fileModel.RefNo = obj.Item2.RefNo;
+                //_fileModel.RefNo = obj.Item2.RefNo;
+                _fileModel.RefNo = (obj.Item2.RefNo ?? "").Replace("'", "''");
                 _fileModel.RefLevel1 = obj.Item2.RefLevel1;
                 _fileModel.RefLevel2 = obj.Item2.RefLevel2;
                 _fileModel.Extention = obj.Item2.Extention;

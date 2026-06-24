@@ -72,11 +72,13 @@ namespace RMS_Square.Areas.Regulatory.Controllers
             {
                 _fileModel = new FileDetailModel
                 {
-                    FileName = obj.Item2.FileName,
+                    //FileName = obj.Item2.FileName,
+                    FileName = (obj.Item2.FileName ?? "").Replace("'", "''"),
                     FileCode = obj.Item2.FileCode,
                     FileSize = obj.Item2.FileSize,
                     FileType = obj.Item2.FileType,
-                    RefNo = obj.Item2.RefNo,
+                    //RefNo = obj.Item2.RefNo,
+                    RefNo = (obj.Item2.RefNo ?? "").Replace("'", "''"),
                     RefLevel1 = obj.Item2.RefLevel1,
                     RefLevel2 = obj.Item2.RefLevel2,
                     Extention = obj.Item2.Extention
