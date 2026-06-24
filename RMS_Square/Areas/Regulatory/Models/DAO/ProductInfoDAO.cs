@@ -412,18 +412,18 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             return (from DataRow row in dt.Rows
                     select new ProductInfoBEL
                     {
-                        ProductCode = row["PRODUCT_CODE"]?.ToString(),
-                        SAPProductCode = row["SAP_PRODUCT_CODE"]?.ToString(),
-                        GenericCode = row["GENERIC_CODE"]?.ToString(),
-                        StrengthCode = row["STRENGTH_CODE"]?.ToString(),
-                        BrandName = row["BRAND_NAME"]?.ToString(),
-                        ProductCategory = row["PRODUCT_CATEGORY"]?.ToString(),
-                        PackSizeName = row["PACK_SIZE_NAME"]?.ToString(),
-                        CompanyCode = row["COMPANY_CODE"]?.ToString(),
-                        ProductName = row["PRODUCT_NAME"]?.ToString(),
-                        ProductVariant = row["PRODUCT_VARIANT"]?.ToString(),
-                        Status = row["STATUS"]?.ToString(),
-                        Remarks = row["REMARKS"]?.ToString()
+                        ProductCode = row["PRODUCT_CODE"].ToString(),
+                        SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
+                        GenericCode = row["GENERIC_CODE"].ToString(),
+                        StrengthCode = row["STRENGTH_CODE"].ToString(),
+                        BrandName = row["BRAND_NAME"].ToString(),
+                        ProductCategory = row["PRODUCT_CATEGORY"].ToString(),
+                        PackSizeName = row["PACK_SIZE_NAME"].ToString(),
+                        CompanyCode = row["COMPANY_CODE"].ToString(),
+                        ProductName = row["PRODUCT_NAME"].ToString(),
+                        ProductVariant = row["PRODUCT_VARIANT"].ToString(),
+                        Status = row["STATUS"].ToString(),
+                        Remarks = row["REMARKS"].ToString()
                     }).ToList();
         }
 
