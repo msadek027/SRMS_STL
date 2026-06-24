@@ -260,23 +260,7 @@
                     </div>
                 </div>
 
-                <!--<div class="row form-group">
-                    <label class="col-sm-2 modern-label">Submission Date</label>
-                    <div class="col-sm-3">
-                        <div class="input-group date">
-                            <input type="text" class="form-control" id="SubmissionDate" name="SubmissionDate" placeholder="dd/mm/yyyy">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                        </div>
-                    </div>
-                    <div class="col-sm-1 gap-col"></div>--> <!-- Middle Gap -->
-                    <!--<label class="col-sm-2 modern-label">Inspection Date</label>
-                    <div class="col-sm-4">
-                        <div class="input-group date">
-                            <input type="text" class="form-control" id="InspectionDate" name="InspectionDate" placeholder="dd/mm/yyyy">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                        </div>
-                    </div>
-                </div>-->
+
 
                 <div class="row form-group">
                     <label class="col-sm-2 modern-label">Approval Date</label>
@@ -294,7 +278,7 @@
                 </div>
 
                 <div class="row form-group">
-                    <label class="col-sm-2 modern-label">Valid Up To</label>
+                    <label class="col-sm-2 modern-label">Valid Up To<span class="asterisk">*</span></label>
                     <div class="col-sm-3">
                         <div class="input-group date">
                             <input type="text" class="form-control txtBox" id="ValidUpto" name="ValidUpto" placeholder="dd/mm/yyyy">
@@ -303,9 +287,9 @@
                     </div>
                     <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
                     @*<label class="col-sm-2 modern-label">Entry Date</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="RevisionDate" name="RevisionDate" readonly>
-                    </div>*@
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="RevisionDate" name="RevisionDate" readonly>
+                </div>*@
                 </div>
 
                 <div class="row form-group" style="margin-bottom: 0;">
@@ -326,6 +310,25 @@
                 </div>
             </div>
 
+            <!-- ── Section 4: Authority Info ── -->
+            <div class="gui-card">
+                <h4 class="gui-section-title"><i class="glyphicon glyphicon-education text-primary"></i> Authority Info</h4>
+
+                <div class="row form-group">
+                    <label class="col-sm-2 modern-label">Authority Type@* <span class="asterisk">*</span>*@</label>
+                    <div class="col-sm-3">
+                        <input type="text" id="AuthorityType" name="AuthorityType" placeholder="Enter Authority Type" class="txtBox form-control" />
+                    </div>
+                    <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
+                   
+                    <label class="col-sm-2 modern-label">Authority Name @*<span class="asterisk">*</span>*@</label>
+                    <div class="col-sm-3">
+                        
+                        <input type="text" id="AuthorityName" name="AuthorityName" placeholder="Enter Authority Name" class="txtBox form-control" />
+                    </div>
+                </div>
+            </div>
+
             <!-- ── Section 3: Responsible Department ── -->
             <div class="gui-card">
                 <h4 class="gui-section-title"><i class="glyphicon glyphicon-user text-primary"></i> Responsible Department</h4>
@@ -335,21 +338,12 @@
                     <div class="col-sm-3">
                         <select id="ResDept1" class="form-control txtBox" name="ResDept1">
                             <option value="">--Select Any--</option>
-                            <option value="HR">HR</option>
-                            <option value="IT">IT</option>
-                            <option value="Sales">Sales</option>
-                            <option value="Accounting">Accounting</option>
                         </select>
                     </div>
-                    <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
-                    <label class="col-sm-2 modern-label">Department 2 <span class="asterisk">*</span></label>
+                    <div class="col-sm-1 gap-col"></div> <label class="col-sm-2 modern-label">Department 2 @*<span class="asterisk">*</span>*@</label>
                     <div class="col-sm-4">
                         <select id="ResDept2" class="form-control txtBox" name="ResDept2">
                             <option value="">--Select Any--</option>
-                            <option value="HR">HR</option>
-                            <option value="IT">IT</option>
-                            <option value="Sales">Sales</option>
-                            <option value="Accounting">Accounting</option>
                         </select>
                     </div>
                 </div>
@@ -445,11 +439,38 @@
 <script type="text/javascript">
 $(document).ready(function () {
 
+    $.ajax({
+        url: '@Url.Action("GetDepartment", "DepartmentInfo")',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            var options = '<option value="">--Select Any--</option>';
+
+            // Loop through the returned JSON array
+            // Note: Change 'DepartmentCode' and 'DepartmentName' to match the exact property names returned by your C# model/controller.
+            $.each(data, function (index, item) {
+                // If you want to save the Department ID/Code in the database:
+                options += '<option value="' + item.DepartmentCode + '">' + item.DepartmentName + '</option>';
+
+                // OR, if your database column stores the text name (like "HR", "IT"), use this instead:
+                // options += '<option value="' + item.DepartmentName + '">' + item.DepartmentName + '</option>';
+            });
+
+            // Bind the options to both dropdowns
+            $('#ResDept1').html(options);
+            $('#ResDept2').html(options);
+        },
+        error: function (xhr, status, error) {
+            toastr.error('Failed to load departments.');
+            console.log(error);
+        }
+    });
+
     CheckUnSavedData();
     ClearRequiredTextBoxRedColor();
     // ── Make Dropdown Searchable using Select2 ──
     $('#CompLicenseName').select2({
-        width: '100%', 
+        width: '100%',
         placeholder: "--Select Any--",
         allowClear: true
     });
@@ -460,6 +481,16 @@ $(document).ready(function () {
         allowClear: true
     });
 
+    $('#ResDept1').select2({
+        width: '100%',
+        placeholder: "--Select Any--",
+        allowClear: true
+    });
+    $('#ResDept2').select2({
+        width: '100%',
+        placeholder: "--Select Any--",
+        allowClear: true
+    });
     $('#CompLicenseName').on('change', function () {
         changeAny = 1;
     });
@@ -510,6 +541,8 @@ $(document).ready(function () {
         $('#ResDept1').val('');
         $('#ResDept2').val('');
         $('.modify-text').hide();
+        $('#AuthorityType').val('');
+        $('#AuthorityName').val('');
     }
 
     // ════════════════════════════════════════════════════════════════
@@ -640,8 +673,10 @@ $(document).ready(function () {
         $('#RevisionDate').val(row.RevisionDate   || '');
         $('#IsModifed').val(row.IsModifed         || '');
         $('#Details').val(row.Details             || '');
-        $('#ResDept1').val(row.ResDept1           || '');
-        $('#ResDept2').val(row.ResDept2           || '');
+        $('#ResDept1').val(row.ResDept1 || '').trigger('change');
+        $('#ResDept2').val(row.ResDept2 || '').trigger('change');
+        $('#AuthorityType').val(row.AuthorityType || '');
+        $('#AuthorityName').val(row.AuthorityName || '');
 
         // show/hide modify details textarea
         $('.modify-text').toggle(row.IsModifed === 'Yes');
@@ -1008,7 +1043,21 @@ $(document).ready(function () {
     // ════════════════════════════════════════════════════════════════
     $('#btnSave').click(function () {
         if (changeAny === 1) {
-            var checkInput = InputValidation('CompanyCode') + InputValidation('LicenseNo');
+            var checkInput = InputValidation('CompanyCode') +
+                InputValidation('LicenseNo') +
+                InputValidation('CompLicenseName') +
+                InputValidation('ValidUpto') +
+                InputValidation('ResDept1');
+
+            var select2Fields = ['CompLicenseName', 'ResDept1'];
+            $.each(select2Fields, function (index, fieldId) {
+                if (!$('#' + fieldId).val()) {
+                    $('#' + fieldId).next('.select2-container').find('.select2-selection').css('border-color', '#ef4444');
+                } else {
+                    $('#' + fieldId).next('.select2-container').find('.select2-selection').css('border-color', '#cbd5e1');
+                }
+            });
+
             if (checkInput === 0) {
                 model.CLID            = $('#CLID').val();
                 model.CompanyCode     = $('#CompanyUnitCode').val();
@@ -1024,7 +1073,8 @@ $(document).ready(function () {
                 model.ValidUpto       = $('#ValidUpto').val();
                 model.RevisionDate    = $('#RevisionDate').val();
                 model.AlarmDays       = $('#AlarmDays').val();
-
+                model.AuthorityType = $('#AuthorityType').val();
+                model.AuthorityName = $('#AuthorityName').val();
                 $.ajax({
                     url: '@Url.Action("frmCompanyLicense", "CompanyLicense")',
                     data: JSON.stringify(model),
@@ -1053,11 +1103,17 @@ $(document).ready(function () {
         }
     });
 
+    $('#CompLicenseName, #ResDept1').on('change', function () {
+        if ($(this).val()) {
+            $(this).next('.select2-container').find('.select2-selection').css('border-color', '#cbd5e1');
+        }
+    });
+
     var model = {
         "CLID": "", "CompanyCode": "", "LicenseNo": "", "CompLicenseName": "",
         "Details": "", "ResDept1": "", "ResDept2": "", "IsModifed": "",
         "RevisionNo": "", "SubmissionDate": "", "InspectionDate": "",
-        "ApprovalDate": "", "ValidUpto": "", "RevisionDate": "", "AlarmDays": ""
+        "ApprovalDate": "", "ValidUpto": "", "RevisionDate": "", "AlarmDays": "", "AuthorityType": "", "AuthorityName": ""
     };
 
 }); // end document.ready

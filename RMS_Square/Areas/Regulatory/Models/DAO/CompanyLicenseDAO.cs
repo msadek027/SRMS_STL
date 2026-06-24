@@ -23,7 +23,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             _idGenerated = new IDGenerated();
         }
 
-        public bool SaveUpdate(CompanyLicenseBEL model, string userId)
+        /*public bool SaveUpdate(CompanyLicenseBEL model, string userId)
         {
             try
             {
@@ -85,6 +85,70 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             {
                 throw errorException;
             }
+        }*/
+
+        public bool SaveUpdate(CompanyLicenseBEL model, string userId)
+        {
+            try
+            {
+                var query = new StringBuilder();
+
+                // SQL Injection থেকে বাঁচা এবং Single Quote (') হ্যান্ডেল করার জন্য লোকাল ফাংশন
+                string EscapeSql(string input)
+                {
+                    return (input ?? "").Replace("'", "''").Trim();
+                }
+
+                if (model.CLID > 0)
+                {
+                    // U for update
+                    ReturnMaxID = model.CLID;
+                    MaxID = model.CompLicenseSlNo;
+                    RefNo = model.RevisionNo;
+                    IUMode = "U";
+
+                    query.Append(" UPDATE COMPANY_LICENSE SET COMPANY_CODE='" + EscapeSql(model.CompanyCode) + "', LICENSE_NO='" + EscapeSql(model.LicenseNo) + "', SUBMISSION_TYPE='" + EscapeSql(model.SubmissionType) + "',");
+
+                    // Notun 2ti field (AUTHORITY_TYPE, AUTHORITY_NAME) ekhane add kora holo
+                    query.Append(" COMP_LICENSE_NAME='" + EscapeSql(model.CompLicenseName) + "', DETAILS='" + EscapeSql(model.Details) + "', RES_DEPT1='" + EscapeSql(model.ResDept1) + "', RES_DEPT2='" + EscapeSql(model.ResDept2) + "', IS_MODIFIED='" + EscapeSql(model.IsModifed) + "', AUTHORITY_TYPE='" + EscapeSql(model.AuthorityType) + "', AUTHORITY_NAME='" + EscapeSql(model.AuthorityName) + "',");
+
+                    query.Append(" SUBMISSION_DATE =(TO_DATE('" + model.SubmissionDate + "','dd/MM/yyyy')), INSPECTION_DATE =(TO_DATE('" + model.InspectionDate + "','dd/MM/yyyy')),");
+                    query.Append(" VALID_UPTO =(TO_DATE('" + model.ValidUpto + "','dd/MM/yyyy')), APPROVAL_DATE =(TO_DATE('" + model.ApprovalDate + "','dd/MM/yyyy')), NOTIFICATION_DAYS ='" + EscapeSql(model.AlarmDays) + "',");
+                    query.Append(" UPDATE_DATE =(TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + "','dd/MM/yyyy HH24:mi:ss')), UPDATE_BY='" + EscapeSql(userId) + "'");
+                    query.Append(" WHERE CLID='" + model.CLID + "'");
+                }
+                else
+                {
+                    // I for Insert  
+                    ReturnMaxID = _idGenerated.getMAXSL("COMPANY_LICENSE", "CLID");
+                    MaxID = _idGenerated.getMAXID("COMPANY_LICENSE", "COMP_LICENSE_SLNO", "fm000000000");
+
+                    string strCount = _dbHelper.GetValue("SELECT COUNT(1) AS RevisionNo FROM COMPANY_LICENSE WHERE IS_DELETE='N' AND COMPANY_CODE='" + EscapeSql(model.CompanyCode) + "' GROUP BY COMPANY_CODE");
+
+                    IUMode = "I";
+
+                    // Column list-e notun 2ti column (AUTHORITY_TYPE, AUTHORITY_NAME) add kora holo
+                    query.Append(" INSERT INTO COMPANY_LICENSE(CLID, COMP_LICENSE_SLNO, COMPANY_CODE, LICENSE_NO, REVISION_NO, SUBMISSION_TYPE, COMP_LICENSE_NAME, DETAILS, RES_DEPT1, RES_DEPT2, IS_MODIFIED, AUTHORITY_TYPE, AUTHORITY_NAME, SUBMISSION_DATE, INSPECTION_DATE, VALID_UPTO, APPROVAL_DATE, NOTIFICATION_DAYS, SET_BY, SET_ON, IS_DELETE) ");
+
+                    // Values list-e model.AuthorityType ebong model.AuthorityName add kora holo
+                    query.Append(" VALUES( '" + ReturnMaxID + "','" + MaxID + "','" + EscapeSql(model.CompanyCode) + "','" + EscapeSql(model.LicenseNo) + "','" + RefNo + "','" + EscapeSql(model.SubmissionType) + "','" + EscapeSql(model.CompLicenseName) + "','" + EscapeSql(model.Details) + "','" + EscapeSql(model.ResDept1) + "','" + EscapeSql(model.ResDept2) + "','" + EscapeSql(model.IsModifed) + "','" + EscapeSql(model.AuthorityType) + "','" + EscapeSql(model.AuthorityName) + "',");
+                    query.Append(" (TO_DATE('" + model.SubmissionDate + "','dd/MM/yyyy')),(TO_DATE('" + model.InspectionDate + "','dd/MM/yyyy')),(TO_DATE('" + model.ValidUpto + "','dd/MM/yyyy')),(TO_DATE('" + model.ApprovalDate + "','dd/MM/yyyy')),");
+                    query.Append(" '" + EscapeSql(model.AlarmDays) + "','" + EscapeSql(userId) + "',(TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + "','dd/MM/yyyy HH24:mi:ss')), 'N')");
+                }
+
+                if (_dbHelper.CmdExecute(_dbConn.SAConnStrReader(), query.ToString()))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw; // "throw errorException;" এর বদলে শুধু "throw;" ব্যবহার করা হয়েছে স্ট্যাক ট্রেস ঠিক রাখার জন্য
+            }
         }
 
         public IList<CompanyLicenseBEL> GetAllInfo(CompanyLicenseBEL model, string orderBy)
@@ -94,7 +158,7 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             query.Append(" CL.COMPANY_CODE AS COMPANY_UNIT_CODE, CU.COMPANY_UNIT_NAME, ");
             query.Append(" CU.COMPANY_CODE AS COMPANY_CODE, ");  // ← fix: parent company code from CU, not CL
             query.Append(" CL.LICENSE_NO, CL.SUBMISSION_TYPE, TO_CHAR(CL.SUBMISSION_DATE, 'dd/mm/yyyy') SUBMISSION_DATE, ");
-            query.Append(" CL.COMP_LICENSE_NAME, CL.DETAILS, CL.RES_DEPT1, CL.RES_DEPT2, CL.IS_MODIFIED, ");
+            query.Append(" CL.COMP_LICENSE_NAME, CL.DETAILS, CL.RES_DEPT1, CL.RES_DEPT2, CL.IS_MODIFIED,CL.AUTHORITY_TYPE,CL.AUTHORITY_NAME, ");
             query.Append(" TO_CHAR(CL.INSPECTION_DATE, 'dd/mm/yyyy') INSPECTION_DATE, TO_CHAR(CL.VALID_UPTO, 'dd/mm/yyyy') VALID_UPTO, ");
             query.Append(" TO_CHAR(CL.APPROVAL_DATE, 'dd/mm/yyyy') APPROVAL_DATE, CL.NOTIFICATION_DAYS, TO_CHAR(CL.SET_ON, 'dd/mm/yyyy') SET_ON, ");
             query.Append(" C.COMPANY_NAME, C.ADDRESS ");
@@ -140,6 +204,8 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                             ValidUpto = row["VALID_UPTO"].ToString(),
                             ApprovalDate = row["APPROVAL_DATE"].ToString(),
                             AlarmDays = row["NOTIFICATION_DAYS"].ToString(),
+                            AuthorityType = row["AUTHORITY_TYPE"].ToString(),
+                            AuthorityName = row["AUTHORITY_NAME"].ToString(),
                             RevisionDate = row["SET_ON"].ToString(),
                             RevisionNo = row["REVISION_NO"].ToString()
                         }).ToList();
