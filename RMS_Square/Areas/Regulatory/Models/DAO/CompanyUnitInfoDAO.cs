@@ -38,11 +38,11 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             try
             {
                 if (master == null)
-                    throw new ArgumentNullException(nameof(master));
+                    throw new ArgumentException("master cannot be null");
 
                 // CompanyCode required for insert or when changing company on update
                 if (string.IsNullOrWhiteSpace(master.CompanyCode))
-                    throw new ArgumentException("CompanyCode is required.", nameof(master.CompanyCode));
+                throw new ArgumentException("master cannot be null");
 
                 string Qry = "";
 
