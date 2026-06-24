@@ -426,16 +426,16 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
                 string dateCol = model.ChooseOption == "SubmissionDate" ? "D.SUBMISSION_DATE" : (model.ChooseOption == "ApprovalDate" ? "D.APPROVAL_DATE" : "D.PROPOSAL_DATE");
                 if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
                 {
-                    query.Append($" AND {dateCol} BETWEEN TO_DATE('{General.SetDateStrYYYYMMDD(model.FromDate)}','yyyy/mm/dd') AND TO_DATE('{General.SetDateStrYYYYMMDD(model.ToDate)}','yyyy/mm/dd') ");
+                    query.Append(" AND {dateCol} BETWEEN TO_DATE('{General.SetDateStrYYYYMMDD(model.FromDate)}','yyyy/mm/dd') AND TO_DATE('{General.SetDateStrYYYYMMDD(model.ToDate)}','yyyy/mm/dd') ");
                 }
             }
             else if (!string.IsNullOrEmpty(model.FromDate) && !string.IsNullOrEmpty(model.ToDate))
             {
                 string fDate = General.SetDateStrYYYYMMDD(model.FromDate);
                 string tDate = General.SetDateStrYYYYMMDD(model.ToDate);
-                query.Append($" AND ( D.SUBMISSION_DATE BETWEEN TO_DATE('{fDate}','yyyy/mm/dd') AND TO_DATE('{tDate}','yyyy/mm/dd') ");
-                query.Append($" OR D.PROPOSAL_DATE BETWEEN TO_DATE('{fDate}','yyyy/mm/dd') AND TO_DATE('{tDate}','yyyy/mm/dd') ");
-                query.Append($" OR D.APPROVAL_DATE BETWEEN TO_DATE('{fDate}','yyyy/mm/dd') AND TO_DATE('{tDate}','yyyy/mm/dd')) ");
+                query.Append(" AND ( D.SUBMISSION_DATE BETWEEN TO_DATE('{fDate}','yyyy/mm/dd') AND TO_DATE('{tDate}','yyyy/mm/dd') ");
+                query.Append(" OR D.PROPOSAL_DATE BETWEEN TO_DATE('{fDate}','yyyy/mm/dd') AND TO_DATE('{tDate}','yyyy/mm/dd') ");
+                query.Append(" OR D.APPROVAL_DATE BETWEEN TO_DATE('{fDate}','yyyy/mm/dd') AND TO_DATE('{tDate}','yyyy/mm/dd')) ");
             }
 
             if (!string.IsNullOrEmpty(orderBy)) { query.Append(" ORDER BY D.ID " + orderBy); }
