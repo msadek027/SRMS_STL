@@ -13,6 +13,7 @@
         --danger: #ef4444;
         --card-bg: #ffffff;
         --bg-page: #f4f7fb;
+        --info: #3b82f6;
     }
 
     #divFirst {
@@ -30,6 +31,28 @@
         border-bottom: 2px solid var(--primary);
         padding-bottom: 10px;
         display: inline-block;
+    }
+
+    .section-title {
+        color: #1e293b;
+        font-weight: 700;
+        font-size: 18px;
+        margin-bottom: 16px;
+        padding: 10px 16px;
+        border-left: 4px solid var(--primary);
+        background: rgba(79, 70, 229, 0.05);
+        border-radius: 0 8px 8px 0;
+    }
+
+        .section-title.company {
+            border-left-color: var(--info);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+    .section-divider {
+        margin: 32px 0 24px 0;
+        border: none;
+        border-top: 2px dashed #e2e8f0;
     }
 
     /* KPI Cards */
@@ -65,6 +88,10 @@
             border-left-color: var(--success);
         }
 
+        .kpi-card.info {
+            border-left-color: var(--info);
+        }
+
     .kpi-icon {
         width: 48px;
         height: 48px;
@@ -94,6 +121,11 @@
         .kpi-icon.success {
             background: rgba(16, 185, 129, 0.1);
             color: var(--success);
+        }
+
+        .kpi-icon.info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
         }
 
     .kpi-details h3 {
@@ -171,10 +203,26 @@
         font-size: 11px;
         font-weight: 700;
     }
+
+    .badge-warn {
+        background: #fef3c7;
+        color: #92400e;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+    }
 </style>
 
 <div class="box-body" id="divFirst">
     <h2 class="dashboard-title"><i class="glyphicon glyphicon-dashboard"></i> Regulatory Dashboard</h2>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- SECTION 1: PRODUCT REGISTRATION OVERVIEW               -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="section-title">
+        <i class="glyphicon glyphicon-th-list"></i> Product Registration Overview
+    </div>
 
     <div class="kpi-row">
         <div class="kpi-card">
@@ -210,25 +258,15 @@
     <div class="row">
         <div class="col-md-4">
             <div class="dashboard-panel">
-                <div class="panel-title"><i class="glyphicon glyphicon-stats text-primary"></i> Overall Status</div>
+                <div class="panel-title"><i class="glyphicon glyphicon-stats text-primary"></i> Product Status</div>
                 <div class="canvas-wrapper">
                     <canvas id="docStatusChart"></canvas>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="dashboard-panel">
-                <div class="panel-title"><i class="glyphicon glyphicon-adjust text-info"></i> Authority Split</div>
-                <div class="canvas-wrapper">
-                    <canvas id="authorityChart"></canvas>
-                </div>
-            </div>
-        </div>
-
         <div class="col-md-4">
             <div class="dashboard-panel" style="overflow-y:auto;">
-                <div class="panel-title"><i class="glyphicon glyphicon-warning-sign text-danger"></i> Attention Required</div>
+                <div class="panel-title"><i class="glyphicon glyphicon-warning-sign text-danger"></i> Product - Attention Required</div>
                 <table class="dash-table">
                     <thead>
                         <tr>
@@ -244,28 +282,98 @@
             </div>
         </div>
     </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- SECTION 2: COMPANY LICENSE OVERVIEW                     -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <hr class="section-divider" />
+
+    <div class="section-title company">
+        <i class="glyphicon glyphicon-briefcase"></i> Company License Overview
+    </div>
+
+    <div class="kpi-row">
+        <div class="kpi-card info">
+            <div class="kpi-icon info"><i class="glyphicon glyphicon-briefcase"></i></div>
+            <div class="kpi-details">
+                <h3 id="kpiCompTotal">0</h3>
+                <p>Total Licenses</p>
+            </div>
+        </div>
+        <div class="kpi-card warning">
+            <div class="kpi-icon warning"><i class="glyphicon glyphicon-bell"></i></div>
+            <div class="kpi-details">
+                <h3 id="kpiCompExpiring">0</h3>
+                <p>Expiring (30 Days)</p>
+            </div>
+        </div>
+        <div class="kpi-card success">
+            <div class="kpi-icon success"><i class="glyphicon glyphicon-hourglass"></i></div>
+            <div class="kpi-details">
+                <h3 id="kpiCompPending">0</h3>
+                <p>Pending Approvals</p>
+            </div>
+        </div>
+        <div class="kpi-card danger">
+            <div class="kpi-icon danger"><i class="glyphicon glyphicon-remove-circle"></i></div>
+            <div class="kpi-details">
+                <h3 id="kpiCompExpired">0</h3>
+                <p>Already Expired</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="dashboard-panel">
+                <div class="panel-title"><i class="glyphicon glyphicon-stats" style="color:var(--info);"></i> Company License Status</div>
+                <div class="canvas-wrapper">
+                    <canvas id="compStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-panel" style="overflow-y:auto;">
+                <div class="panel-title"><i class="glyphicon glyphicon-warning-sign text-danger"></i> Company License - Attention Required</div>
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Valid Upto</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="compExpiringTableBody">
+                        <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
     $(document).ready(function () {
 
-        // Load Real Data from Backend
+        // ══════════════════════════════════════════════
+        // SECTION 1: PRODUCT DATA
+        // ══════════════════════════════════════════════
         $.ajax({
             url: '@Url.Action("GetDashboardData", "Home", new { area = "" })',
             type: 'GET',
             success: function (res) {
                 if (res.error) {
-                    toastr.error("Dashboard Data Error: " + res.error);
+                    toastr.error("Product Dashboard Error: " + res.error);
                     return;
                 }
 
-                // 1. Populate KPIs
+                // 1. Populate Product KPIs
                 $('#kpiTotal').text(res.KPI.Total);
                 $('#kpiExpiring').text(res.KPI.ExpiringSoon);
                 $('#kpiPending').text(res.KPI.Pending);
                 $('#kpiExpired').text(res.KPI.Expired);
 
-                // 2. Status Chart (Doughnut)
+                // 2. Product Status Chart (Doughnut)
                 if (document.getElementById('docStatusChart')) {
                     var ctxStatus = document.getElementById('docStatusChart').getContext('2d');
                     new Chart(ctxStatus, {
@@ -274,7 +382,7 @@
                             labels: res.StatusChart.labels,
                             datasets: [{
                                 data: res.StatusChart.values,
-                                backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], // Green, Yellow, Red
+                                backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
                                 borderWidth: 0
                             }]
                         },
@@ -287,36 +395,14 @@
                     });
                 }
 
-                // 3. Authority Chart (Pie)
-                if (document.getElementById('authorityChart')) {
-                    var ctxAuth = document.getElementById('authorityChart').getContext('2d');
-                    new Chart(ctxAuth, {
-                        type: 'pie',
-                        data: {
-                            labels: res.AuthorityChart.labels,
-                            datasets: [{
-                                data: res.AuthorityChart.values,
-                                backgroundColor: ['#4f46e5', '#0ea5e9', '#8b5cf6'],
-                                borderWidth: 2,
-                                borderColor: '#ffffff'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: { legend: { position: 'bottom' } }
-                        }
-                    });
-                }
-
-                // 4. Populate Expiring Table
+                // 3. Populate Product Expiring Table
                 var tbody = $('#expiringTableBody');
                 tbody.empty();
-                if(res.ExpiringTable && res.ExpiringTable.length > 0) {
-                    $.each(res.ExpiringTable, function(i, row) {
+                if (res.ExpiringTable && res.ExpiringTable.length > 0) {
+                    $.each(res.ExpiringTable, function (i, row) {
                         tbody.append(
                             '<tr>' +
-                            '<td><strong style="color:var(--primary);">' + row.ProductName + '</strong><br><span style="font-size:11px;color:var(--muted);">' + row.CompanyName + '</span></td>' +
+                            '<td><strong style="color:var(--primary);">' + row.ProductName + '</strong><br><span style="font-size:11px;color:#94a3b8;">' + row.CompanyName + '</span></td>' +
                             '<td>' + row.ValidUpto + '</td>' +
                             '<td><span class="badge-urgent">' + row.DaysLeft + ' days left</span></td>' +
                             '</tr>'
@@ -327,7 +413,71 @@
                 }
             },
             error: function () {
-                toastr.error('Failed to load dashboard metrics.');
+                toastr.error('Failed to load product dashboard metrics.');
+            }
+        });
+
+        // ══════════════════════════════════════════════
+        // SECTION 2: COMPANY LICENSE DATA
+        // ══════════════════════════════════════════════
+        $.ajax({
+            url: '@Url.Action("GetCompanyLicenseDashboardData", "Home", new { area = "" })',
+            type: 'GET',
+            success: function (res) {
+                if (res.error) {
+                    toastr.error("Company License Dashboard Error: " + res.error);
+                    return;
+                }
+
+                // 1. Populate Company KPIs
+                $('#kpiCompTotal').text(res.KPI.Total);
+                $('#kpiCompExpiring').text(res.KPI.ExpiringSoon);
+                $('#kpiCompPending').text(res.KPI.Pending);
+                $('#kpiCompExpired').text(res.KPI.Expired);
+
+                // 2. Company License Status Chart (Doughnut)
+                if (document.getElementById('compStatusChart')) {
+                    var ctxComp = document.getElementById('compStatusChart').getContext('2d');
+                    new Chart(ctxComp, {
+                        type: 'doughnut',
+                        data: {
+                            labels: res.StatusChart.labels,
+                            datasets: [{
+                                data: res.StatusChart.values,
+                                backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { position: 'bottom' } },
+                            cutout: '65%'
+                        }
+                    });
+                }
+
+                // 3. Populate Company Expiring Table
+                var compTbody = $('#compExpiringTableBody');
+                compTbody.empty();
+                if (res.ExpiringTable && res.ExpiringTable.length > 0) {
+                    $.each(res.ExpiringTable, function (i, row) {
+                        var badgeClass = row.DaysLeft <= 0 ? 'badge-urgent' : 'badge-warn';
+                        var statusText = row.DaysLeft <= 0 ? 'Expired' : row.DaysLeft + ' days left';
+                        compTbody.append(
+                            '<tr>' +
+                            '<td><strong style="color:var(--info);">' + row.CompanyName + '</strong><br><span style="font-size:11px;color:#94a3b8;">' + row.LicenseNo + '</span></td>' +
+                            '<td>' + row.ValidUpto + '</td>' +
+                            '<td><span class="' + badgeClass + '">' + statusText + '</span></td>' +
+                            '</tr>'
+                        );
+                    });
+                } else {
+                    compTbody.html('<tr><td colspan="3" style="text-align:center;color:var(--success);padding:20px;">All Good! No immediate expiries.</td></tr>');
+                }
+            },
+            error: function () {
+                toastr.error('Failed to load company license dashboard metrics.');
             }
         });
 

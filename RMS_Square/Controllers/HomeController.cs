@@ -301,7 +301,105 @@ namespace RMS_Square.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public JsonResult GetCompanyLicenseDashboardData()
+        {
+            try
+            {
+                var dao = new CompanyLicenseDAO();
 
+                // সব company license আনো (IS_DELETE <> 'Y')
+                var allLicenses = dao.GetAllInfo(new CompanyLicenseBEL(), "DESC");
+
+                int total = allLicenses.Count;
+                int expired = 0;
+                int expiringSoon = 0; // 30 দিনের মধ্যে expire হবে
+                int active = 0;
+
+                var expiringTableList = new List<object>();
+
+                foreach (var lic in allLicenses)
+                {
+                    if (!string.IsNullOrEmpty(lic.ValidUpto))
+                    {
+                        DateTime validDate;
+                        if (DateTime.TryParseExact(lic.ValidUpto, "dd/MM/yyyy",
+                            System.Globalization.CultureInfo.InvariantCulture,
+                            System.Globalization.DateTimeStyles.None, out validDate))
+                        {
+                            int daysLeft = (validDate - DateTime.Now.Date).Days;
+
+                            if (daysLeft < 0)
+                            {
+                                expired++;
+                                expiringTableList.Add(new
+                                {
+                                    CompanyName = lic.CompanyName ?? lic.CompanyCode,
+                                    LicenseNo = lic.LicenseNo,
+                                    ValidUpto = lic.ValidUpto,
+                                    DaysLeft = daysLeft
+                                });
+                            }
+                            else if (daysLeft <= 30)
+                            {
+                                expiringSoon++;
+                                expiringTableList.Add(new
+                                {
+                                    CompanyName = lic.CompanyName ?? lic.CompanyCode,
+                                    LicenseNo = lic.LicenseNo,
+                                    ValidUpto = lic.ValidUpto,
+                                    DaysLeft = daysLeft
+                                });
+                            }
+                            else
+                            {
+                                active++;
+                            }
+                        }
+                        else
+                        {
+                            active++; // parse না হলে active ধরে নাও
+                        }
+                    }
+                    else
+                    {
+                        active++; // ValidUpto empty হলে active ধরো
+                    }
+                }
+
+                // Pending = যেগুলোর ApprovalDate নেই
+                int pending = allLicenses.Count(x => string.IsNullOrEmpty(x.ApprovalDate));
+
+                // Sort expiring table: expired first (negative days), then by days ascending
+                var sortedExpiringTable = expiringTableList
+                    .OrderBy(x => ((dynamic)x).DaysLeft)
+                    .Take(10)
+                    .ToList();
+
+                var result = new
+                {
+                    KPI = new
+                    {
+                        Total = total,
+                        ExpiringSoon = expiringSoon,
+                        Pending = pending,
+                        Expired = expired
+                    },
+                    StatusChart = new
+                    {
+                        labels = new[] { "Active", "Expiring Soon", "Expired" },
+                        values = new[] { active, expiringSoon, expired }
+                    },
+                    ExpiringTable = sortedExpiringTable
+                };
+
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
         private string CountCompanyLicExpiry()
         {
             string qry = @"SELECT COUNT(1)ComLicCount FROM ( SELECT CL.CLID, CL.REVISION_NO,CL.COMPANY_CODE,CL.VALID_UPTO,CL.NOTIFICATION_DAYS
