@@ -493,6 +493,18 @@
             white-space: nowrap;
         }
 
+    .btn-danger {
+        background-color: #ef4444;
+        box-shadow: 0 4px 10px rgba(239, 68, 68, .3);
+        color: #fff;
+    }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+            transform: translateY(-1px);
+            color: #fff;
+        }
+
         .popup-tbl tbody tr {
             border-bottom: 1px solid var(--border-soft);
             cursor: pointer;
@@ -567,6 +579,9 @@
         <div style="margin-left:auto;">
             <button id="btnSave" class="btn btn-success" type="button" style="display:none;">
                 <i class="glyphicon glyphicon-ok"></i> Save &amp; Approve
+            </button>
+            <button id="btnDelete" class="btn btn-danger" type="button" style="display:none; margin-left:8px;">
+                <i class="glyphicon glyphicon-trash"></i> Delete
             </button>
             <button id="btnReset" class="btn btn-default" type="button">
                 <i class="glyphicon glyphicon-refresh"></i> Reset
@@ -697,7 +712,12 @@
             <option value="Plant Protection Wing">Plant Protection Wing (dept. of Agricultural Extension)</option>
             <option value="DGDA">DGDA</option>
         </select>*@
-                    <input type="text" id="AuthorityType" name="AuthorityType" placeholder="Enter Authority Type" class="txtBox form-control" />
+                    <select id="AuthorityType" name="AuthorityType" class="txtBox form-control">
+                        <option value="">-- Select Authority Type --</option>
+                        <option value="BSTI">BSTI</option>
+                        <option value="Plant Protection Wing">Plant Protection Wing (dept. of Agricultural Extension)</option>
+                        <option value="DGDA">DGDA</option>
+                    </select>
                 </div>
                 <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
                 @*<label class="col-sm-2 modern-label">Authority Name <span class="asterisk">*</span></label>
@@ -1168,6 +1188,7 @@ $(document).ready(function () {
 
         $('#detailSection').show();
         $('#btnSave').show();
+        $('#btnDelete').show();
     }
 
     /* ════════════════════════════════════
@@ -1350,7 +1371,43 @@ var fileUrl = '@Url.Action("PreviewFile", "ProductRegApproval", new { area = "Re
         $('#FilterCompanyName,#FilterUnitName').val('');
         $('#detailSection').hide();
         $('#btnSave').hide();
+        $('#btnDelete').hide();
     });
 
+
+    $('#btnDelete').click(function () {
+        var annexId = $('#AnnexId').val();
+        if (!annexId) {
+            toastr.warning('Please select a record first.');
+            return;
+        }
+
+        // Confirmation dialog to prevent accidental clicks
+        if (confirm("Are you sure you want to delete this record? This action cannot be undone.")) {
+            $("#divLoading").show();
+
+            $.ajax({
+                url: '@Url.Action("DeleteRecord", "ProductRegApproval")',
+                type: 'POST',
+                contentType: 'application/json;',
+                dataType: 'json',
+                data: JSON.stringify({ AnnexId: annexId }),
+                success: function (res) {
+                    $("#divLoading").hide();
+                    if (res.Status === "Yes") {
+                        toastr.success('Record deleted successfully.');
+                        $('#btnReset').click(); // Reset the form
+                        // Optionally trigger doSearch() here to refresh the grid instantly
+                    } else {
+                        toastr.error(res.Status || 'Delete failed.');
+                    }
+                },
+                error: function () {
+                    $("#divLoading").hide();
+                    toastr.error('Server error. Please try again.');
+                }
+            });
+        }
+    });
 }); // end ready
 </script>

@@ -88,5 +88,33 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                 return HttpNotFound();
             }
         }
+
+        //=========DELETE=====================================
+
+        [HttpPost]
+        public ActionResult DeleteRecord(string AnnexId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(AnnexId))
+                {
+                    return Json(new { Status = "Invalid Registration ID." });
+                }
+
+                string userId = Session["UserID"] as string;
+                bool isDeleted = _dal.DeleteRecord(AnnexId, userId);
+
+                return Json(new { Status = isDeleted ? "Yes" : "Delete failed at database level." });
+            }
+            catch (Exception e)
+            {
+                return Json(new
+                {
+                    Status = "Error: " + e.Message.Substring(0, Math.Min(60, e.Message.Length))
+                });
+            }
+        }
+
+
     }
 }

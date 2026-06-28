@@ -317,7 +317,32 @@
                 <div class="row form-group">
                     <label class="col-sm-2 modern-label">Authority Type@* <span class="asterisk">*</span>*@</label>
                     <div class="col-sm-3">
-                        <input type="text" id="AuthorityType" name="AuthorityType" placeholder="Enter Authority Type" class="txtBox form-control" />
+                        <select id="AuthorityType" name="AuthorityType" class="txtBox form-control">
+                            <option value="">-- Select Authority Type --</option>
+                            <option value="Bangladesh Crop Protection Association">Bangladesh Crop Protection Association</option>
+                            <option value="Bangladesh Employers Federation">Bangladesh Employers Federation</option>
+                            <option value="Bangladesh Investment Development Authority (BIDA)">Bangladesh Investment Development Authority (BIDA)</option>
+                            <option value="Chief Controller of Imports and Exports (CCI&E)">Chief Controller of Imports and Exports (CCI&E)</option>
+                            <option value="City Corporation / Municipality / Union Parishad">City Corporation / Municipality / Union Parishad</option>
+                            <option value="Department of Agricultural Extension (DAE)">Department of Agricultural Extension (DAE)</option>
+                            <option value="Department of Environment (DoE)">Department of Environment (DoE)</option>
+                            <option value="Department of Explosives">Department of Explosives</option>
+                            <option value="Department of Health">Department of Health</option>
+                            <option value="Department of Inspection for Factories and Establishments (DIFE)">Department of Inspection for Factories and Establishments (DIFE)</option>
+                            <option value="Department of Narcotics Control (DNC)">Department of Narcotics Control (DNC)</option>
+                            <option value="District Commissioner (DC) Office">District Commissioner (DC) Office</option>
+                            <option value="District Commissioner (DC) Office and Department of Explosives">District Commissioner (DC) Office and Department of Explosives</option>
+                            <option value="District Controller of Food">District Controller of Food</option>
+                            <option value="Fire Service and Civil Defence">Fire Service and Civil Defence</option>
+                            <option value="MCCI/FBCCI/Chamber of Commerce">MCCI/FBCCI/Chamber of Commerce</option>
+                            <option value="National Board of Revenue (NBR)">National Board of Revenue (NBR)</option>
+                            <option value="Office of the Chief Inspector of Boilers">Office of the Chief Inspector of Boilers</option>
+                            <option value="RAJUK/Relevant Development Authority">RAJUK/Relevant Development Authority</option>
+                            <option value="Registrar of Joint Stock Companies and Firms (RJSC)">Registrar of Joint Stock Companies and Firms (RJSC)</option>
+                            <option value="Roads and Highways Department (RHD)">Roads and Highways Department (RHD)</option>
+                            <option value="Union Land Office">Union Land Office</option>
+                            <option value="Water Resources Planning Organisation">Water Resources Planning Organisation</option>
+                        </select>
                     </div>
                     <div class="col-sm-1 gap-col"></div> <!-- Middle Gap -->
                    
@@ -491,6 +516,14 @@ $(document).ready(function () {
         placeholder: "--Select Any--",
         allowClear: true
     });
+
+    $('#AuthorityType').select2({
+        width: '100%',
+        placeholder: "--Select Any--",
+        allowClear: true
+    });
+
+
     $('#CompLicenseName').on('change', function () {
         changeAny = 1;
     });

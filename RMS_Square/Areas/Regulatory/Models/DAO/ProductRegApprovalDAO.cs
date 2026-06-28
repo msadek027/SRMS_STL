@@ -157,5 +157,20 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             }
             return list;
         }
+
+
+        public bool DeleteRecord(string annexId, string userId)
+        {
+            var query = new StringBuilder();
+            string now = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+
+            query.Append(" UPDATE PRODUCT_REGISTRATION_INFO SET");
+            query.Append("    IS_DELETE = 'Y',");
+            query.Append("    UPDATE_DATE = (TO_DATE('" + now + "','dd/MM/yyyy HH24:mi:ss')),");
+            query.Append("    UPDATE_BY = '" + EscapeSql(userId) + "'");
+            query.Append(" WHERE ANNEX_ID = '" + EscapeSql(annexId) + "'");
+
+            return _dbHelper.CmdExecute(_dbConn.SAConnStrReader(), query.ToString());
+        }
     }
 }
