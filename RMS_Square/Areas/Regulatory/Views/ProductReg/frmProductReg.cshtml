@@ -96,7 +96,42 @@
         box-shadow: none !important;
         transition: all 0.2s;
     }
+    .vp-row {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
 
+    .vp-badge {
+        background: #ede9fe;
+        color: #5b21b6;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 8px;
+        white-space: nowrap;
+    }
+
+    .vp-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .vp-pill {
+        background: #fff;
+        border: 1px solid #cbd5e1;
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 12px;
+        color: #1e293b;
+    }
     .form-control:focus {
         border-color: var(--primary);
         background-color: #fff;
@@ -285,26 +320,20 @@
                 </div>
                 <div class="col-sm-1 gap-col"></div>
 
-                <label class="col-sm-2 modern-label">Product Category</label>
-                <div class="col-sm-3">
-                    <input type="text" id="ProductCategory" name="ProductCategory" class="form-control" readonly />
-                </div>
-            </div>
-
-            <div class="row form-group">
                 <label class="col-sm-2 modern-label">Brand Name</label>
                 <div class="col-sm-3">
                     <input type="text" id="BrandName" name="BrandName" class="form-control" readonly />
                 </div>
-                <div class="col-sm-1 gap-col"></div>
-
-                <label class="col-sm-2 modern-label">Pack Size</label>
-                <div class="col-sm-3">
-                    <input type="text" id="PackSizeName" name="PackSizeName" class="form-control" readonly />
-                </div>
             </div>
-        </div>
 
+        </div>
+        <!-- ── Variant & Pack Size Display (Read Only) ── -->
+        <div class="gui-card" id="variantDisplaySection" style="display:none;">
+            <h4 class="gui-section-title" style="margin-bottom:14px;">
+                <i class="glyphicon glyphicon-th-list text-info"></i> Variants &amp; Pack Sizes
+            </h4>
+            <div id="variantDisplayContainer"></div>
+        </div>
         <!-- ── History Grid ── -->
         <div id="historySection">
             <div class="history-label">
@@ -666,6 +695,14 @@ $(document).ready(function () {
         $('#btnFindProduct').removeAttr('disabled');
         $("#historySection").hide();
         $("#HistoryGrid").data("kendoGrid").dataSource.data([]);
+
+        $('#variantDisplaySection').hide();       
+        $('#variantDisplayContainer').html('');
+
+        $('#CompanyCode').val('');
+        $('#CompanyUnitCode').val('');
+        $('#CompanyName').val('');
+        $('#CompanyUnitName').val('');
     });
 
     // ════════════════════════════════════════════════════════════════
@@ -877,7 +914,7 @@ $(document).ready(function () {
         // Load this specific record into detail block (user picked it explicitly)
         loadDetailFromRow(row);
         setUpdateMode();
-
+        loadVariantDisplay(row.ProductCode);
         $('#btnFind').attr('disabled', 'disabled');
         $('#btnFindProduct').attr('disabled', 'disabled');
 
@@ -898,6 +935,47 @@ $(document).ready(function () {
             ]
         });
     });
+
+    function loadVariantDisplay(productCode) {
+        $('#variantDisplaySection').hide();
+        $('#variantDisplayContainer').html('');
+        if (!productCode) return;
+
+        $.ajax({
+            url: '@Url.Action("GetVariantsAndPacks", "ProductInfo")',
+            method: 'get',
+            data: { productCode: productCode },
+            success: function (data) {
+                if (!data || data.length === 0) { return; }
+
+                var html = '';
+                $.each(data, function (i, v) {
+                    var activePacks = $.grep(v.Packs || [], function (p) { return p.Status === 'Active'; });
+
+                    html += '<div class="vp-row">';
+                    html += '<span class="vp-badge">V' + (i + 1) + '</span>';
+                    html += '<span class="vp-name">' + escHtmlVP(v.VariantName) + '</span>';
+                    html += '<span style="color:#e2e8f0">|</span>';
+
+                    if (activePacks.length) {
+                        $.each(activePacks, function (j, pk) {
+                            html += '<span class="vp-pill">' + escHtmlVP(pk.PackSizeName) + '</span>';
+                        });
+                    } else {
+                        html += '<span style="color:#94a3b8;font-size:12px">No pack sizes</span>';
+                    }
+                    html += '</div>';
+                });
+
+                $('#variantDisplayContainer').html(html);
+                $('#variantDisplaySection').show();
+            }
+        });
+    }
+
+    function escHtmlVP(s) {
+        return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    }
 
     // ── Kendo Windows ───────────────────────────────────────────────
     var DisplayPopupWindow = $("#DisplayPopupWindow").kendoWindow({
@@ -946,7 +1024,7 @@ $(document).ready(function () {
         });
     }
 
-    function loadProductGrid(companyUnitCode) {
+    function loadProductGrid(companyUnitCode) {debugger
         $.ajax({
             url: '@Url.Action("GetAllActiveProduct", "General")',
             type: 'GET', data: { "companyCode": companyUnitCode },
@@ -997,6 +1075,8 @@ $(document).ready(function () {
         $('#ProductCategory').val(''); $('#BrandName').val('');
         $('#ProductSpecification').val(''); $('#PackSizeName').val('');
         $("#historySection").hide();
+        $('#variantDisplaySection').hide();         
+        $('#variantDisplayContainer').html('');
         setInsertMode();
         CompanyWindow.close();
         changeAny = 1;
@@ -1016,23 +1096,34 @@ $(document).ready(function () {
     });
 
     // ── Product helpers ─────────────────────────────────────────────
-   /* $('#btnFindProduct').click(function () {
-        var unitCode = $('#CompanyUnitCode').val();
-        if (!unitCode || unitCode.trim() === "") { toastr.warning('Please select a company first.'); return; }
-        ProductWindow.open().center(); loadProductGrid(unitCode);
-    });
-
-    $("#ProductCode").on('click dblclick keyup keypress keydown', function () {
-        var unitCode = $('#CompanyUnitCode').val();
-        if (!unitCode || unitCode.trim() === "") { toastr.warning('Please select a company first.'); return; }
-        ProductWindow.open().center(); loadProductGrid(unitCode);
-    });*/
 
     // ── Product: Name field click → popup ──
+    //$('#btnFindProduct').click(function () {
+    //    var unitCode = $('#CompanyUnitCode').val();
+    //    if (!unitCode || unitCode.trim() === "") {
+    //        toastr.warning('Please select a company first.');
+    //        return;
+    //    }
+    //    ProductWindow.open().center();
+    //    loadProductGrid(unitCode);
+    //});
+
+    //$("#ProductName").on('click', function () {
+    //    var unitCode = $('#CompanyUnitCode').val();
+    //    if (!unitCode || unitCode.trim() === "") {
+    //        toastr.warning('Please select a company first.');
+    //        return;
+    //    }
+    //    ProductWindow.open().center();
+    //    loadProductGrid(unitCode);
+    //});
+
     $('#btnFindProduct').click(function () {
         var unitCode = $('#CompanyUnitCode').val();
-        if (!unitCode || unitCode.trim() === "") {
+        var companyName = $('#CompanyName').val();
+        if (!unitCode || unitCode.trim() === "" || !companyName || companyName.trim() === "") {
             toastr.warning('Please select a company first.');
+            $('#CompanyName').focus();
             return;
         }
         ProductWindow.open().center();
@@ -1041,8 +1132,10 @@ $(document).ready(function () {
 
     $("#ProductName").on('click', function () {
         var unitCode = $('#CompanyUnitCode').val();
-        if (!unitCode || unitCode.trim() === "") {
+        var companyName = $('#CompanyName').val();
+        if (!unitCode || unitCode.trim() === "" || !companyName || companyName.trim() === "") {
             toastr.warning('Please select a company first.');
+            $('#CompanyName').focus();
             return;
         }
         ProductWindow.open().center();
@@ -1082,7 +1175,7 @@ $(document).ready(function () {
         $('#PackSizeName').val(row.PackSizeName);
         ProductWindow.close();
         changeAny = 1;
-
+        loadVariantDisplay(row.ProductCode);
         // Reset detail block first, then load history → auto-loads latest record if exists
         setInsertMode();
         loadHistoryGrid(row.ProductCode, $('#CompanyUnitCode').val(), true);

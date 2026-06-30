@@ -1,942 +1,976 @@
 ﻿@{
-    //ViewBag.Title = "frmGmpCertificate";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script src="~/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <link href="~/Content/CustomCSS/InputText.css" rel="stylesheet" />
 
-<script type="text/javascript">
-    $(document).ready(function () {
-
-        EventPermission();
-        $('#btnReset').click(function () {
-            //  master.StrengthCode = $("#StrengthCode option:selected").val();
-            ResetData();
-            $("#Status").val("Active");
-        });
-
-        // Company window for find button
-        var CompanyWindow = $("#CompanyWindow").kendoWindow({
-            actions: ["Minimize", "Maximize", "Close"],
-            width: "90%",
-            height: "80%",
-            draggable: true,
-            modal: true,
-            title: "List of Company."
-        }).data("kendoWindow").center();
-
-
-        $('#btnFind').click(function () {
-            CompanyWindow.open();
-            $.ajax({
-                url: '@Url.Action("GetAllCompany", "General")',
-                method: 'get',
-                data: 'json',
-                success: function (data) {
-
-                    var flatData = [];
-
-                    $.each(data, function (i, company) {
-
-                        if (company.Units && company.Units.length > 0) {
-                            $.each(company.Units, function (j, unit) {
-                                flatData.push({
-                                    CompanyCode: company.CompanyCode,
-                                    CompanyName: company.CompanyName,
-                                    LicenseNo: company.LicenseNo,
-                                    CompanyUnitCode: unit.CompanyUnitCode,
-                                    CompanyUnitName: unit.CompanyUnitName
-                                });
-                            });
-                        } else {
-                            flatData.push({
-                                CompanyCode: company.CompanyCode,
-                                CompanyName: company.CompanyName,
-                                LicenseNo: company.LicenseNo,
-                                CompanyUnitCode: "",
-                                CompanyUnitName: ""
-                            });
-                        }
-                    });
-
-                    $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(flatData);
-                }
-            });
-        });
-        // CompanyCode এর পুরনো event সরিয়ে এটা দিন:
-$("#CompanyName").on('click', function () {
-    CompanyWindow.open();
-    $.ajax({
-        url: '@Url.Action("GetAllCompany", "General")',
-        method: 'get',
-        data: 'json',
-        success: function (data) {
-            var flatData = [];
-            $.each(data, function (i, company) {
-                if (company.Units && company.Units.length > 0) {
-                    $.each(company.Units, function (j, unit) {
-                        flatData.push({
-                            CompanyCode: company.CompanyCode,
-                            CompanyName: company.CompanyName,
-                            LicenseNo: company.LicenseNo,
-                            CompanyUnitCode: unit.CompanyUnitCode,
-                            CompanyUnitName: unit.CompanyUnitName
-                        });
-                    });
-                } else {
-                    flatData.push({
-                        CompanyCode: company.CompanyCode,
-                        CompanyName: company.CompanyName,
-                        LicenseNo: company.LicenseNo,
-                        CompanyUnitCode: "",
-                        CompanyUnitName: ""
-                    });
-                }
-            });
-            $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(flatData);
-        }
-    });
-});
-        //Initializing Main page details Kendo Grid Colums
-        var companyGrid = $('#CompanyWindowGrid').kendoGrid({
-            dataSource: new kendo.data.DataSource({
-                batch: true,
-                schema: {
-                    model: {
-                        id: "CompanyCode",
-                        fields: {
-                            CompanyCode: { type: "string" },
-                            Units: { defaultValue: [] }
-                        }
-                    }
-                },
-                pageSize: 10,
-            }),
-            pageable: {
-                //refresh: true,
-                pageSizes: true, buttonCount: 10
-            },
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            editable: false,
-            selectable: "row",
-            //selectable: "multiple",
-            toolbar: [{ template: "<input type='text' id='txtCompanyKeyword'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
-            navigatable: true,
-            height: 430,
-            // groupable: true,
-            groupable: { messages: { empty: "Custom message text" } },
-            columnMenu: true,
-            reorderable: true,
-            resizable: true,
-            columns: [
-               //  { field: "CompanyCode", title: "CompanyCode", width: 80 },
-                 { field: "CompanyName", title: "Company Name", width: 100, filterable: { multi: true } },
-                //{ field: "CompanyUnitCode", title: "CompanyUnitCode", width: 160 },
-                { field: "CompanyUnitName", title: "Unit Name", width: 80 }
-            ]
-
-        }).data('kendoGrid');
-
-        $('#CompanyWindowGrid').dblclick(function () {
-            var grid = $(this).data('kendoGrid');
-            var selectRow = grid.dataItem(grid.select());
-            $('#CompanyCode').val(selectRow.CompanyCode);
-            $('#CompanyName').val(selectRow.CompanyName);
-            $('#CompanyUnitCode').val(selectRow.CompanyUnitCode);
-            $('#CompanyUnitName').val(selectRow.CompanyUnitName);
-            CompanyWindow.close();
-            changeAny = 1;
-
-        });
-
-        //Company Name wise Filter table row
-        $("#txtCompanyKeyword").keyup(function () {
-            var val = $(this).val();
-            $("#CompanyWindowGrid").data("kendoGrid").dataSource.filter({
-                logic: "or",
-                filters: [
-                     { field: "CompanyCode", operator: "contains", value: val },
-                     { field: "CompanyName", operator: "contains", value: val },
-                     { field: "Address", operator: "contains", value: val }
-                ]
-            });
-        });
-
-
-
-
-        /// for dosage form////
-        /// Creating POP UP For the GetDosageForm Grid To Load
-        var PopupWindowDosageForm = $("#PopupWindowDosageForm").kendoWindow({
-            width: "50%",
-            height: "70%",
-            draggable: true,
-            modal: true,
-            title: "List Of Values."
-        }).data("kendoWindow").center();
-
-
-
-        /// On Key pressing event in DosageForm Selection Field
-        // $("#StrengthName").on('keyup keypress keydown dblclick', function (e) {
-        $('#btnDosageForm').click(function () {
-            PopupWindowDosageForm.open();
-            $.ajax({
-                url: '/DosageFormInfo/GetDosageForm',
-                method: 'get',
-                data: 'json',
-                success: function (data) {
-                    if (data != "") {
-                        $('#PopupWindowGridDosageForm').data('kendoGrid').dataSource.data(data);
-                    }
-                    else {
-                        PopupWindow.close();
-                        AcknowledgeMsg();
-                    }
-                },
-                error: function () {
-                    alert('Error occured!');
-                },
-            });
-        });
-
-        $("#DosageFormName").on('keyup keypress keydown click dblclick', function (e) {
-            PopupWindowDosageForm.open();
-            $.ajax({
-                url: '/DosageFormInfo/GetDosageForm',
-                method: 'get',
-                data: 'json',
-                success: function (data) {
-                    if (data != "") {
-                        $('#PopupWindowGridDosageForm').data('kendoGrid').dataSource.data(data);
-                    }
-                    else {
-                        PopupWindow.close();
-                        AcknowledgeMsg();
-                    }
-                },
-                error: function () {
-                    alert('Error occured!');
-                },
-            });
-        });
-
-        /// Creating GRID For Loading DosageForm Information
-        var PopupGridDosageForm = $('#PopupWindowGridDosageForm').kendoGrid({
-            dataSource: new kendo.data.DataSource({
-                batch: true,
-                schema: {
-                    model: {
-                        id: "DosageFormCode",
-                        fields: {
-                            DosageFormCode: { type: "string" },
-                        }
-                    }
-                },
-                pageSize: 10,
-            }),
-            pageable: {
-                pageSizes: true, buttonCount: 5
-            },
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            editable: false,
-            selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtPopupDosageForm'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
-            navigatable: true,
-            height: 430,
-            groupable: { messages: { empty: "Custom message text" } },
-            columnMenu: true,
-            reorderable: true,
-            resizable: true,
-            columns: [
-                 { field: "DosageFormCode", title: "DosageForm Code", width: 80 },
-                 { field: "DosageFormName", title: "DosageForm Name", width: 100 },
-
-            ]
-
-        }).data('kendoGrid');
-
-        $("#txtPopupDosageForm").keyup(function () {
-            var val = $(this).val();
-            $("#PopupWindowGridDosageForm").data("kendoGrid").dataSource.filter({
-                logic: "or",
-                filters: [
-                     { field: "DosageFormCode", operator: "contains", value: val },
-                     { field: "DosageFormName", operator: "contains", value: val }
-
-                ]
-            });
-        });
-
-        /// On Grid Double Click, append data in appropriate field
-        $('#PopupWindowGridDosageForm').dblclick(function () {
-            var grid = $(this).data('kendoGrid');
-
-            var selectRow = grid.dataItem(grid.select());
-            $('#DosageFormCode').val(selectRow.DosageFormCode);
-            $('#DosageFormName').val(selectRow.DosageFormName);
-            PopupWindowDosageForm.close();
-        });
-        /// end Dosage form//
-
-        /// for ProductType////
-        /// Creating POP UP For the ProductType Grid To Load
-        var PopupWindowProductType = $("#PopupWindowProductType").kendoWindow({
-            width: "50%",
-            height: "70%",
-            draggable: true,
-            modal: true,
-            title: "List Of Values."
-        }).data("kendoWindow").center();
-
-
-
-        /// On Key pressing event in PRODUCT TYPE Selection Field
-        $("#btnProductType").click(function () {
-            PopupWindowProductType.open();
-            $.ajax({
-                url: '/ProductTypeInfo/GetProductType',
-                method: 'get',
-                data: 'json',
-                success: function (data) {
-                    if (data != "") {
-                        $('#PopupWindowGridProductType').data('kendoGrid').dataSource.data(data);
-                    }
-                    else {
-                        PopupWindow.close();
-                        AcknowledgeMsg();
-                    }
-                },
-                error: function () {
-                    alert('Error occured!');
-                },
-            });
-        });
-
-
-        /// Creating GRID For Loading ProductType Information
-        var PopupGridProductType = $('#PopupWindowGridProductType').kendoGrid({
-            dataSource: new kendo.data.DataSource({
-                batch: true,
-                schema: {
-                    model: {
-                        id: "ProductTypeCode",
-                        fields: {
-                            ProductTypeCode: { type: "string" },
-                        }
-                    }
-                },
-                pageSize: 10,
-            }),
-            pageable: {
-                pageSizes: true, buttonCount: 5
-            },
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            editable: false,
-            selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtPopupProductType'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
-            navigatable: true,
-            height: 430,
-            groupable: { messages: { empty: "Custom message text" } },
-            columnMenu: true,
-            reorderable: true,
-            resizable: true,
-            columns: [
-                 { field: "ProductTypeCode", title: "ProductType Code", width: 80 },
-                 { field: "ProductTypeName", title: "ProductType Name", width: 100 },
-
-            ]
-
-        }).data('kendoGrid');
-
-        $("#txtPopupProductType").keyup(function () {
-            var val = $(this).val();
-            $("#PopupWindowGridProductType").data("kendoGrid").dataSource.filter({
-                logic: "or",
-                filters: [
-                     { field: "ProductTypeCode", operator: "contains", value: val },
-                     { field: "ProductTypeName", operator: "contains", value: val }
-
-                ]
-            });
-        });
-
-        /// On Grid Double Click, append data in appropriate field
-        $('#PopupWindowGridProductType').dblclick(function () {
-            var grid = $(this).data('kendoGrid');
-
-            var selectRow = grid.dataItem(grid.select());
-            $('#ProductTypeCode').val(selectRow.ProductTypeCode);
-            $('#ProductTypeName').val(selectRow.ProductTypeName);
-            PopupWindowProductType.close();
-        });
-        /// end ProductTypeName form//
-
-
-        /// for THERAPEUTIC////
-        /// Creating POP UP For the TherapeuticClass Grid To Load
-        var PopupWindowTherapeuticClass = $("#PopupWindowTherapeuticClass").kendoWindow({
-            width: "50%",
-            height: "70%",
-            draggable: true,
-            modal: true,
-            title: "List Of Values."
-        }).data("kendoWindow").center();
-
-
-
-        /// On Key pressing event in DosageForm Selection Field
-        $('#btnTherapeuticClass').click(function () {
-            PopupWindowTherapeuticClass.open();
-            $.ajax({
-                url: '/TherapeuticClassInfo/GetTherapeuticClass',
-                method: 'get',
-                data: 'json',
-                success: function (data) {
-                    if (data != "") {
-                        $('#PopupWindowGridTherapeuticClass').data('kendoGrid').dataSource.data(data);
-                    }
-                    else {
-                        PopupWindow.close();
-                        AcknowledgeMsg();
-                    }
-                },
-                error: function () {
-                    alert('Error occured!');
-                },
-            });
-        });
-
-
-        $("#TherapeuticClassName").on('keyup keypress keydown click dblclick', function (e) {
-            PopupWindowTherapeuticClass.open();
-            $.ajax({
-                url: '/TherapeuticClassInfo/GetTherapeuticClass',
-                method: 'get',
-                data: 'json',
-                success: function (data) {
-                    if (data != "") {
-                        $('#PopupWindowGridTherapeuticClass').data('kendoGrid').dataSource.data(data);
-                    }
-                    else {
-                        PopupWindow.close();
-                        AcknowledgeMsg();
-                    }
-                },
-                error: function () {
-                    alert('Error occured!');
-                },
-            });
-        });
-        /// Creating GRID For Loading TherapeuticClass Information
-        var PopupGridTherapeuticClass = $('#PopupWindowGridTherapeuticClass').kendoGrid({
-            dataSource: new kendo.data.DataSource({
-                batch: true,
-                schema: {
-                    model: {
-                        id: "TherapeuticClassCode",
-                        fields: {
-                            TherapeuticClassCode: { type: "string" },
-                        }
-                    }
-                },
-                pageSize: 10,
-            }),
-            pageable: {
-                pageSizes: true, buttonCount: 5
-            },
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            editable: false,
-            selectable: "row",
-            toolbar: [{ template: "<input type='text' id='txtPopupTH'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
-            navigatable: true,
-            height: 430,
-            groupable: { messages: { empty: "Custom message text" } },
-            columnMenu: true,
-            reorderable: true,
-            resizable: true,
-            columns: [
-                 { field: "TherapeuticClassCode", title: "TherapeuticClass Code", width: 80 },
-                 { field: "TherapeuticClassName", title: "TherapeuticClass Name", width: 100 },
-
-            ]
-
-        }).data('kendoGrid');
-
-        $("#txtPopupTH").keyup(function () {
-            var val = $(this).val();
-            $("#PopupWindowGridTherapeuticClass").data("kendoGrid").dataSource.filter({
-                logic: "or",
-                filters: [
-                     { field: "TherapeuticClassCode", operator: "contains", value: val },
-                     { field: "TherapeuticClassName", operator: "contains", value: val }
-
-                ]
-            });
-        });
-
-
-        /// On Grid Double Click, append data in appropriate field
-        $('#PopupWindowGridTherapeuticClass').dblclick(function () {
-            var grid = $(this).data('kendoGrid');
-
-            var selectRow = grid.dataItem(grid.select());
-            $('#TherapeuticClassCode').val(selectRow.TherapeuticClassCode);
-            $('#TherapeuticClassName').val(selectRow.TherapeuticClassName);
-            PopupWindowTherapeuticClass.close();
-        });
-        /// end TherapeuticClass form//
-
-
-        // Company window for find button
-        var ViewPopupWindow = $("#ViewPopupWindow").kendoWindow({
-            actions: ["Minimize", "Maximize", "Close"],
-            width: "90%",
-            height: "80%",
-            draggable: true,
-            modal: true,
-            title: "List of Product"
-        }).data("kendoWindow").center();
-
-        $('#btnView').click(function () {
-
-            ViewPopupWindow.open();
-
-            $.ajax({
-                url: '/ProductInfo/GetProduct',
-                method: 'get',
-                data: 'json',
-                success: function (data) {
-                    if (data != "") {
-                        $('#PopupWindowGrid').data('kendoGrid').dataSource.data(data);
-                    }
-                    else {
-                        ViewPopupWindow.close();
-                        AcknowledgeMsg();
-                    }
-
-                },
-                error: function () {
-                    alert('Error occured!');
-                },
-                //complete: function () { },
-            });
-
-        });
-
-        //Initializing Main page details Kendo Grid Colums
-        var PopupGrid = $('#PopupWindowGrid').kendoGrid({
-            dataSource: new kendo.data.DataSource({
-                batch: true,
-                schema: {
-                    model: {
-                        id: "ProductCode",
-                        fields: {
-                            ProductCode: { type: "string" },
-                        }
-                    }
-                },
-                pageSize: 10,
-            }),
-            pageable: {
-                //refresh: true,
-                pageSizes: true, buttonCount: 5
-            },
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            editable: false,
-            selectable: "row",
-            //selectable: "multiple",
-            toolbar: ["excel",{ template: "<input type='text' id='txtPopupInput'  style='float:right' placeholder='Search...' class='k-textbox'>" }, ],
-            excel: {
-                fileName: "Export.xlsx",
-                allPages: true,
-                filterable: true
-            },
-            navigatable: true,
-            height: 430,
-            // groupable: true,
-            groupable: { messages: { empty: "Custom message text" } },
-            columnMenu: true,
-            reorderable: true,
-            resizable: true,
-            columns: [
-                // { field: "CompanyCode", title: "CompanyCode", width: 80 },
-                 { field: "CompanyName", title: "Company Name", width: 150 },
-               // { field: "CompanyUnitCode", title: "CompanyUnitCode", width: 150 },
-                { field: "CompanyUnitName", title: "Unit Name", width: 150 },
-                { field: "ProductName", title: "Product Name", width: 150 },
-                 //{ field: "ProductCode", title: "Serial No", width: 80 },
-                // { field: "SAPProductCode", title: "Product Code", width: 80 },
-                 { field: "BrandName", title: "Brand Name", width: 100 },
-                 //{ field: "YearMonth", title: "SetYearMonth", width: 100 },
-                // { field: "GenericCode", title: "Generic & Strength", width: 180 },
-                 //{ field: "StrengthName", title: "Strength Name", width: 100 },
-                // { field: "DosageFormName", title: "Dosage Form", width: 100 },
-                 { field: "PackSizeName", title: "Pack Size", width: 100 },
-                 { field: "ProductCategory", title: "Product Category", width: 100 }
-            ]
-
-        }).data('kendoGrid');
-
-        $('#PopupWindowGrid').dblclick(function () {
-            var grid = $(this).data('kendoGrid');
-            var selectRow = grid.dataItem(grid.select());
-            ViewPopupWindow.close();
-            SetMasterData(selectRow);
-
-        });
-
-        //Produc Name twise Filter table row
-        $("#txtPopupInput").keyup(function () {
-            var val = $(this).val();
-            $("#PopupWindowGrid").data("kendoGrid").dataSource.filter({
-                logic: "or",
-                filters: [
-                     { field: "CompanyCode", operator: "contains", value: val },
-                     { field: "CompanyName", operator: "contains", value: val },
-                    { field: "CompanyUnitCode", operator: "contains", value: val },
-                    { field: "CompanyUnitName", operator: "contains", value: val },
-                     { field: "ProductCode", operator: "contains", value: val },
-                     { field: "SAPProductCode", operator: "contains", value: val },
-                     { field: "YearMonth", operator: "contains", value: val },
-                     { field: "BrandName", operator: "contains", value: val },
-                     { field: "GenericCode", operator: "contains", value: val },
-                     { field: "DosageFormName", operator: "contains", value: val },
-                     //{ field: "StrengthName", operator: "contains", value: val },
-                     { field: "PackSizeName", operator: "contains", value: val },
-                     { field: "ProductCategory", operator: "contains", value: val },
-                ]
-            });
-        });
-
-        $('#btnSave').click(function () {
-            debugger
-            debugger
-            var Input = InputValidation('CompanyCode') +
-                InputValidation('ProductName') +
-                InputValidation('BrandName') +
-                InputValidation('ProductVariant') +
-                InputValidation('PackSizeName');
-            if (Input == 0) {
-                master.CompanyCode = $('#CompanyUnitCode').val();
-                master.ProductCode = $('#ProductCode').val();
-                master.ProductVariant = $('#ProductVariant').val();
-                master.ProductName = $('#ProductName').val();
-                master.SAPProductCode = $('#SAPProductCode').val();
-                master.BrandName = $('#BrandName').val();
-                master.PackSizeName = $('#PackSizeName').val();
-                master.DosageFormCode = $('#DosageFormCode').val();
-                master.DosageFormName = $('#DosageFormName').val();
-                master.ProductCategory = $('#ProductCategory').val();
-                master.TherapeuticClassCode = $('#TherapeuticClassCode').val();
-                master.TherapeuticClassName = $('#TherapeuticClassName').val();
-                master.ProductSpecification = $('#ProductSpecification').val();
-                master.IntroducedInBD = $('#IntroducedInBD').val();
-                master.ManufacturingType = $('#ManufacturingType').val();
-                master.ProductTypeCode = $('#ProductTypeCode').val();
-                master.ProductTypeName = $('#ProductTypeName').val();
-                master.Status = $('#Status').val();
-                master.Remarks = $('#Remarks').val();
-                $.ajax({
-                    //url: '/ProductInfo/frmProductInfo',
-                    url: '@Url.Action("frmProductInfo", "ProductInfo")',
-                    data: JSON.stringify(master),
-                    type: 'POST',
-                    contentType: 'application/json;',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data.Status == "Yes") {
-                            $("#ProductCode").val(data.ID);
-                            OperationMsg(data.Mode);
-                        }
-                        else {
-                            ErrorFrmServerMsg(data.Status);
-                        }
-
-                    }
-                    //,error: function () { ErrorFrmClientMsg(); },
-                    // complete: function () { CompletedMsg(); },
-                }); //End of ajax call
-            }
-            else {
-                ValidationMsg();
-            }
-
-        });
-        var master = { "CompanyCode": "", "CompanyUnitCode": "", "ProductCode": "", "ProductVariant": "", "ProductName": "", "SAPProductCode": "", "BrandName": "", "GenericCode": "", "DosageFormCode": "", "DosageFormName": "", "PackSizeName": "", "ProductCategory": "", "TherapeuticClassCode": "", "TherapeuticClassName": "", "ProductSpecification": "", "IntroducedInBD": "", "ManufacturingType": "", "ProductTypeCode": "", "ProductTypeName": "", "Status": "", "Remarks": "" };
-    });
-</script>
-
-
 <style>
-    /* ── Modern Form UI Redesign ── */
     :root {
         --primary: #4f46e5;
         --info: #0ea5e9;
-        --bg-page: #f4f7fb;
+        --success: #10b981;
+        --danger: #ef4444;
+        --border-soft: #e2e8f0;
         --card-bg: #ffffff;
         --text-main: #1e293b;
         --text-muted: #475569;
-        --border-soft: #e2e8f0;
     }
 
-    /* Action Bar */
     .action-bar {
-        background: var(--card-bg);
+        background: #fff;
         border-radius: 12px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02), 0 4px 12px rgba(0, 0, 0, 0.04);
-        padding: 16px 24px;
-        margin-bottom: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        padding: 14px 20px;
+        margin-bottom: 20px;
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
         border: 1px solid var(--border-soft);
     }
 
-    .action-bar .btn {
-        border-radius: 8px;
-        font-weight: 600;
-        padding: 8px 20px;
-        transition: all 0.2s ease;
-        margin-left: 8px;
-        border: none;
+        .action-bar .btn {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 8px 18px;
+            border: none;
+            margin-left: 8px;
+        }
+
+    .btn-primary {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(79,70,229,0.25);
     }
-    .action-bar .btn i { margin-right: 6px; }
 
-    .btn-primary { background-color: var(--primary); box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); }
-    .btn-primary:hover { background-color: #4338ca; transform: translateY(-1px); }
+        .btn-primary:hover {
+            background: #4338ca;
+            color: #fff;
+        }
 
-    .btn-info { background-color: var(--info); box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3); color: #fff; }
-    .btn-info:hover { background-color: #0284c7; transform: translateY(-1px); color: #fff; }
+    .btn-info {
+        background: var(--info);
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(14,165,233,0.25);
+    }
 
-    .btn-default { background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
-    .btn-default:hover { background-color: #e2e8f0; color: #0f172a; }
+        .btn-info:hover {
+            background: #0284c7;
+            color: #fff;
+        }
 
-    /* Cards */
+    .btn-default {
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+    }
+
+        .btn-default:hover {
+            background: #e2e8f0;
+        }
+
+    .btn-success-sm {
+        background: #ecfdf5;
+        color: #059669;
+        border: 1px solid #6ee7b7;
+        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+
+    .btn-danger-sm {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fca5a5;
+        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+
+    .btn-sm-gray {
+        background: #f8fafc;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+
     .gui-card {
-        background: var(--card-bg);
+        background: #fff;
         border-radius: 12px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02), 0 4px 12px rgba(0, 0, 0, 0.04);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         border: 1px solid var(--border-soft);
-        padding: 30px 24px;
-        margin-bottom: 24px;
+        padding: 22px 20px;
+        margin-bottom: 18px;
     }
-    .gui-card.context-card {
-        background: #fcfdfd;
-        border-left: 4px solid var(--info);
-    }
+
+        .gui-card.accent-left {
+            border-left: 4px solid var(--info);
+        }
 
     .gui-section-title {
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 700;
         color: var(--text-main);
-        margin-top: 0;
-        margin-bottom: 25px;
-        padding-bottom: 12px;
+        margin-bottom: 18px;
+        padding-bottom: 10px;
         border-bottom: 1px solid var(--border-soft);
         display: flex;
         align-items: center;
-        gap: 8px;
+        justify-content: space-between;
     }
 
-    /* Form Elements - Horizontal Layout */
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 16px;
     }
 
     .modern-label {
-        font-size: 13.5px;
+        font-size: 12.5px;
         font-weight: 600;
         color: var(--text-muted);
-        text-align: left; /* Changed from right to left */
         padding-top: 8px;
-        letter-spacing: 0.3px;
     }
 
     .form-control {
         border-radius: 6px;
         border: 1px solid #cbd5e1;
-        padding: 8px 14px;
+        padding: 8px 12px;
         height: auto;
-        font-size: 14px;
+        font-size: 13px;
         color: var(--text-main);
         box-shadow: none !important;
         transition: all 0.2s;
     }
 
-    .form-control:focus {
-        border-color: var(--primary);
-        background-color: #fff;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.1) !important;
+        }
+
+        .form-control[readonly] {
+            background: #f8fafc;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+            .form-control[readonly]:hover {
+                border-color: var(--info);
+            }
+
+    .asterisk {
+        color: var(--danger);
+        font-weight: bold;
     }
 
-    .form-control[readonly] {
-        background-color: #f1f5f9;
-        color: #64748b;
-        cursor: not-allowed;
-        border-color: #e2e8f0;
+    .field-error {
+        color: var(--danger);
+        font-size: 11px;
+        display: none;
+        margin-top: 3px;
     }
 
-    .asterisk { color: #ef4444; font-weight: bold; margin-left: 2px; }
+        .field-error.show {
+            display: block;
+        }
 
-    /* For smaller screens, override text alignment */
-    media (max-width: 768px) {
-        .modern-label { padding-top: 0; margin-bottom: 6px; }
-        .gap-col { display: none; }
+    /* Variant styles */
+    .variant-block {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        flex-wrap: wrap;
+    }
+
+    .variant-badge {
+        background: #ede9fe;
+        color: #5b21b6;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 8px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .pack-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #fff;
+        border: 1px solid #cbd5e1;
+        border-radius: 20px;
+        padding: 3px 10px 3px 12px;
+        font-size: 12px;
+        color: #1e293b;
+    }
+
+        .pack-pill button {
+            background: none;
+            border: none;
+            padding: 0;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 13px;
+            line-height: 1;
+            margin-left: 2px;
+        }
+
+            .pack-pill button:hover {
+                color: #ef4444;
+            }
+
+    .add-pack-inline {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #f0fdf4;
+        border: 1px dashed #6ee7b7;
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 12px;
+        color: #059669;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+        .add-pack-inline:hover {
+            background: #dcfce7;
+        }
+
+    .variant-name-input {
+        border: none;
+        background: transparent;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+        outline: none;
+        width: 400px;
+        padding: 2px 4px;
+        border-bottom: 1px dashed #cbd5e1;
+    }
+
+        .variant-name-input:focus {
+            border-bottom-color: #4f46e5;
+        }
+
+    .pack-input-row {
+        display: none;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        width: 100%;
+        padding-left: 80px;
+    }
+
+        .pack-input-row input {
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 12px;
+            color: #1e293b;
+            width: 160px;
+            outline: none;
+        }
+
+            .pack-input-row input:focus {
+                border-color: #4f46e5;
+            }
+
+        .pack-input-row .btn-confirm {
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .pack-input-row .btn-cancel-pack {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 20px;
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    /* Alert */
+    .alert-danger {
+        background: #fef2f2;
+        border: 1px solid #fca5a5;
+        color: #b91c1c;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        margin-bottom: 14px;
+        display: none;
+    }
+
+    .alert-success {
+        background: #ecfdf5;
+        border: 1px solid #6ee7b7;
+        color: #065f46;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        margin-bottom: 14px;
+        display: none;
     }
 </style>
 
-<div class="container-fluid" style="padding: 20px 0;">
+<script type="text/javascript">
+$(document).ready(function () {
 
-    <!-- ── Action Bar ── -->
+    EventPermission();
+
+    // ── State ─────────────────────────────────────────────
+    var variantList    = [];
+    var variantCounter = 0;
+    var packCounter    = 0;
+
+    var master = {
+        CompanyCode:"", CompanyUnitCode:"", ProductCode:"",
+        ProductName:"", SAPProductCode:"", BrandName:"", GenericCode:"",
+        DosageFormCode:"", DosageFormName:"", ProductCategory:"",
+        TherapeuticClassCode:"", TherapeuticClassName:"",
+        ProductSpecification:"", IntroducedInBD:"",
+        ManufacturingType:"", ProductTypeCode:"", ProductTypeName:"",
+        Status:"", Remarks:"", Variants:[]
+    };
+
+    // ── Reset ─────────────────────────────────────────────
+    $('#btnReset').click(function () {
+        ResetData();
+        $('#Status').val('Active');
+        variantList = []; variantCounter = 0; packCounter = 0;
+        renderVariants();
+        hideAlerts();
+    });
+
+    // ── Render Variants ───────────────────────────────────
+    function renderVariants() {
+        var active = $.grep(variantList, function (v) { return !v.isDeleted; });
+        if (!active.length) {
+            $('#variantContainer').html(
+                '<div class="empty-state"><i class="glyphicon glyphicon-th-list" style="font-size:18px;margin-bottom:6px;display:block"></i>No variants yet. Click "Add variant".</div>'
+            );
+            return;
+        }
+
+        var html = '';
+        var vIdx = 0;
+        $.each(variantList, function (i, v) {
+            if (v.isDeleted) return;
+            vIdx++;
+            var activePacks = $.grep(v.packs, function (p) { return !p.isDeleted; });
+
+            html += '<div class="variant-block" data-vtid="' + v.tempId + '">';
+
+            // Badge
+            html += '<span class="variant-badge">V' + vIdx + '</span>';
+
+            // Variant name input
+            html += '<input type="text" class="variant-name-input" placeholder="Variant name e.g. 500mg" value="' + escH(v.variantName) + '" data-vtid="' + v.tempId + '" title="Variant name">';
+
+            // Separator
+            html += '<span style="color:#e2e8f0;font-size:16px">|</span>';
+
+            // Pack pills
+            $.each(activePacks, function (j, pk) {
+                html += '<span class="pack-pill">';
+                html += '<span>' + escH(pk.packSizeName) + '</span>';
+                html += '<button type="button" class="btn-del-pack" data-vtid="' + v.tempId + '" data-ptid="' + pk.tempId + '" title="Remove pack">&times;</button>';
+                html += '</span>';
+            });
+
+            // Add pack trigger
+            html += '<span class="add-pack-inline btn-show-pack-input" data-vtid="' + v.tempId + '">';
+            html += '<i class="glyphicon glyphicon-plus" style="font-size:10px"></i> Pack';
+            html += '</span>';
+
+            // Delete variant
+            html += '<span style="margin-left:auto;flex-shrink:0">';
+            html += '<button type="button" class="btn btn-danger-sm btn-del-variant" data-vtid="' + v.tempId + '" title="Delete variant">';
+            html += '<i class="glyphicon glyphicon-trash"></i></button>';
+            html += '</span>';
+
+            // Pack input row (hidden by default)
+            html += '<div class="pack-input-row" id="packInputRow_' + v.tempId + '">';
+            html += '<input type="text" class="pack-size-input" placeholder="Pack size e.g. 10x10, 100ml" data-vtid="' + v.tempId + '">';
+            html += '<button type="button" class="btn-confirm btn-confirm-pack" data-vtid="' + v.tempId + '">Add</button>';
+            html += '<button type="button" class="btn-cancel-pack btn-hide-pack-input" data-vtid="' + v.tempId + '">Cancel</button>';
+            html += '</div>';
+
+            html += '</div>';
+        });
+
+        $('#variantContainer').html(html);
+        bindVariantEvents();
+    }
+
+    function bindVariantEvents() {
+        // Variant name sync
+        $(document).off('input.vn').on('input.vn', '.variant-name-input', function () {
+            findV($(this).data('vtid')).variantName = $(this).val();
+        });
+
+        // Show pack input
+        $(document).off('click.spi').on('click.spi', '.btn-show-pack-input', function () {
+            var vtid = $(this).data('vtid');
+            $('#packInputRow_' + vtid).css('display', 'flex').find('.pack-size-input').focus();
+        });
+
+        // Hide pack input
+        $(document).off('click.hpi').on('click.hpi', '.btn-hide-pack-input', function () {
+            var vtid = $(this).data('vtid');
+            $('#packInputRow_' + vtid).hide().find('.pack-size-input').val('');
+        });
+
+        // Confirm add pack
+        $(document).off('click.cap').on('click.cap', '.btn-confirm-pack', function () {
+            var vtid = $(this).data('vtid');
+            var input = $('#packInputRow_' + vtid).find('.pack-size-input');
+            var val = input.val().trim();
+            if (!val) { input.focus(); return; }
+            packCounter++;
+            findV(vtid).packs.push({
+                tempId: 'p' + packCounter, packCode: '',
+                sapProductCode: '', packSizeName: val,
+                status: 'Active', remarks: '', isDeleted: false
+            });
+            renderVariants();
+        });
+
+        // Enter key on pack input
+        $(document).off('keydown.pki').on('keydown.pki', '.pack-size-input', function (e) {
+            if (e.which === 13) {
+                $(this).closest('.pack-input-row').find('.btn-confirm-pack').click();
+            }
+            if (e.which === 27) {
+                $(this).closest('.pack-input-row').find('.btn-hide-pack-input').click();
+            }
+        });
+
+        // Delete variant
+        $(document).off('click.dv').on('click.dv', '.btn-del-variant', function () {
+            var v = findV($(this).data('vtid'));
+            if (confirm('Delete variant "' + (v.variantName || 'this variant') + '"?')) {
+                v.isDeleted = true;
+                $.each(v.packs, function (i, p) { p.isDeleted = true; });
+                renderVariants();
+            }
+        });
+
+        // Delete pack pill
+        $(document).off('click.dp').on('click.dp', '.btn-del-pack', function () {
+            findP($(this).data('vtid'), $(this).data('ptid')).isDeleted = true;
+            renderVariants();
+        });
+    }
+
+    // Add Variant button
+    $('#btnAddVariant').click(function () {
+        variantCounter++;
+        variantList.push({
+            tempId: 'v' + variantCounter, variantCode: '',
+            variantName: '', status: 'Active',
+            remarks: '', isDeleted: false, packs: []
+        });
+        renderVariants();
+    });
+
+    // ── Helpers ───────────────────────────────────────────
+    function findV(tid) {
+        return $.grep(variantList, function(v){ return v.tempId === tid; })[0];
+    }
+    function findP(vid, pid) {
+        return $.grep(findV(vid).packs, function(p){ return p.tempId === pid; })[0];
+    }
+    function escH(s) {
+        return (s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+    }
+    function hideAlerts() {
+        $('#msgArea').hide(); $('#successArea').hide();
+        $('.field-error').removeClass('show');
+    }
+    function showAlert(msg, type) {
+        if (type === 'error') { $('#msgArea').html('<i class="glyphicon glyphicon-warning-sign"></i> ' + msg).show(); }
+        else                  { $('#successArea').html('<i class="glyphicon glyphicon-ok-circle"></i> ' + msg).show(); }
+    }
+
+    // ── Company Window ─────────────────────────────────────
+    var CompanyWindow = $("#CompanyWindow").kendoWindow({
+        actions: ["Minimize","Maximize","Close"],
+        width: "90%", height: "80%",
+        draggable: true, modal: true,
+        title: "Select Company"
+    }).data("kendoWindow").center();
+
+    function openCompanyWindow() {
+        CompanyWindow.open();
+        $.ajax({
+            url: '@Url.Action("GetAllCompany", "General")',
+            method: 'get',
+            success: function (data) {
+                var flatData = [];
+                $.each(data, function (i, company) {
+                    if (company.Units && company.Units.length > 0) {
+                        $.each(company.Units, function (j, unit) {
+                            flatData.push({ CompanyCode: company.CompanyCode, CompanyName: company.CompanyName, LicenseNo: company.LicenseNo, CompanyUnitCode: unit.CompanyUnitCode, CompanyUnitName: unit.CompanyUnitName });
+                        });
+                    } else {
+                        flatData.push({ CompanyCode: company.CompanyCode, CompanyName: company.CompanyName, LicenseNo: company.LicenseNo, CompanyUnitCode: "", CompanyUnitName: "" });
+                    }
+                });
+                $('#CompanyWindowGrid').data('kendoGrid').dataSource.data(flatData);
+            }
+        });
+    }
+
+    $('#btnFind').click(openCompanyWindow);
+    $('#CompanyName').click(openCompanyWindow);
+
+    $('#CompanyWindowGrid').kendoGrid({
+        dataSource: new kendo.data.DataSource({
+            schema: { model: { id: "CompanyCode", fields: { CompanyCode: { type: "string" } } } },
+            pageSize: 10
+        }),
+        pageable: { pageSizes: true, buttonCount: 10 },
+        scrollable: true, sortable: true, filterable: true,
+        editable: false, selectable: "row",
+        toolbar: [{ template: "<input type='text' id='txtCompanyKeyword' style='float:right' placeholder='Search...' class='k-textbox'>" }],
+        height: 430,
+        columns: [
+            { field: "CompanyName",    title: "Company Name", width: 200 },
+            { field: "CompanyUnitName", title: "Unit Name",    width: 150 }
+        ]
+    }).data('kendoGrid');
+
+    $('#CompanyWindowGrid').dblclick(function () {
+        var grid = $(this).data('kendoGrid');
+        var row = grid.dataItem(grid.select());
+        if (!row) return;
+        $('#CompanyCode').val(row.CompanyCode);
+        $('#CompanyName').val(row.CompanyName);
+        $('#CompanyUnitCode').val(row.CompanyUnitCode);
+        $('#CompanyUnitName').val(row.CompanyUnitName);
+        CompanyWindow.close();
+        $('.field-error#err_company').removeClass('show');
+    });
+
+    $('#txtCompanyKeyword').keyup(function () {
+        var val = $(this).val();
+        $('#CompanyWindowGrid').data('kendoGrid').dataSource.filter({
+            logic: "or",
+            filters: [
+                { field: "CompanyCode",    operator: "contains", value: val },
+                { field: "CompanyName",    operator: "contains", value: val },
+                { field: "CompanyUnitName",operator: "contains", value: val }
+            ]
+        });
+    });
+
+    // ── Dosage Form Window ─────────────────────────────────
+    var PopupWindowDosageForm = $("#PopupWindowDosageForm").kendoWindow({
+        width: "50%", height: "70%", draggable: true, modal: true, title: "Select Dosage Form"
+    }).data("kendoWindow").center();
+
+    function openDosageForm() {
+        PopupWindowDosageForm.open();
+        $.ajax({ url: '/DosageFormInfo/GetDosageForm', method: 'get', success: function(data) {
+            if (data) $('#PopupWindowGridDosageForm').data('kendoGrid').dataSource.data(data);
+        }});
+    }
+    $('#btnDosageForm').click(openDosageForm);
+    $('#DosageFormName').click(openDosageForm);
+
+    $('#PopupWindowGridDosageForm').kendoGrid({
+        dataSource: new kendo.data.DataSource({ schema: { model: { id: "DosageFormCode" } }, pageSize: 10 }),
+        pageable: { pageSizes: true }, scrollable: true, sortable: true, filterable: true,
+        editable: false, selectable: "row", height: 430,
+        toolbar: [{ template: "<input type='text' id='txtDFSearch' style='float:right' placeholder='Search...' class='k-textbox'>" }],
+        columns: [
+            { field: "DosageFormCode", title: "Code", width: 80 },
+            { field: "DosageFormName", title: "Name", width: 150 }
+        ]
+    }).data('kendoGrid');
+
+    $('#PopupWindowGridDosageForm').dblclick(function () {
+        var row = $(this).data('kendoGrid').dataItem($(this).data('kendoGrid').select());
+        if (!row) return;
+        $('#DosageFormCode').val(row.DosageFormCode);
+        $('#DosageFormName').val(row.DosageFormName);
+        PopupWindowDosageForm.close();
+    });
+
+    // ── Therapeutic Class Window ───────────────────────────
+    var PopupWindowTC = $("#PopupWindowTherapeuticClass").kendoWindow({
+        width: "50%", height: "70%", draggable: true, modal: true, title: "Select Therapeutic Class"
+    }).data("kendoWindow").center();
+
+    function openTC() {
+        PopupWindowTC.open();
+        $.ajax({ url: '/TherapeuticClassInfo/GetTherapeuticClass', method: 'get', success: function(data) {
+            if (data) $('#PopupWindowGridTherapeuticClass').data('kendoGrid').dataSource.data(data);
+        }});
+    }
+    $('#btnTherapeuticClass').click(openTC);
+    $('#TherapeuticClassName').click(openTC);
+
+    $('#PopupWindowGridTherapeuticClass').kendoGrid({
+        dataSource: new kendo.data.DataSource({ schema: { model: { id: "TherapeuticClassCode" } }, pageSize: 10 }),
+        pageable: { pageSizes: true }, scrollable: true, sortable: true, filterable: true,
+        editable: false, selectable: "row", height: 430,
+        toolbar: [{ template: "<input type='text' id='txtTCSearch' style='float:right' placeholder='Search...' class='k-textbox'>" }],
+        columns: [
+            { field: "TherapeuticClassCode", title: "Code", width: 80 },
+            { field: "TherapeuticClassName", title: "Name", width: 200 }
+        ]
+    }).data('kendoGrid');
+
+    $('#PopupWindowGridTherapeuticClass').dblclick(function () {
+        var row = $(this).data('kendoGrid').dataItem($(this).data('kendoGrid').select());
+        if (!row) return;
+        $('#TherapeuticClassCode').val(row.TherapeuticClassCode);
+        $('#TherapeuticClassName').val(row.TherapeuticClassName);
+        PopupWindowTC.close();
+    });
+
+    // ── Search/View Products Window ────────────────────────
+    var ViewPopupWindow = $("#ViewPopupWindow").kendoWindow({
+        actions: ["Minimize","Maximize","Close"],
+        width: "90%", height: "80%",
+        draggable: true, modal: true, title: "Search Products"
+    }).data("kendoWindow").center();
+
+    $('#btnView').click(function () {
+        ViewPopupWindow.open();
+        $.ajax({
+            url: '/ProductInfo/GetProduct', method: 'get',
+            success: function (data) {
+                if (data) $('#PopupWindowGrid').data('kendoGrid').dataSource.data(data);
+            }
+        });
+    });
+
+    $('#PopupWindowGrid').kendoGrid({
+        dataSource: new kendo.data.DataSource({
+            schema: { model: { id: "ProductCode" } }, pageSize: 10
+        }),
+        pageable: { pageSizes: true, buttonCount: 5 },
+        scrollable: true, sortable: true, filterable: true,
+        editable: false, selectable: "row",
+        toolbar: ["excel", { template: "<input type='text' id='txtPopupInput' style='float:right' placeholder='Search...' class='k-textbox'>" }],
+        excel: { fileName: "Products.xlsx", allPages: true },
+        height: 430,
+        columns: [
+            { field: "CompanyName",    title: "Company",      width: 150 },
+            { field: "CompanyUnitName",title: "Unit",         width: 120 },
+            { field: "ProductName",    title: "Product Name", width: 160 },
+            { field: "BrandName",      title: "Brand",        width: 120 },
+            { field: "variantName", title: "variantName", width: 100 }
+        ]
+    }).data('kendoGrid');
+
+    $('#PopupWindowGrid').dblclick(function () {
+        var row = $(this).data('kendoGrid').dataItem($(this).data('kendoGrid').select());
+        if (!row) return;
+        ViewPopupWindow.close();
+        SetMasterData(row);
+    });
+
+    $('#txtPopupInput').keyup(function () {
+        var val = $(this).val();
+        $('#PopupWindowGrid').data('kendoGrid').dataSource.filter({
+            logic: "or",
+            filters: [
+                { field: "CompanyName",    operator: "contains", value: val },
+                { field: "ProductName",    operator: "contains", value: val },
+                { field: "BrandName",      operator: "contains", value: val },
+                { field: "ProductCategory",operator: "contains", value: val }
+            ]
+        });
+    });
+
+    // ── SetMasterData (when editing existing product) ──────
+    function SetMasterData(row) {
+        $('#ProductCode').val(row.ProductCode);
+        $('#CompanyCode').val(row.CompanyCode);
+        $('#CompanyName').val(row.CompanyName);
+        $('#CompanyUnitCode').val(row.CompanyUnitCode);
+        $('#CompanyUnitName').val(row.CompanyUnitName);
+        $('#ProductName').val(row.ProductName);
+        $('#BrandName').val(row.BrandName);
+        $('#SAPProductCode').val(row.SAPProductCode);
+        $('#GenericCode').val(row.GenericCode);
+        $('#DosageFormCode').val(row.DosageFormCode);
+        $('#DosageFormName').val(row.DosageFormName);
+        $('#TherapeuticClassCode').val(row.TherapeuticClassCode);
+        $('#TherapeuticClassName').val(row.TherapeuticClassName);
+        $('#ProductCategory').val(row.ProductCategory);
+        $('#ManufacturingType').val(row.ManufacturingType);
+        $('#Status').val(row.Status);
+        $('#Remarks').val(row.Remarks);
+
+        // Load existing variants + packs
+        if (row.ProductCode) {
+            $.ajax({
+                url: '@Url.Action("GetVariantsAndPacks", "ProductInfo")',
+                method: 'get',
+                data: { productCode: row.ProductCode },
+                success: function (data) {
+                    variantList = [];
+                    variantCounter = 0;
+                    packCounter = 0;
+                    $.each(data, function (i, v) {
+                        variantCounter++;
+                        var variant = {
+                            tempId: 'v' + variantCounter,
+                            variantCode: v.VariantCode,
+                            variantName: v.VariantName,
+                            status: v.Status,
+                            remarks: v.Remarks,
+                            isDeleted: false,
+                            packs: []
+                        };
+                        $.each(v.Packs || [], function (j, pk) {
+                            packCounter++;
+                            variant.packs.push({
+                                tempId: 'p' + packCounter,
+                                packCode: pk.PackCode,
+                                sapProductCode: pk.SAPProductCode,
+                                packSizeName: pk.PackSizeName,
+                                status: pk.Status,
+                                remarks: pk.Remarks,
+                                isDeleted: false
+                            });
+                        });
+                        variantList.push(variant);
+                    });
+                    renderVariants();
+                }
+            });
+        }
+    }
+
+    // ── Save ──────────────────────────────────────────────
+    $('#btnSave').click(function () {
+        hideAlerts();
+        var errs = [];
+
+        // Master field validation
+        if (!$('#CompanyCode').val()) {
+            errs.push('Company is required');
+            $('#err_company').addClass('show');
+        }
+        if (!$('#ProductName').val().trim()) {
+            errs.push('Product name is required');
+            $('#err_pname').addClass('show');
+        }
+        if (!$('#BrandName').val().trim()) {
+            errs.push('Brand name is required');
+            $('#err_brand').addClass('show');
+        }
+
+        // Variant validation
+        var active = $.grep(variantList, function(v){ return !v.isDeleted; });
+        if (!active.length) {
+            errs.push('At least one variant is required');
+        }
+        $.each(active, function(i, v) {
+            var vNum = i + 1;
+            if (!v.variantName.trim()) { errs.push('Variant ' + vNum + ': name is required'); }
+            var ap = $.grep(v.packs, function(p){ return !p.isDeleted; });
+            if (!ap.length) { errs.push('Variant ' + vNum + ': at least one pack size required'); }
+            $.each(ap, function(j, pk) {
+                if (!pk.packSizeName.trim()) { errs.push('Variant ' + vNum + ', Pack ' + (j+1) + ': pack size name required'); }
+            });
+        });
+
+        if (errs.length) {
+            showAlert(errs.join('&nbsp;&nbsp;|&nbsp;&nbsp;'), 'error');
+            return;
+        }
+
+        // Build payload
+        master.CompanyCode          = $('#CompanyUnitCode').val() || $('#CompanyCode').val();
+        master.ProductCode          = $('#ProductCode').val();
+        master.ProductName          = $('#ProductName').val();
+        master.BrandName            = $('#BrandName').val();
+        master.SAPProductCode       = $('#SAPProductCode').val();
+        master.GenericCode          = $('#GenericCode').val();
+        master.DosageFormCode       = $('#DosageFormCode').val();
+        master.DosageFormName       = $('#DosageFormName').val();
+        master.TherapeuticClassCode = $('#TherapeuticClassCode').val();
+        master.TherapeuticClassName = $('#TherapeuticClassName').val();
+        master.ProductCategory      = $('#ProductCategory').val();
+        master.ManufacturingType    = $('#ManufacturingType').val();
+        master.Status               = $('#Status').val();
+        master.Remarks              = $('#Remarks').val();
+
+        master.Variants = $.map(variantList, function(v) {
+            return {
+                VariantCode: v.variantCode,
+                VariantName: v.variantName,
+                Status:      v.status,
+                Remarks:     v.remarks,
+                IsDeleted:   v.isDeleted,
+                Packs: $.map(v.packs, function(pk) {
+                    return {
+                        PackCode:       pk.packCode,
+                        SAPProductCode: pk.sapProductCode,
+                        PackSizeName:   pk.packSizeName,
+                        Status:         pk.status,
+                        Remarks:        pk.remarks,
+                        IsDeleted:      pk.isDeleted
+                    };
+                })
+            };
+        });
+
+        $.ajax({
+            url: '@Url.Action("frmProductInfo", "ProductInfo")',
+            data: JSON.stringify(master),
+            type: 'POST',
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (data) {
+                if (data.Status === "Yes") {
+                    $('#ProductCode').val(data.ID);
+                    showAlert('Saved successfully! Product Code: ' + data.ID, 'success');
+                    OperationMsg(data.Mode);
+                } else {
+                    showAlert(data.Status, 'error');
+                    ErrorFrmServerMsg(data.Status);
+                }
+            }
+        });
+    });
+
+    // Initialize
+    renderVariants();
+});
+</script>
+
+<div class="container-fluid" style="padding:20px 0">
+
+    <!-- Alerts -->
+    <div class="alert-danger" id="msgArea"></div>
+    <div class="alert-success" id="successArea"></div>
+
+    <!-- Action Bar -->
     <div class="action-bar">
-        <div id="MessageText" style="font-weight: 600; color: #10b981;"></div>
-        <div style="margin-left: auto;">
-            <button id="btnSave" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-save"></i> Save Product</button>
+        <div style="font-weight:600;color:#10b981" id="MessageText"></div>
+        <div style="margin-left:auto">
+            <button id="btnSave" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-save"></i> Save product</button>
             <button id="btnView" class="btn btn-info" type="button"><i class="glyphicon glyphicon-search"></i> Search</button>
             <button id="btnReset" class="btn btn-default" type="button"><i class="glyphicon glyphicon-refresh"></i> Reset</button>
         </div>
     </div>
 
-    <!-- ── Main Form Body ── -->
-    <div class="box-body" style="padding: 0;">
+    <!-- Hidden fields -->
+    <input type="hidden" id="ProductCode">
+    <input type="hidden" id="CompanyCode">
+    <input type="hidden" id="CompanyUnitCode">
+    <input type="hidden" id="DosageFormCode">
+    <input type="hidden" id="TherapeuticClassCode">
 
-        <!-- Section 1: Company Context (Read Only) -->
-        <div class="gui-card context-card">
-            <h4 class="gui-section-title"><i class="glyphicon glyphicon-briefcase text-info"></i> Company Information</h4>
-
-            <!-- Company Code: hidden -->
-            <div class="row form-group">
-                <label class="col-sm-2 modern-label">Company Name <span class="asterisk">*</span></label>
-                <div class="col-sm-4">
-                    <input type="text" id="CompanyName" name="CompanyName" class="form-control txtBox" placeholder="Click to select..." readonly />
-                </div>
-
-                <div class="col-sm-1 gap-col"></div>
-
-                <label class="col-sm-2 modern-label">Unit Name</label>
-                <div class="col-sm-3">
-                    <input type="text" id="CompanyUnitName" name="CompanyUnitName" class="form-control" placeholder="Auto" readonly />
-                </div>
+    <!-- Company -->
+    <div class="gui-card accent-left">
+        <div class="gui-section-title"><span><i class="glyphicon glyphicon-briefcase"></i> Company information</span></div>
+        <div class="row form-group">
+            <label class="col-sm-2 modern-label">Company <span class="asterisk">*</span></label>
+            <div class="col-sm-3">
+                <input type="text" id="CompanyName" class="form-control" placeholder="Click to select company..." readonly>
+                <span class="field-error" id="err_company">Please select a company</span>
             </div>
-
-            <!-- Hidden inputs — backend -->
-            <input type="hidden" id="CompanyCode" name="CompanyCode" />
-            <input type="hidden" id="CompanyUnitCode" name="CompanyUnitCode" />
-        </div>
-
-        <div class="gui-card">
-            <h4 class="gui-section-title"><i class="glyphicon glyphicon-tag text-primary"></i> Product Details</h4>
-
-            <input type="hidden" id="ProductCode" name="ProductCode" />
-
-            <div class="row form-group">
-                <label class="col-sm-2 modern-label">Product Name <span class="asterisk">*</span></label>
-                <div class="col-sm-3">
-                    <input type="text" maxlength="150" id="ProductName" name="ProductName" placeholder="Enter Product Name" class="form-control" />
-                </div>
-
-
-                <div class="col-sm-1 gap-col"></div>
-
-                <label class="col-sm-2 modern-label">Brand Name <span class="asterisk">*</span></label>
-                <div class="col-sm-3">
-                    <input type="text" id="BrandName" name="BrandName" placeholder="Enter Brand Name" class="form-control" />
-                </div>
-            </div>
-
-            <div class="row form-group" style="margin-bottom: 0;">
-                <label class="col-sm-2 modern-label">Pack Size <span class="asterisk">*</span></label>
-                <div class="col-sm-3">
-                    <input type="text" id="PackSizeName" name="PackSizeName" maxlength="300" placeholder="e.g. 10x10" class="form-control" />
-                </div>
-
-                <div class="col-sm-1 gap-col"></div>
-                <label class="col-sm-2 modern-label">Product Variant <span class="asterisk">*</span></label>
-                <div class="col-sm-3">
-                    <input type="text" class="form-control" id="ProductVariant" name="ProductVariant" placeholder="Enter Product Variant" />
-                </div>
-                
+            <div class="col-sm-1"></div>
+            <label class="col-sm-2 modern-label">Unit name</label>
+            <div class="col-sm-3">
+                <input type="text" id="CompanyUnitName" class="form-control" placeholder="Auto-filled" readonly>
             </div>
         </div>
-
-        <!-- Section 3: Classification & Status -->
-        <div class="gui-card">
-            <h4 class="gui-section-title"><i class="glyphicon glyphicon-cog text-primary"></i> Classification & Settings</h4>
-
-            <div class="row form-group">
-                <label class="col-sm-2 modern-label">Product Category</label>
-                <div class="col-sm-3">
-                    <input type="text" class="form-control" id="ProductCategory" name="ProductCategory" placeholder="Enter Product Category" />
-                </div>
-
-                <div class="col-sm-1 gap-col"></div>  
-
-                <label class="col-sm-2 modern-label">Manufacturing Type</label>
-                <div class="col-sm-4">
-                    <select class="form-control text" id="ManufacturingType">
-                        <option selected="selected" value="Local">Local</option>
-                        <option value="Import">Import</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="row form-group" style="margin-bottom: 0;">
-                <label class="col-sm-2 modern-label">Status</label>
-                <div class="col-sm-3">
-                    <select class="form-control text" id="Status">
-                        <option selected="selected" value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                    </select>
-                </div>
-
-                <div class="col-sm-1 gap-col"></div>  
-
-                <label class="col-sm-2 modern-label">Remarks</label>
-                <div class="col-sm-4">
-                    <textarea class="form-control" id="Remarks" name="Remarks" placeholder="Enter any additional remarks here..." rows="2"></textarea>
-                </div>
-            </div>
-        </div>
-
     </div>
+
+    <!-- Product Details -->
+    <div class="gui-card">
+        <div class="gui-section-title"><span><i class="glyphicon glyphicon-tag"></i> Product details</span></div>
+        <div class="row form-group">
+            <label class="col-sm-2 modern-label">Product name <span class="asterisk">*</span></label>
+            <div class="col-sm-3">
+                <input type="text" id="ProductName" class="form-control" maxlength="150" placeholder="Enter product name">
+                <span class="field-error" id="err_pname">Product name is required</span>
+            </div>
+            <div class="col-sm-1"></div>
+            <label class="col-sm-2 modern-label">Brand name <span class="asterisk">*</span></label>
+            <div class="col-sm-3">
+                <input type="text" id="BrandName" class="form-control" placeholder="Enter brand name">
+                <span class="field-error" id="err_brand">Brand name is required</span>
+            </div>
+        </div>
+    </div>
+    <!-- Variants + Packs -->
+    <div class="gui-card">
+        <div class="gui-section-title">
+            <span><i class="glyphicon glyphicon-th-list"></i> Variants and pack sizes</span>
+            <button id="btnAddVariant" class="btn btn-success-sm" type="button">
+                <i class="glyphicon glyphicon-plus"></i> Add variant
+            </button>
+        </div>
+        <div id="variantContainer"></div>
+    </div>
+    <!-- Classification -->
+    <div class="gui-card">
+        <div class="gui-section-title"><span><i class="glyphicon glyphicon-cog"></i> Classification and settings</span></div>
+        <div class="row form-group">
+            <label class="col-sm-2 modern-label">Product category</label>
+            <div class="col-sm-3">
+                <input type="text" id="ProductCategory" class="form-control" placeholder="e.g. Tablet, Capsule">
+            </div>
+            <div class="col-sm-1"></div>
+            <label class="col-sm-2 modern-label">Manufacturing type</label>
+            <div class="col-sm-3">
+                <select id="ManufacturingType" class="form-control">
+                    <option value="Local">Local</option>
+                    <option value="Import">Import</option>
+                </select>
+            </div>
+        </div>
+        <div class="row form-group">
+            <label class="col-sm-2 modern-label">Status</label>
+            <div class="col-sm-3">
+                <select id="Status" class="form-control">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+            <div class="col-sm-1"></div>
+            <label class="col-sm-2 modern-label">Remarks</label>
+            <div class="col-sm-3">
+                <textarea id="Remarks" class="form-control" rows="2" placeholder="Optional notes"></textarea>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
-<div class="box-footer" style="background: transparent; border-top: none;"></div>
-
-<!-- ── Popup Windows (Hidden) ── -->
-<div class="row">
-    <div id="ViewPopupWindow" class="PopupWindowLayout" style="display: none;">
-        <div id="PopupWindowGrid" class="PopUpGrid"></div>
-    </div>
-    <div id="PopupWindowDosageForm" class="PopupWindowLayout" style="display: none;">
-        <div id="PopupWindowGridDosageForm" class="PopUpGrid"></div>
-    </div>
-    <div id="PopupWindowPackSize" class="PopupWindowLayout" style="display: none;">
-        <div id="PopupWindowGridPackSize" class="PopUpGrid"></div>
-    </div>
-    <div id="PopupWindowProductType" class="PopupWindowLayout" style="display: none;">
-        <div id="PopupWindowGridProductType" class="PopUpGrid"></div>
-    </div>
-    <div id="PopupWindowTherapeuticClass" class="PopupWindowLayout" style="display: none;">
-        <div id="PopupWindowGridTherapeuticClass" class="PopUpGrid"></div>
-    </div>
-    <div id="CompanyWindow" class="PopupWindowLayout" style="display: none;">
-        <div id="CompanyWindowGrid" class="PopUpGrid"></div>
-    </div>
-</div>
-
-
-
-
-
+<!-- Popup Windows -->
+<div id="ViewPopupWindow" style="display:none"><div id="PopupWindowGrid"></div></div>
+<div id="PopupWindowDosageForm" style="display:none"><div id="PopupWindowGridDosageForm"></div></div>
+<div id="PopupWindowTherapeuticClass" style="display:none"><div id="PopupWindowGridTherapeuticClass"></div></div>
+<div id="CompanyWindow" style="display:none"><div id="CompanyWindowGrid"></div></div>

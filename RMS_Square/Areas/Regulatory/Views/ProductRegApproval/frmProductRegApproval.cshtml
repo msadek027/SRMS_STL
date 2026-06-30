@@ -18,7 +18,42 @@
         --green-bg: #f0fdf4;
         --green-bd: #6ee7b7;
     }
+    .vp-row {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
 
+    .vp-badge {
+        background: #ede9fe;
+        color: #5b21b6;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 8px;
+        white-space: nowrap;
+    }
+
+    .vp-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .vp-pill {
+        background: #fff;
+        border: 1px solid #cbd5e1;
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 12px;
+        color: #1e293b;
+    }
     /* Action Bar */
     .action-bar {
         background: var(--card-bg);
@@ -644,20 +679,17 @@
                 <div class="col-sm-4">
                     <input type="text" id="ProductName" class="form-control" readonly />
                 </div>
-                <label class="col-sm-2 modern-label">Product Category</label>
-                <div class="col-sm-3">
-                    <input type="text" id="ProductCategory" class="form-control" readonly />
-                </div>
-            </div>
-            <div class="row form-group" style="margin-bottom:0;">
                 <label class="col-sm-2 modern-label">Brand Name</label>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <input type="text" id="BrandName" class="form-control" readonly />
                 </div>
-                <label class="col-sm-2 modern-label">Pack Size</label>
-                <div class="col-sm-3">
-                    <input type="text" id="PackSizeName" class="form-control" readonly />
-                </div>
+            </div>
+            
+            <div id="variantDisplaySection" style="display:none; margin-top:16px; padding-top:16px; border-top:1px solid var(--border-soft);">
+                <label class="modern-label" style="display:block; margin-bottom:10px;">
+                    <i class="glyphicon glyphicon-th-list"></i> Variants &amp; Pack Sizes
+                </label>
+                <div id="variantDisplayContainer"></div>
             </div>
         </div>
 
@@ -1185,12 +1217,54 @@ $(document).ready(function () {
         $('#ApprovalRemarks').val(row.ApprovalRemarks     || '');
 
         loadFiles(row.AnnexId);
+        loadVariantDisplay(row.ProductCode);
 
         $('#detailSection').show();
         $('#btnSave').show();
         $('#btnDelete').show();
     }
 
+
+    function loadVariantDisplay(productCode) {
+        $('#variantDisplaySection').hide();
+        $('#variantDisplayContainer').html('');
+        if (!productCode) return;
+
+        $.ajax({
+            url: '@Url.Action("GetVariantsAndPacks", "ProductInfo")',
+            method: 'get',
+            data: { productCode: productCode },
+            success: function (data) {
+                if (!data || data.length === 0) { return; }
+
+                var html = '';
+                $.each(data, function (i, v) {
+                    var activePacks = $.grep(v.Packs || [], function (p) { return p.Status === 'Active'; });
+
+                    html += '<div class="vp-row">';
+                    html += '<span class="vp-badge">V' + (i + 1) + '</span>';
+                    html += '<span class="vp-name">' + escHtmlVP(v.VariantName) + '</span>';
+                    html += '<span style="color:#e2e8f0">|</span>';
+
+                    if (activePacks.length) {
+                        $.each(activePacks, function (j, pk) {
+                            html += '<span class="vp-pill">' + escHtmlVP(pk.PackSizeName) + '</span>';
+                        });
+                    } else {
+                        html += '<span style="color:#94a3b8;font-size:12px">No pack sizes</span>';
+                    }
+                    html += '</div>';
+                });
+
+                $('#variantDisplayContainer').html(html);
+                $('#variantDisplaySection').show();
+            }
+        });
+    }
+
+    function escHtmlVP(s) {
+        return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    }
     /* ════════════════════════════════════
        FILE LIST (read-only, download only)
     ════════════════════════════════════ */
@@ -1372,6 +1446,9 @@ var fileUrl = '@Url.Action("PreviewFile", "ProductRegApproval", new { area = "Re
         $('#detailSection').hide();
         $('#btnSave').hide();
         $('#btnDelete').hide();
+
+        $('#variantDisplaySection').hide();      
+        $('#variantDisplayContainer').html('');
     });
 
 

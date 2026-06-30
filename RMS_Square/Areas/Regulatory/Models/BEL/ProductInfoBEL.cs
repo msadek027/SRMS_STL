@@ -46,7 +46,12 @@ namespace RMS_Square.Areas.Regulatory.Models.BEL
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string LastDays { get; set; }
-        
+        private List<ProductVariantBEL> _variants;
+        public List<ProductVariantBEL> Variants
+        {
+            get { return _variants ?? (_variants = new List<ProductVariantBEL>()); }
+            set { _variants = value; }
+        }
 
     }
 }

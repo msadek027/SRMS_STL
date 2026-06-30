@@ -1521,12 +1521,14 @@
     <Compile Include="Areas\Regulatory\Models\BEL\ProductInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ProductInfoView.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ProductLifeCycleBEL.cs" />
+    <Compile Include="Areas\Regulatory\Models\BEL\ProductPackBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ProductPriceBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ProductPriceMasterBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ProductRegistrationBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ProductReportParams.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ProductSummaryBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ProductTypeInfoBEL.cs" />
+    <Compile Include="Areas\Regulatory\Models\BEL\ProductVariantBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\PromotionInfoBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\RecipeBEL.cs" />
     <Compile Include="Areas\Regulatory\Models\BEL\ReportModel.cs" />

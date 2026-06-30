@@ -23,38 +23,73 @@ namespace RMS_Square.Areas.Regulatory.Controllers
         {
             if (Session["UserID"] != null)
             {
-                //ViewBag.strengthList = new DalCustomer().GetAll(0, Convert.ToInt32(Session["MemberID"]), true, string.Empty, "Name").OrderBy(o => o.CustomerName);
-                // ViewBag.strengthList = new StrengthInfoDAO().GetStrengthList();    
                 return View();
             }
             return Redirect(string.Format("~/Home/frmHome"));
         }
+
+        //[HttpPost]
+        //public ActionResult frmProductInfo(ProductInfoBEL master)
+        //{
+        //    try
+        //    {
+
+        //        string userId = Session["UserID"] as string;
+        //        if (primaryDAO.SaveUpdate(master, userId))
+        //        {
+        //            return Json(new { ID = primaryDAO.MaxID, Mode = primaryDAO.IUMode, Status = "Yes" });
+        //        }
+        //        else
+        //            return View("frmRole");
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        if (e.Message.Substring(0, 9) == "ORA-00001")
+        //            return Json(new { Status = "Error:ORA-00001,Data already exists!" });//Unique Identifier.
+        //        else if (e.Message.Substring(0, 9) == "ORA-02292")
+        //            return Json(new { Status = "Error:ORA-02292,Data already exists!" });//Child Record Found.
+        //        else if (e.Message.Substring(0, 9) == "ORA-12899")
+        //            return Json(new { Status = "Error:ORA-12899,Data Value Too Large!" });//Value Too Large.
+        //        else
+        //            return Json(new { Status = "! Error : Error Code:" + e.Message.Substring(0, 9) });//Other Wise Error Found
+
+        //    }
+        //}
 
         [HttpPost]
         public ActionResult frmProductInfo(ProductInfoBEL master)
         {
             try
             {
-
                 string userId = Session["UserID"] as string;
                 if (primaryDAO.SaveUpdate(master, userId))
                 {
-                    return Json(new { ID = primaryDAO.MaxID, Mode = primaryDAO.IUMode, Status = "Yes" });
+                    return Json(new
+                    {
+                        ID = primaryDAO.MaxID,
+                        Mode = primaryDAO.IUMode,
+                        Status = "Yes"
+                    });
                 }
                 else
-                    return View("frmRole");
+                {
+                    return Json(new { Status = "Error: Save failed." });
+                }
             }
             catch (Exception e)
             {
-                if (e.Message.Substring(0, 9) == "ORA-00001")
-                    return Json(new { Status = "Error:ORA-00001,Data already exists!" });//Unique Identifier.
-                else if (e.Message.Substring(0, 9) == "ORA-02292")
-                    return Json(new { Status = "Error:ORA-02292,Data already exists!" });//Child Record Found.
-                else if (e.Message.Substring(0, 9) == "ORA-12899")
-                    return Json(new { Status = "Error:ORA-12899,Data Value Too Large!" });//Value Too Large.
-                else
-                    return Json(new { Status = "! Error : Error Code:" + e.Message.Substring(0, 9) });//Other Wise Error Found
+                string msg = e.Message.Length >= 9
+                             ? e.Message.Substring(0, 9)
+                             : e.Message;
 
+                if (msg == "ORA-00001")
+                    return Json(new { Status = "Error: Data already exists!" });
+                else if (msg == "ORA-02292")
+                    return Json(new { Status = "Error: Child record found!" });
+                else if (msg == "ORA-12899")
+                    return Json(new { Status = "Error: Value too large!" });
+                else
+                    return Json(new { Status = "Error: " + e.Message });
             }
         }
 
@@ -157,6 +192,13 @@ namespace RMS_Square.Areas.Regulatory.Controllers
                 return View();
             }
             return Redirect(string.Format("~/Home/frmHome"));
+        }
+
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult GetVariantsAndPacks(string productCode)
+        {
+            var data = primaryDAO.GetVariantsAndPacks(productCode);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
     }
 }
