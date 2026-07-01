@@ -359,6 +359,16 @@ $(document).ready(function () {
         variantList = []; variantCounter = 0; packCounter = 0;
         renderVariants();
         hideAlerts();
+
+        // ── ──
+        $('#ProductCode').val('');
+        $('#CompanyCode').val('');
+        $('#CompanyUnitCode').val('');
+        $('#CompanyName').val('');
+        $('#CompanyUnitName').val('');
+        $('#DosageFormCode').val('');
+        $('#TherapeuticClassCode').val('');
+        // ───────────────────────────
     });
 
     // ── Render Variants ───────────────────────────────────
@@ -682,7 +692,7 @@ $(document).ready(function () {
             { field: "CompanyUnitName",title: "Unit",         width: 120 },
             { field: "ProductName",    title: "Product Name", width: 160 },
             { field: "BrandName",      title: "Brand",        width: 120 },
-            { field: "variantName", title: "variantName", width: 100 }
+            //{ field: "variantName", title: "variantName", width: 100 }
         ]
     }).data('kendoGrid');
 

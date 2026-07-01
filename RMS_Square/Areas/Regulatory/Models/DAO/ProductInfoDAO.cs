@@ -385,44 +385,106 @@ namespace RMS_Square.Areas.Regulatory.Models.DAO
             return dt.Rows[0][0].ToString();
         }
         
+        //public List<ProductInfoBEL> GetAllActiveProduct(string companyCode)
+        //{
+        //    var query = new System.Text.StringBuilder();
+
+        //    query.Append(" SELECT C.COMPANY_CODE,C.COMPANY_UNIT_CODE,C.COMPANY_UNIT_NAME,P.PRODUCT_CODE,P.PRODUCT_NAME,P.SAP_PRODUCT_CODE,P.GENERIC_CODE, P.PACK_SIZE_NAME,");
+        //    query.Append(" P.BRAND_NAME, P.PRODUCT_CATEGORY,P.PRODUCT_SPECIFICATION,P.INTRODUCED_BANGLADESH, ");
+        //    query.Append(" P.MANUFACTURING_TYPE,P.PRODUCT_TYPE_CODE, FN_PRODUCT_TYPE_NAME(P.PRODUCT_TYPE_CODE) PRODUCT_TYPE_NAME,P.STATUS,  P.REMARKS ,TO_CHAR(p.SET_ON, 'YYYY')||TO_CHAR(p.SET_ON, 'MM') as YearMonth ");
+        //    query.Append(" FROM PRODUCT_INFO p,COMPANY_UNIT_INFO C ");
+        //    query.Append(" WHERE P.COMPANY_CODE=C.COMPANY_UNIT_CODE(+) AND P.STATUS='Active' ");
+
+        //    if (!string.IsNullOrEmpty(companyCode))
+        //    {
+        //        query.Append(" AND P.COMPANY_CODE ='" + companyCode + "'");
+        //    }
+        //    query.Append(" ORDER BY P.PRODUCT_CODE ");
+        //    DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), query.ToString());
+        //    List<ProductInfoBEL> item;
+
+        //    item = (from DataRow row in dt.Rows
+        //            select new ProductInfoBEL
+        //            {
+        //                ProductCode = row["PRODUCT_CODE"].ToString(),
+        //                ProductName = row["PRODUCT_NAME"].ToString(),
+        //                SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
+        //                PackSizeName = row["PACK_SIZE_NAME"].ToString(),
+        //                BrandName = row["BRAND_NAME"].ToString(),
+        //                CompanyCode = row["COMPANY_UNIT_CODE"].ToString(),
+        //                CompanyName = row["COMPANY_UNIT_NAME"].ToString(),
+        //                ProductCategory = row["PRODUCT_CATEGORY"].ToString(),
+        //                ProductSpecification = row["PRODUCT_SPECIFICATION"].ToString(),
+        //                IntroducedInBD = row["INTRODUCED_BANGLADESH"].ToString(),
+        //                ManufacturingType = row["MANUFACTURING_TYPE"].ToString(),
+        //                ProductTypeCode = row["PRODUCT_TYPE_CODE"].ToString(),
+        //                ProductTypeName = row["PRODUCT_TYPE_NAME"].ToString(),
+        //                Status = row["STATUS"].ToString(),
+        //                Remarks = row["REMARKS"].ToString(),
+        //                YearMonth = row["YearMonth"].ToString()
+        //            }).ToList();
+        //    return item;
+        //}
+
         public List<ProductInfoBEL> GetAllActiveProduct(string companyCode)
         {
             var query = new System.Text.StringBuilder();
 
-            query.Append(" SELECT C.COMPANY_CODE,C.COMPANY_UNIT_CODE,C.COMPANY_UNIT_NAME,P.PRODUCT_CODE,P.PRODUCT_NAME,P.SAP_PRODUCT_CODE,P.GENERIC_CODE, P.PACK_SIZE_NAME,");
-            query.Append(" P.BRAND_NAME, P.PRODUCT_CATEGORY,P.PRODUCT_SPECIFICATION,P.INTRODUCED_BANGLADESH, ");
-            query.Append(" P.MANUFACTURING_TYPE,P.PRODUCT_TYPE_CODE, FN_PRODUCT_TYPE_NAME(P.PRODUCT_TYPE_CODE) PRODUCT_TYPE_NAME,P.STATUS,  P.REMARKS ,TO_CHAR(p.SET_ON, 'YYYY')||TO_CHAR(p.SET_ON, 'MM') as YearMonth ");
-            query.Append(" FROM PRODUCT_INFO p,COMPANY_UNIT_INFO C ");
-            query.Append(" WHERE P.COMPANY_CODE=C.COMPANY_UNIT_CODE(+) AND P.STATUS='Active' ");
+            query.Append(" SELECT C.COMPANY_CODE, C.COMPANY_UNIT_CODE, C.COMPANY_UNIT_NAME, ");
+            query.Append("        P.PRODUCT_CODE, P.PRODUCT_NAME, P.SAP_PRODUCT_CODE, P.GENERIC_CODE, ");
+            query.Append("        P.BRAND_NAME, P.PRODUCT_CATEGORY, P.PRODUCT_SPECIFICATION, ");
+            query.Append("        P.INTRODUCED_BANGLADESH, P.MANUFACTURING_TYPE, P.PRODUCT_TYPE_CODE, ");
+            query.Append("        FN_PRODUCT_TYPE_NAME(P.PRODUCT_TYPE_CODE) PRODUCT_TYPE_NAME, ");
+            query.Append("        P.STATUS, P.REMARKS, ");
+            query.Append("        TO_CHAR(P.SET_ON,'YYYY')||TO_CHAR(P.SET_ON,'MM') AS YearMonth, ");
+
+            // Variant names — comma separated
+            query.Append("        (SELECT LISTAGG(V.VARIANT_NAME, ', ') WITHIN GROUP (ORDER BY V.VARIANT_CODE) ");
+            query.Append("           FROM PRODUCT_VARIANT_INFO V ");
+            query.Append("          WHERE V.PRODUCT_CODE = P.PRODUCT_CODE ");
+            query.Append("            AND V.STATUS = 'Active') AS PRODUCT_VARIANT, ");
+
+            // Pack sizes — comma separated (across all variants)
+            query.Append("        (SELECT LISTAGG(PK.PACK_SIZE_NAME, ', ') WITHIN GROUP (ORDER BY PK.PACK_CODE) ");
+            query.Append("           FROM PRODUCT_PACK_INFO PK ");
+            query.Append("          WHERE PK.PRODUCT_CODE = P.PRODUCT_CODE ");
+            query.Append("            AND PK.STATUS = 'Active') AS PACK_SIZE_NAME ");
+
+            query.Append(" FROM PRODUCT_INFO P, COMPANY_UNIT_INFO C ");
+            query.Append(" WHERE P.COMPANY_CODE = C.COMPANY_UNIT_CODE(+) ");
+            query.Append("   AND P.STATUS = 'Active' ");
 
             if (!string.IsNullOrEmpty(companyCode))
             {
-                query.Append(" AND P.COMPANY_CODE ='" + companyCode + "'");
+                query.Append(" AND P.COMPANY_CODE = '" + companyCode + "'");
             }
-            query.Append(" ORDER BY P.PRODUCT_CODE ");
-            DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), query.ToString());
-            List<ProductInfoBEL> item;
 
-            item = (from DataRow row in dt.Rows
-                    select new ProductInfoBEL
-                    {
-                        ProductCode = row["PRODUCT_CODE"].ToString(),
-                        ProductName = row["PRODUCT_NAME"].ToString(),
-                        SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
-                        PackSizeName = row["PACK_SIZE_NAME"].ToString(),
-                        BrandName = row["BRAND_NAME"].ToString(),
-                        CompanyCode = row["COMPANY_UNIT_CODE"].ToString(),
-                        CompanyName = row["COMPANY_UNIT_NAME"].ToString(),
-                        ProductCategory = row["PRODUCT_CATEGORY"].ToString(),
-                        ProductSpecification = row["PRODUCT_SPECIFICATION"].ToString(),
-                        IntroducedInBD = row["INTRODUCED_BANGLADESH"].ToString(),
-                        ManufacturingType = row["MANUFACTURING_TYPE"].ToString(),
-                        ProductTypeCode = row["PRODUCT_TYPE_CODE"].ToString(),
-                        ProductTypeName = row["PRODUCT_TYPE_NAME"].ToString(),
-                        Status = row["STATUS"].ToString(),
-                        Remarks = row["REMARKS"].ToString(),
-                        YearMonth = row["YearMonth"].ToString()
-                    }).ToList();
+            query.Append(" ORDER BY P.PRODUCT_CODE ");
+
+            DataTable dt = dbHelper.GetDataTable(dbConn.SAConnStrReader(), query.ToString());
+
+            var item = (from DataRow row in dt.Rows
+                        select new ProductInfoBEL
+                        {
+                            ProductCode = row["PRODUCT_CODE"].ToString(),
+                            ProductName = row["PRODUCT_NAME"].ToString(),
+                            SAPProductCode = row["SAP_PRODUCT_CODE"].ToString(),
+                            PackSizeName = row["PACK_SIZE_NAME"].ToString(),
+                            ProductVariant = row["PRODUCT_VARIANT"].ToString(),
+                            BrandName = row["BRAND_NAME"].ToString(),
+                            CompanyCode = row["COMPANY_UNIT_CODE"].ToString(),
+                            CompanyName = row["COMPANY_UNIT_NAME"].ToString(),
+                            ProductCategory = row["PRODUCT_CATEGORY"].ToString(),
+                            ProductSpecification = row["PRODUCT_SPECIFICATION"].ToString(),
+                            IntroducedInBD = row["INTRODUCED_BANGLADESH"].ToString(),
+                            ManufacturingType = row["MANUFACTURING_TYPE"].ToString(),
+                            ProductTypeCode = row["PRODUCT_TYPE_CODE"].ToString(),
+                            ProductTypeName = row["PRODUCT_TYPE_NAME"].ToString(),
+                            Status = row["STATUS"].ToString(),
+                            Remarks = row["REMARKS"].ToString(),
+                            YearMonth = row["YearMonth"].ToString()
+                        }).ToList();
+
             return item;
         }
         public List<ProductInfoBEL> GetAllProduct(string companyCode)
